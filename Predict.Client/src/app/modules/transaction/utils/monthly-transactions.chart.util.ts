@@ -56,7 +56,7 @@ export namespace MonthlyTransactionChartUtils {
     const maxAbs = Math.max(...allValues.map((v) => Math.abs(v)), 0);
 
     return {
-      chart: { zooming: { type: 'xy' } },
+      chart: { zooming: { type: 'x' } },
       title: { text: 'Monthly Transactions', align: 'left' },
       xAxis: { categories },
       yAxis: {
