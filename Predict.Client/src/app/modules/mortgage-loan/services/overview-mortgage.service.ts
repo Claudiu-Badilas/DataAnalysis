@@ -9,7 +9,7 @@ import {
   RepaymentScheduleDto,
 } from '../models/mortgage.model';
 
-export const MortgageLoanService_STORAGE_KEY = 'GraficRambursare_18-Apr-2026v2';
+export const MortgageLoanService_STORAGE_KEY = 'GraficRambursare_18-May-2026';
 
 @Injectable({ providedIn: 'root' })
 export class MortgageLoanService {
