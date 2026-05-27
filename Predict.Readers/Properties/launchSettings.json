@@ -1,0 +1,20 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:6455",
+      "sslPort": 44319
+    }
+  },
+  "profiles": {
+    "RunApplication": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TOKEN_KEY": "adskd]ad)-{admkwamd2312dsa",
+        "DB_CONN_STRING": "host=localhost;username=postgres;password=admin;database=predict"
+      }
+    }
+  }
+}
