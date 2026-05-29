@@ -4,9 +4,18 @@
     [chartOptions]="mortgageInterestProgressChart()"
     ><ng-container p-highcharts-wrapper-content>
       <div class="m-2 d-flex align-items-center justify-content-between">
-        <div class="title">Progress</div>
+        <div class="w-50">
+          <!-- <div class="title">Progress</div> -->
+          <p-toggle-button
+            id="asdasdas"
+            [options]="['pie', 'bar']"
+            [selected]="progressPaymentChartTypeChange()"
+            (selectionChange)="onProgressPaymentChartTypeChange($event)"
+          />
+        </div>
         <div class="w-50">
           <p-toggle-button
+            id="asdasdasasdsad"
             [options]="['Credit', 'Dobanda', 'Total']"
             [selected]="progressPaymentViewChange()"
             [gradient]="{

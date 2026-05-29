@@ -5,12 +5,11 @@ import { Store } from '@ngrx/store';
 import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/selectors/mortgage-loan-detailed.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
-import { Colors } from 'src/app/shared/styles/colors';
-import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
-import { MortgageLoanMonthlyPaymentsChartUtils } from '../../utils/charts/mortgage-loan-monthly-payments.chart.util';
-import { map } from 'rxjs';
+import { Colors } from 'src/app/shared/styles/colors';
 import { MortgageInterestProgressChartUtils } from '../../utils/charts/mortgage-interest-progress.chart.util';
+import { MortgageLoanMonthlyPaymentsChartUtils } from '../../utils/charts/mortgage-loan-monthly-payments.chart.util';
+import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
 
 @Component({
   selector: 'p-mortgage-loan-detailed-body',
@@ -45,6 +44,7 @@ export class MortgageLoanDetailedBodyComponent {
     MortgageInterestProgressChartUtils.getChart(
       this.historicalInstalments(),
       this.progressPaymentViewChange(),
+      this.progressPaymentChartTypeChange(),
     ),
   );
 
@@ -60,6 +60,7 @@ export class MortgageLoanDetailedBodyComponent {
   colors = Colors;
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
   progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Credit');
+  progressPaymentChartTypeChange = signal<'Pie' | 'Bar'>('Pie');
 
   onMonthlyPaymentViewChange($event: string) {
     this.monthlyPaymentViewChange.set($event as 'Prd. Fixa' | 'Prd. Totala');
@@ -69,5 +70,9 @@ export class MortgageLoanDetailedBodyComponent {
     this.progressPaymentViewChange.set(
       $event as 'Credit' | 'Dobanda' | 'Total',
     );
+  }
+
+  onProgressPaymentChartTypeChange($event: string) {
+    this.progressPaymentChartTypeChange.set($event as 'Pie' | 'Bar');
   }
 }

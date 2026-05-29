@@ -9,6 +9,7 @@ export namespace MortgageInterestProgressChartUtils {
   export function getChart(
     rates: HistoricalInstalmentPayment[],
     selection: 'Credit' | 'Dobanda' | 'Total',
+    chartType: 'Pie' | 'Bar' = 'Pie',
   ): Highcharts.Options {
     if (!rates.length) return null;
 
@@ -104,50 +105,111 @@ export namespace MortgageInterestProgressChartUtils {
     const percent = (value: number) =>
       total ? MathUtil.round(MathUtil.percent(value, total)) : 0;
 
-    // 🔹 Final chart data
-    const chartData = rawData.map((d) => ({
-      name: d.name,
-      nameShort: d.nameShort,
-      y: percent(d.value),
-      amount: MathUtil.round(d.value),
-      amountCompact: NumberFormatPipe.numberFormat(d.value),
-      color: d.color,
-    }));
+    // 🔹 Prepare data based on chart type
+    if (chartType === 'Pie') {
+      // Pie chart data (percentages)
+      const pieChartData = rawData.map((d) => ({
+        name: d.name,
+        nameShort: d.nameShort,
+        y: percent(d.value),
+        amount: MathUtil.round(d.value),
+        amountCompact: NumberFormatPipe.numberFormat(d.value),
+        color: d.color,
+      }));
 
-    return {
-      chart: { type: 'pie', spacing: [20, 20, 20, 20] },
-      title: { text: null, align: 'left' },
-      tooltip: {
-        headerFormat: '',
-        pointFormat:
-          '<span style="color:{point.color}">●</span> <b>{point.name}</b><br/>' +
-          '<b>{point.y}%</b><br/>' +
-          'Amount: <b>{point.amountCompact} RON</b>',
-      },
-      plotOptions: {
-        pie: {
-          innerSize: '70%',
-          dataLabels: {
-            enabled: true,
-            format:
-              '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
-            style: {
-              fontSize: '11px',
-              textOutline: 'none',
-              fontWeight: 'normal',
+      return {
+        chart: { type: 'pie', spacing: [20, 20, 20, 20] },
+        title: { text: null, align: 'left' },
+        legend: { enabled: false },
+        tooltip: {
+          pointFormat:
+            '<span style="color:{point.color}">●</span> <b>{point.name}</b><br/>' +
+            '<b>{point.y}%</b><br/>' +
+            'Amount: <b>{point.amountCompact} RON</b>',
+        },
+        plotOptions: {
+          pie: {
+            innerSize: '70%',
+            dataLabels: {
+              enabled: true,
+              format:
+                '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
+              style: {
+                fontSize: '11px',
+                textOutline: 'none',
+                fontWeight: 'normal',
+              },
+              connectorWidth: 1,
+              connectorPadding: 5,
+              distance: 20,
             },
-            connectorWidth: 1,
-            connectorPadding: 5,
-            distance: 20,
           },
         },
-      },
-      series: [
-        {
-          name: 'Mortgage',
-          data: chartData,
+        series: [
+          {
+            type: 'pie',
+            name: 'Mortgage Distribution (%)',
+            data: pieChartData,
+            showInLegend: false,
+          },
+        ] as SeriesOptionsType[],
+      };
+    } else {
+      // Bar chart data (actual values, sorted descending)
+      const barChartData = rawData
+        .map((d) => ({
+          name: d.name,
+          nameShort: d.nameShort,
+          y: MathUtil.round(d.value),
+          amount: MathUtil.round(d.value),
+          amountCompact: NumberFormatPipe.numberFormat(d.value),
+          color: d.color,
+        }))
+        .sort((a, b) => b.y - a.y);
+
+      return {
+        chart: { type: 'bar', spacing: [20, 20, 20, 20] },
+        title: { text: null, align: 'left' },
+        legend: { enabled: false },
+        tooltip: {
+          pointFormat:
+            '<span style="color:{point.color}">●</span> <b>{point.name}</b><br/>' +
+            'Amount: <b>{point.amountCompact} RON</b>',
         },
-      ] as SeriesOptionsType[],
-    };
+        xAxis: {
+          type: 'category',
+          categories: barChartData.map((d) => d.name),
+          title: { text: null },
+          labels: { style: { fontSize: '11px', fontWeight: 'bold' } },
+          lineColor: '#E0E0E0',
+          tickColor: '#E0E0E0',
+        },
+        yAxis: {
+          title: { text: 'Amount (RON)' },
+          labels: { format: '{value} RON', style: { fontSize: '11px' } },
+          gridLineColor: '#F0F0F0',
+        },
+        plotOptions: {
+          bar: {
+            dataLabels: {
+              enabled: true,
+              format: '{point.amountCompact} RON',
+              style: { fontSize: '11px', fontWeight: 'bold', color: '#333333' },
+              position: 'right',
+            },
+          },
+        },
+        series: [
+          {
+            type: 'bar',
+            name: 'Mortgage Amounts (RON)',
+            data: barChartData,
+            colorByPoint: true,
+            colors: barChartData.map((d) => d.color),
+            showInLegend: false,
+          },
+        ] as SeriesOptionsType[],
+      };
+    }
   }
 }
