@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 import * as fromAppStore from 'src/app/store/app-state.reducer';
@@ -9,10 +8,10 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
   selector: 'p-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.scss'],
-  imports: [CommonModule, NgbDropdownModule],
+  imports: [CommonModule],
 })
 export class TopBarComponent {
-  constructor(private store: Store<fromAppStore.AppState>) {}
+  @Input() hasModuleNavContent: boolean = false;
 
   modules = [
     { label: 'Mortgage', icon: 'wallet', url: '/mortgage-loan' },
@@ -23,6 +22,8 @@ export class TopBarComponent {
   ];
 
   isMenuOpen = false;
+
+  constructor(private store: Store<fromAppStore.AppState>) {}
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;

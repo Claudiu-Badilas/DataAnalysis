@@ -66,6 +66,14 @@
   flex-shrink: 0;
 }
 
+/* Mobile Actions (Icons only) */
+.actions--mobile {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .actions__link {
   display: inline-flex;
   align-items: center;
@@ -255,21 +263,22 @@
     gap: 12px;
   }
 
-  .brand__name {
-    display: none;
-  }
-
-  .brand__logo {
-    width: 40px;
-    height: 40px;
-  }
-
-  /* Hide desktop actions on mobile */
+  /* Hide desktop actions with labels */
   .actions--desktop {
     display: none;
   }
 
-  /* Show mobile menu on mobile */
+  /* Show mobile actions (icons only) - but only when hasModuleNavContent is false */
+  .actions--mobile {
+    display: flex;
+  }
+
+  /* Hide brand name on mobile */
+  .brand__name {
+    display: none;
+  }
+
+  /* Show burger menu - but only when hasModuleNavContent is true */
   .mobile-menu {
     display: block;
     margin: 0 !important;
@@ -303,6 +312,14 @@
   .brand__logo svg {
     width: 16px;
     height: 16px;
+  }
+
+  .actions--mobile {
+    gap: 4px;
+  }
+
+  .actions--mobile .actions__link {
+    padding: 6px;
   }
 
   .dropdown-menu {
