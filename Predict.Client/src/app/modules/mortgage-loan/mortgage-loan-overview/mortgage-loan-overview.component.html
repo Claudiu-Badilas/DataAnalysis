@@ -4,7 +4,9 @@
   ></p-mortgage-loan-overview-header>
 
   <div class="mt-2 p-2 card">
-    <div class="d-flex align-items-center justify-content-between">
+    <div
+      class="d-flex align-items-center justify-content-between shadow-sm rounded"
+    >
       <p-dropdown-select
         [items]="dropDownSelectOptions$ | async"
         [selectedItem]="selectedRepaymentScheduleName$ | async"
