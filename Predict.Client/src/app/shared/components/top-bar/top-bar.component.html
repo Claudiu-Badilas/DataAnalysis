@@ -28,8 +28,7 @@
       <ng-content select="[module-navigation]"></ng-content>
     </div>
 
-    <!-- Desktop Actions (with labels) - Hidden when module-nav has content -->
-    <div class="actions actions--desktop" *ngIf="!hasModuleNavContent">
+    <div class="actions actions--desktop">
       @for (option of modules; track option) {
         <button
           type="button"
@@ -124,7 +123,6 @@
       }
     </div>
 
-    <!-- Mobile Actions (Icons Only) - Hidden when module-nav has content -->
     <div class="actions actions--mobile" *ngIf="!hasModuleNavContent">
       @for (option of modules; track option) {
         <button
