@@ -47,7 +47,6 @@ export namespace MonthlyTransactionChartUtils {
       return incomesTotal - expensesTotal;
     });
 
-    // Optional: symmetric axis for clean 0 alignment
     const allValues = [
       ...incomesData.map(([_, v]) => v),
       ...expensesData.map(([_, v]) => v),
@@ -58,6 +57,7 @@ export namespace MonthlyTransactionChartUtils {
     return {
       chart: { zooming: { type: 'x' } },
       title: { text: 'Monthly Transactions', align: 'left' },
+      legend: { enabled: false },
       xAxis: { categories },
       yAxis: {
         title: null,
@@ -70,6 +70,14 @@ export namespace MonthlyTransactionChartUtils {
             color: Colors.BS_BLACK,
           },
         ],
+      },
+      tooltip: {
+        shared: true,
+        useHTML: true,
+        valueDecimals: 2,
+        headerFormat: '<b>{point.key}</b><br/>',
+        pointFormat:
+          '<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:{series.color}; margin-right:8px;"></span> {series.name}: <b>${point.y:,.2f}</b><br/>',
       },
       series: [
         {
