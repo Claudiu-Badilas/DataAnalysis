@@ -12,25 +12,33 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
   imports: [CommonModule, NgbDropdownModule],
 })
 export class TopBarComponent {
-  isMenuOpen = false;
+  constructor(private store: Store<fromAppStore.AppState>) {}
 
   modules = [
-    { name: 'Mortgage', url: 'mortgage-loan/overview' },
-    { name: 'Transactions', url: 'transactions' },
-    { name: 'Invoices', url: 'invoices' },
-    { name: 'Receipts', url: 'receipts/summary' },
-    { name: 'Settings', url: 'settings' },
-    { name: 'Logout', url: 'authentication/logout' },
+    { label: 'Mortgage', icon: 'wallet', url: '/mortgage-loan' },
+    { label: 'Transactions', icon: 'trending', url: '/transactions' },
+    { label: 'Invoices', icon: 'file', url: '/invoices' },
+    { label: 'Receipts', icon: 'receipt', url: '/receipts' },
+    { label: 'Settings', icon: 'settings', url: '/settings' },
   ];
 
-  constructor(private store: Store<fromAppStore.AppState>) {}
+  isMenuOpen = false;
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 
-  onNavigateTo(url: string) {
+  closeMenu() {
     this.isMenuOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  onNavigateTo(url: any) {
     this.store.dispatch(NavigationAction.navigateTo({ route: url }));
   }
 }

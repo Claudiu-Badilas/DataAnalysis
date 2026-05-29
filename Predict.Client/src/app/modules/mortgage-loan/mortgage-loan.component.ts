@@ -6,7 +6,6 @@ import * as MortgageLoanActions from 'src/app/modules/mortgage-loan/actions/mort
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
-import { TopBar2Component } from 'src/app/shared/components/top-bar-2/top-bar-2.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 
@@ -16,7 +15,6 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
     CommonModule,
     RouterModule,
     TopBarComponent,
-    TopBar2Component,
     ToggleButtonComponent,
     ToggleButtonActionsComponent,
   ],
