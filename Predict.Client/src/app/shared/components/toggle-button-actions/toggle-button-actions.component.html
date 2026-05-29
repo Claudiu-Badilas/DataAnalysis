@@ -1,0 +1,12 @@
+<nav class="tabs">
+  @for (item of options; track item) {
+    <button
+      type="button"
+      class="tabs__btn"
+      [class.tabs__btn--active]="_selected() === item"
+      (click)="select(item)"
+    >
+      {{ item }}
+    </button>
+  }
+</nav>
