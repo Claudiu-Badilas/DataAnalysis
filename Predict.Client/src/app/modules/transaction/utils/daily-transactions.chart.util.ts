@@ -22,7 +22,15 @@ export namespace DailyTransactionChartUtils {
         DateUtils.fromJsDateToString(t.registrationDate),
       );
 
-      return Object.entries(group).map(([dateKey, transactions]) => {
+      const sortedEntries = Object.entries(group).sort(
+        ([dateKeyA], [dateKeyB]) => {
+          const dateA = DateUtils.fromStringToJsDate(dateKeyA);
+          const dateB = DateUtils.fromStringToJsDate(dateKeyB);
+          return dateA.getTime() - dateB.getTime();
+        },
+      );
+
+      return sortedEntries.map(([dateKey, transactions]) => {
         const sortedTransactions = [...transactions].sort(
           (a, b) => Math.abs(b.amount) - Math.abs(a.amount),
         );
