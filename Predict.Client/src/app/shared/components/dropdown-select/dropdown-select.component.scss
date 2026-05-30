@@ -1,34 +1,207 @@
 :host {
   display: block;
   width: 100%;
+}
 
-  .dropdown-item {
-    padding: 3px 0 !important;
+.dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-toggle-btn::after {
+  display: none !important;
+}
+
+.dropdown-toggle-btn {
+  height: 40px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 0 16px;
+  color: #1a202c;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown-toggle-btn:hover:not(:disabled) {
+  border-color: #cbd5e1;
+  background: #fafbfc;
+}
+
+.dropdown-toggle-btn:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dropdown-toggle-btn.open {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dropdown-toggle-btn.filled {
+  color: #1a202c;
+  font-weight: 500;
+}
+
+.dropdown-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.dropdown-icon {
+  transition: transform 0.2s ease;
+  color: #64748b;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.dropdown-toggle-btn.open .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+::ng-deep .dropdown-menu-custom {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: auto !important;
+  transform: translateY(8px) !important;
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  background: white;
+  padding: 8px;
+  min-width: 100%;
+  width: 100%;
+  margin-top: 0;
+  animation: slideDown 0.2s ease;
+  z-index: 1050;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(8px);
   }
 }
 
-button[ngbDropdownToggle] {
-  height: 40px;
-  background-color: white !important;
+/* Search Wrapper */
+.search-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Options Container */
+.options-scrollable-container {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+/* Dropdown Items */
+.dropdown-item-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s ease;
   text-align: left;
 }
 
-/* Optional: Smooth scroll for dropdown */
-div[ngbDropdownMenu] div {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 transparent;
+.dropdown-item-custom:hover {
+  background: #f8fafc;
 }
 
-div[ngbDropdownMenu] div::-webkit-scrollbar {
-  width: 6px;
+.dropdown-item-custom.selected {
+  background: #eff6ff;
+  color: #3b82f6;
+  font-weight: 500;
 }
 
-div[ngbDropdownMenu] div::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1;
-  border-radius: 3px;
+.dropdown-item-custom.selected .check-icon {
+  color: #3b82f6;
 }
 
-.options-scrollable-container {
-  max-height: 500px;
-  overflow-y: auto;
+.check-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 32px 16px;
+  color: #94a3b8;
+}
+
+.no-results svg {
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+.no-results span {
+  display: block;
+  font-size: 13px;
+}
+
+/* Animation for item selection */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.dropdown-item-custom {
+  animation: fadeIn 0.2s ease;
 }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'p-dropdown-select',
@@ -10,16 +10,19 @@ import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 })
 export class DropdownSelectComponent {
   @Input({ required: true }) items: string[] = [];
-  @Input({ required: true }) selectedItem!: string;
+  @Input() selectedItem: string = '';
   @Input() placeholder = 'Select';
 
   @Output() selectionChange = new EventEmitter<string>();
 
   searchTerm: string = '';
+  isOpen: boolean = false;
 
   selectItem(item: string) {
     this.selectedItem = item;
     this.selectionChange.emit(item);
+    this.searchTerm = '';
+    this.isOpen = false;
   }
 
   filteredItems() {
@@ -27,5 +30,12 @@ export class DropdownSelectComponent {
     return this.items.filter((item) =>
       item.toLowerCase().includes(this.searchTerm.toLowerCase()),
     );
+  }
+
+  onOpenChange(isOpen: boolean) {
+    this.isOpen = isOpen;
+    if (!isOpen) {
+      this.searchTerm = '';
+    }
   }
 }
