@@ -23,7 +23,11 @@
             <div class="title">Trendul ratelor</div>
             <div class="w-50">
               <p-toggle-button
-                [options]="['Rata', 'Dobanda', 'Principal']"
+                [options]="[
+                  { label: 'Rata' },
+                  { label: 'Dobanda' },
+                  { label: 'Principal' },
+                ]"
                 [selected]="chartView()"
                 [gradient]="{
                   primaryColor: '#047f94',

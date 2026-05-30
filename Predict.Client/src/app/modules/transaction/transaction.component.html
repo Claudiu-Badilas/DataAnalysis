@@ -51,7 +51,7 @@
           <div class="title">Daily Transactions</div>
           <div class="w-50">
             <p-toggle-button
-              [options]="['Expense', 'Income']"
+              [options]="[{ label: 'Expense' }, { label: 'Income' }]"
               [selected]="transactionType()"
               [gradient]="{
                 primaryColor: '#047f94',

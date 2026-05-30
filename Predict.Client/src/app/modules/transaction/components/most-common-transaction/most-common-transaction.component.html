@@ -1,7 +1,7 @@
 <div class="card">
   <div class="header">
     <p-toggle-button
-      [options]="['Lunar', 'Anual']"
+      [options]="[{ label: 'Lunar' }, { label: 'Anual' }]"
       [selected]="viewMode() === 'monthly' ? 'Lunar' : 'Anual'"
       [gradient]="{
         primaryColor: '#047f94',

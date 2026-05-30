@@ -4,10 +4,18 @@
   @for (option of options; track option) {
     <div
       class="toggle-option"
-      [ngClass]="{ active: option === _selected() }"
-      (click)="select(option)"
+      [ngClass]="{ active: option.label === _selected() }"
+      (click)="select(option.label)"
     >
-      {{ option }}
+      @if (option.iconPath) {
+        <img
+          [src]="option.iconPath"
+          alt="{{ option.label }} icon"
+          class="option-icon"
+        />
+      } @else {
+        {{ option.label }}
+      }
     </div>
   }
 
@@ -15,7 +23,7 @@
     class="toggle-slider"
     [style.width.%]="100 / options.length"
     [style.transform]="
-      'translateX(' + options.indexOf(_selected()) * 100 + '%)'
+      'translateX(' + options.map(o => o.label).indexOf(_selected()) * 100 + '%)'
     "
     [style.background]="gradientStyle"
   ></div>

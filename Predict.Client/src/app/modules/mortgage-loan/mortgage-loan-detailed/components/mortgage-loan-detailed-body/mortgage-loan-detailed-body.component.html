@@ -8,7 +8,10 @@
           <!-- <div class="title">Progress</div> -->
           <p-toggle-button
             id="asdasdas"
-            [options]="['Pie', 'Bar']"
+            [options]="[
+              { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
+              { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
+            ]"
             [selected]="progressPaymentChartTypeChange()"
             (selectionChange)="onProgressPaymentChartTypeChange($event)"
           />
@@ -16,7 +19,11 @@
         <div class="w-50">
           <p-toggle-button
             id="asdasdasasdsad"
-            [options]="['Credit', 'Dobanda', 'Total']"
+            [options]="[
+              { label: 'Credit' },
+              { label: 'Dobanda' },
+              { label: 'Total' },
+            ]"
             [selected]="progressPaymentViewChange()"
             [gradient]="{
               primaryColor: '#047f94',
@@ -37,7 +44,7 @@
         <div class="title">Plati Lunare</div>
         <div class="w-50">
           <p-toggle-button
-            [options]="['Prd. Fixa', 'Prd. Totala']"
+            [options]="[{ label: 'Prd. Fixa' }, { label: 'Prd. Totala' }]"
             [selected]="monthlyPaymentViewChange()"
             [gradient]="{
               primaryColor: '#047f94',

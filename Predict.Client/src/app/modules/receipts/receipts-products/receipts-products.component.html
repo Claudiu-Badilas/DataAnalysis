@@ -5,7 +5,7 @@
   <ng-container filters-full-size
     ><div class="space">
       <p-toggle-button
-        [options]="['Summary', 'Products']"
+        [options]="[{ label: 'Summary' }, { label: 'Products' }]"
         [selected]="'Products'"
         (selectionChange)="onSelectionChange($event)"
       />

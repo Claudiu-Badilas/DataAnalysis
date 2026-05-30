@@ -1,10 +1,9 @@
-<p-top-bar>
-  <ng-container module-navigation> </ng-container> </p-top-bar
+<p-top-bar> <ng-container module-navigation> </ng-container> </p-top-bar
 ><p-side-bar>
   <ng-container filters-full-size>
     <div class="space">
       <p-toggle-button
-        [options]="['Overview', 'Detailed']"
+        [options]="[{ label: 'Overview' }, { label: 'Detailed' }]"
         [selected]="'Overview'"
         (selectionChange)="onSelectionChange($event)"
       />

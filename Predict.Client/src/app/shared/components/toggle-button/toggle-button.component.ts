@@ -8,9 +8,10 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
   styleUrl: './toggle-button.component.scss',
 })
 export class ToggleButtonComponent {
-  @Input({ required: true }) options: string[] = [];
+  @Input({ required: true }) options: { label: string; iconPath?: string }[] =
+    [];
   @Input() set selected(value: string | null) {
-    this._selected.set(!!value ? value : this.options[0]);
+    this._selected.set(!!value ? value : this.options[0].label);
   }
   @Input() gradient: { primaryColor: string; secondaryColor: string };
   @Output() selectionChange = new EventEmitter<string>();
