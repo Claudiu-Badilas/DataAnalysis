@@ -7,7 +7,8 @@ import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortga
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { Colors } from 'src/app/shared/styles/colors';
-import { MortgageInterestProgressChartUtils } from '../../utils/charts/mortgage-interest-progress.chart.util';
+import { MortgageInterestProgressChartBarUtils } from '../../utils/charts/mortgage-interest-progress.bar-chart.util';
+import { MortgageInterestProgressChartPieUtils } from '../../utils/charts/mortgage-interest-progress.pie-chart.util';
 import { MortgageLoanMonthlyPaymentsChartUtils } from '../../utils/charts/mortgage-loan-monthly-payments.chart.util';
 import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
 
@@ -40,11 +41,16 @@ export class MortgageLoanDetailedBodyComponent {
     ),
   );
 
-  mortgageInterestProgressChart = computed(() =>
-    MortgageInterestProgressChartUtils.getChart(
+  mortgageInterestProgressPieChart = computed(() =>
+    MortgageInterestProgressChartPieUtils.getChart(
       this.historicalInstalments(),
       this.progressPaymentViewChange(),
-      this.progressPaymentChartTypeChange(),
+    ),
+  );
+
+  mortgageInterestProgressBarChart = computed(() =>
+    MortgageInterestProgressChartBarUtils.getChart(
+      this.historicalInstalments(),
     ),
   );
 

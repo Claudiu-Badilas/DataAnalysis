@@ -1,37 +1,58 @@
 <div class="charts-container mb-3">
-  <p-highcharts-wrapper
-    class="chart-wrapper"
-    [chartOptions]="mortgageInterestProgressChart()"
-    ><ng-container p-highcharts-wrapper-content>
-      <div class="m-2 d-flex align-items-center justify-content-between">
-        <div class="title">Progress</div>
-        <div style="width: 20%">
-          <p-toggle-button
-            [options]="[
-              { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
-              { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
-            ]"
-            [selected]="progressPaymentChartTypeChange()"
-            (selectionChange)="onProgressPaymentChartTypeChange($event)"
-          />
-        </div>
-        <div class="w-50">
-          <p-toggle-button
-            [options]="[
-              { label: 'Credit' },
-              { label: 'Dobanda' },
-              { label: 'Total' },
-            ]"
-            [selected]="progressPaymentViewChange()"
-            [gradient]="{
-              primaryColor: '#047f94',
-              secondaryColor: '#d5a326',
-            }"
-            (selectionChange)="onProgressPaymentViewChange($event)"
-          />
-        </div>
-      </div> </ng-container
-  ></p-highcharts-wrapper>
+  @if (progressPaymentChartTypeChange() === "Pie") {
+    <p-highcharts-wrapper
+      class="chart-wrapper"
+      [chartOptions]="mortgageInterestProgressPieChart()"
+      ><ng-container p-highcharts-wrapper-content>
+        <div class="m-2 d-flex align-items-center justify-content-between">
+          <div class="title">Progress</div>
+          <div class="w-50">
+            <p-toggle-button
+              [options]="[
+                { label: 'Credit' },
+                { label: 'Dobanda' },
+                { label: 'Total' },
+              ]"
+              [selected]="progressPaymentViewChange()"
+              [gradient]="{
+                primaryColor: '#047f94',
+                secondaryColor: '#d5a326',
+              }"
+              (selectionChange)="onProgressPaymentViewChange($event)"
+            />
+          </div>
+          <div style="width: 20%">
+            <p-toggle-button
+              [options]="[
+                { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
+                { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
+              ]"
+              [selected]="progressPaymentChartTypeChange()"
+              (selectionChange)="onProgressPaymentChartTypeChange($event)"
+            />
+          </div>
+        </div> </ng-container
+    ></p-highcharts-wrapper>
+  } @else {
+    <p-highcharts-wrapper
+      class="chart-wrapper"
+      [chartOptions]="mortgageInterestProgressBarChart()"
+      ><ng-container p-highcharts-wrapper-content>
+        <div class="m-2 d-flex align-items-center justify-content-between">
+          <div class="title">Progress</div>
+          <div style="width: 20%">
+            <p-toggle-button
+              [options]="[
+                { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
+                { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
+              ]"
+              [selected]="progressPaymentChartTypeChange()"
+              (selectionChange)="onProgressPaymentChartTypeChange($event)"
+            />
+          </div>
+        </div> </ng-container
+    ></p-highcharts-wrapper>
+  }
 
   <p-highcharts-wrapper
     class="chart-wrapper"
