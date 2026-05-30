@@ -1,12 +1,13 @@
-<div class="d-flex flex-column align-items-center justify-content-between">
+<div class="numeric-input-container">
   @if (label) {
-    <label class="m-0">{{ label }}</label>
+    <label class="numeric-input-label">{{ label }}</label>
   }
-
   <input
     type="number"
+    class="numeric-input"
     [value]="value ?? ''"
     [disabled]="disabled"
     (input)="onInput($event)"
+    (blur)="onBlur($event)"
   />
 </div>

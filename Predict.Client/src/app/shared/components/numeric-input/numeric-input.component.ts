@@ -14,10 +14,26 @@ export class NumericInputComponent {
 
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;
+    let newValue = input.value === '' ? null : Number(input.value);
 
-    const newValue = input.value === '' ? null : Number(input.value);
+    if (newValue !== null && isNaN(newValue)) {
+      newValue = null;
+    }
 
     this.value = newValue;
     this.valueChange.emit(newValue);
+  }
+
+  onBlur(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.value !== '' && !isNaN(Number(input.value))) {
+      const numValue = Number(input.value);
+      const formatted = Math.round(numValue * 100) / 100;
+      if (formatted !== numValue) {
+        this.value = formatted;
+        this.valueChange.emit(formatted);
+      }
+    }
   }
 }
