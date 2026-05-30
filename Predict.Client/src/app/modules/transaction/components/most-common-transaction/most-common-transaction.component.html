@@ -117,8 +117,8 @@
                   [class.positive-diff]="year.difference > 0"
                   [class.negative-diff]="year.difference < 0"
                 >
-                  ({{ year.difference > 0 ? "+" : ""
-                  }}{{ year.difference | numberFormat: "0.00" }})
+                  {{ year.difference > 0 ? "+" : ""
+                  }}{{ year.difference | numberFormat: "0.00" }}
                 </span>
               }
             </div>
