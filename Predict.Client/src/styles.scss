@@ -11,13 +11,10 @@
 body {
   font-family: Inter, system-ui, sans-serif;
   background: linear-gradient(
-    235deg,
-    rgba(241, 197, 184, 0.5),
-    rgba(217, 231, 255, 0.5),
-    rgba(227, 255, 231, 0.5)
+    180deg,
+    oklch(0.98 0.015 220),
+    oklch(0.99 0.01 165)
   );
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   min-height: 100vh;
 
   .card {
