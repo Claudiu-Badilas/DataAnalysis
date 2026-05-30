@@ -9,11 +9,19 @@
       <ng-content select="[module-navigation]"></ng-content>
     </div>
 
+    <!-- Filter Button - Desktop -->
+    @if (hasFiltersContent) {
+      <button type="button" class="actions__link" (click)="openFilterPanel()">
+        <img src="assets/icons/filter.svg" alt="filter" />
+      </button>
+    }
+
     <div class="actions actions--desktop">
       @for (option of modules; track option) {
         <button
           type="button"
           class="actions__link"
+          [class.active]="isActiveRoute(option.url)"
           (click)="onNavigateTo(option.url)"
         >
           <img [src]="'assets/icons/' + option.icon + '.svg'" />
@@ -22,14 +30,27 @@
       }
     </div>
 
+    <!-- Mobile Actions (Icons only) - Only shown when NO module navigation content -->
     <div class="actions actions--mobile" *ngIf="!hasModuleNavContent">
       @for (option of modules; track option) {
         <button
           type="button"
           class="actions__link"
+          [class.active]="isActiveRoute(option.url)"
           (click)="onNavigateTo(option.url)"
         >
           <img [src]="'assets/icons/' + option.icon + '.svg'" />
+        </button>
+      }
+
+      <!-- Filter Button - Mobile (only shown when there are filters AND no burger menu) -->
+      @if (hasFiltersContent) {
+        <button
+          type="button"
+          class="actions__link filter-btn"
+          (click)="openFilterPanel()"
+        >
+          <img src="assets/icons/filter.svg" alt="filter" />
         </button>
       }
     </div>
@@ -43,27 +64,58 @@
       >
         ☰
       </button>
-
-      <div class="dropdown-menu" *ngIf="isMenuOpen">
-        <div class="dropdown-header">
-          <span class="dropdown-title">Menu</span>
-          <button class="close-btn" (click)="closeMenu()">✕</button>
-        </div>
-        <div class="dropdown-items">
-          @for (option of modules; track option) {
-            <button
-              class="dropdown-item"
-              (click)="onNavigateTo(option.url); closeMenu()"
-            >
-              <img [src]="'assets/icons/' + option.icon + '.svg'" />
-              <span>{{ option.label }}</span>
-            </button>
-          }
-        </div>
-      </div>
     </div>
-
-    <!-- Overlay -->
-    <div class="menu-overlay" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
   </div>
 </header>
+
+<!-- Dropdown Menu - Moved OUTSIDE topbar -->
+<div class="dropdown-menu" *ngIf="hasModuleNavContent && isMenuOpen">
+  <div class="dropdown-header">
+    <span class="dropdown-title">Menu</span>
+    <button class="close-btn" (click)="closeMenu()">✕</button>
+  </div>
+  <div class="dropdown-items">
+    @for (option of modules; track option) {
+      <button
+        class="dropdown-item"
+        [class.active]="isActiveRoute(option.url)"
+        (click)="onNavigateTo(option.url); closeMenu()"
+      >
+        <img [src]="'assets/icons/' + option.icon + '.svg'" />
+        <span>{{ option.label }}</span>
+      </button>
+    }
+    <!-- Filter option inside burger menu dropdown - only shown when there are filters -->
+    @if (hasFiltersContent) {
+      <button class="dropdown-item" (click)="openFilterPanel(); closeMenu()">
+        <img src="assets/icons/filter.svg" alt="filter" />
+        <span>Filter</span>
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Filter Panel - Moved OUTSIDE topbar -->
+@if (hasFiltersContent) {
+  <div class="filter-panel" [class.open]="isFilterPanelOpen">
+    <div class="filter-panel__header">
+      <span class="filter-panel__title">Filters</span>
+      <button class="filter-panel__close" (click)="closeFilterPanel()">
+        ✕
+      </button>
+    </div>
+    <div class="filter-panel__content">
+      <ng-content select="[filter-content]"></ng-content>
+    </div>
+  </div>
+}
+
+<!-- Overlays - Moved OUTSIDE topbar -->
+<div class="menu-overlay" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
+@if (hasFiltersContent) {
+  <div
+    class="filter-overlay"
+    *ngIf="isFilterPanelOpen"
+    (click)="closeFilterPanel()"
+  ></div>
+}
