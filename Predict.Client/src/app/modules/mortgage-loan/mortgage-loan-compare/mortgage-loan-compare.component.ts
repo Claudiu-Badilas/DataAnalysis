@@ -12,6 +12,9 @@ import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-sele
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 
+import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
+import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
+import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 import { MortgageLoanCompareBodyComponent } from './components/mortgage-loan-compare-body/mortgage-loan-compare-body.component';
 import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.chart.util';
 
@@ -23,6 +26,8 @@ import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.ch
     DropdownSelectComponent,
     HighchartWrapperComponent,
     MortgageLoanCompareBodyComponent,
+    TopBarComponent,
+    ToggleButtonActionsComponent,
   ],
   templateUrl: './mortgage-loan-compare.component.html',
   styleUrls: ['./mortgage-loan-compare.component.scss'],
@@ -141,5 +146,13 @@ export class MortgageLoanCompareComponent {
 
   onChartViewChange(view: string) {
     this.chartView.set(view as 'Rata' | 'Dobanda' | 'Principal');
+  }
+
+  onSelectionChange(module: string) {
+    this.store.dispatch(
+      NavigationAction.navigateTo({
+        route: `/mortgage-loan/${module.toLowerCase()}`,
+      }),
+    );
   }
 }

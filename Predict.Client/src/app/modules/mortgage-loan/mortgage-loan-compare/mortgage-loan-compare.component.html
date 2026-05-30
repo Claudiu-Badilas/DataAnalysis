@@ -1,20 +1,32 @@
-<div class="mt-2 mx-2">
-  <div class="d-flex align-items-center justify-content-start">
-    <p-dropdown-select
-      [items]="repaymentSchedulesOptions()"
-      [selectedItem]="selectedLeftValue()"
-      placeholder="No Selection"
-      (selectionChange)="onLeftDropdownSelected($event)"
+<p-top-bar [hasModuleNavContent]="true" [hasFiltersContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Overview', 'Detailed', 'Compare']"
+      [selected]="'Compare'"
+      (selectionChange)="onSelectionChange($event)"
     />
+  </ng-container>
+  <ng-container filter-content>
+    <div class="pt-2">
+      <p-dropdown-select
+        [items]="repaymentSchedulesOptions()"
+        [selectedItem]="selectedLeftValue()"
+        placeholder="No Selection"
+        (selectionChange)="onLeftDropdownSelected($event)"
+      />
+    </div>
+    <div class="pt-2">
+      <p-dropdown-select
+        [items]="repaymentSchedulesOptions()"
+        [selectedItem]="selectedRightValue()"
+        placeholder="No Selection"
+        (selectionChange)="onRightDropdownSelected($event)"
+      />
+    </div>
+  </ng-container>
+</p-top-bar>
 
-    <p-dropdown-select
-      [items]="repaymentSchedulesOptions()"
-      [selectedItem]="selectedRightValue()"
-      placeholder="No Selection"
-      (selectionChange)="onRightDropdownSelected($event)"
-    />
-  </div>
-  <div class="mt-2 mx-2"></div>
+<div class="mt-2 mx-2">
   <div>
     <div class="mb-2">
       <p-highcharts-wrapper [chartOptions]="compareRatesTrendChart()">

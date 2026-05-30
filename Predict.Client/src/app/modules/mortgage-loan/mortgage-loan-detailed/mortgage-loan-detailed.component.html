@@ -1,11 +1,21 @@
-<div class="mt-2 mx-2">
-  <p-dropdown-select
-    [items]="dropDownSelectOptions$ | async"
-    [selectedItem]="selectedRepaymentScheduleName$ | async"
-    placeholder="No Selection"
-    (selectionChange)="onDropdownSelected($event)"
-  />
-</div>
+<p-top-bar [hasModuleNavContent]="true" [hasFiltersContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Overview', 'Detailed', 'Compare']"
+      [selected]="'Detailed'"
+      (selectionChange)="onSelectionChange($event)"
+    />
+  </ng-container>
+  <ng-container filter-content>
+    <p-dropdown-select
+      [items]="dropDownSelectOptions$ | async"
+      [selectedItem]="selectedRepaymentScheduleName$ | async"
+      placeholder="No Selection"
+      (selectionChange)="onDropdownSelected($event)"
+    />
+  </ng-container>
+</p-top-bar>
+
 <div class="m-2">
   <div class="mb-2">
     <p-mortgage-loan-detailed-header />
