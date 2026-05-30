@@ -61,14 +61,7 @@ export class MostCommonTransactionComponent {
     return this.expandedYear() === year;
   }
 
-  formatDate(date: Date | null): string {
-    if (!date) return '';
-    const day = date.getDate();
-    const suffix = this.getDaySuffix(day);
-    return `${day}${suffix}`;
-  }
-
-  formatMonthDay(date: Date | null): string {
+  formatDay(date: Date | null): string {
     if (!date) return '';
     const month = date.toLocaleString('default', { month: 'short' });
     const day = date.getDate();
@@ -118,6 +111,11 @@ export class MostCommonTransactionComponent {
             totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
         }));
 
+        // Sort by percentage descending
+        const sortedGroups = groupsWithPercentages.sort(
+          (a, b) => b.percentageOfTotal - a.percentageOfTotal,
+        );
+
         const totalIncome = txs
           .filter((t) => (t.amount ?? 0) > 0)
           .reduce((s, t) => s + (t.amount ?? 0), 0);
@@ -137,8 +135,8 @@ export class MostCommonTransactionComponent {
           totalExpense,
           difference: totalIncome - totalExpense,
           transactionCount: txs.length,
-          multiple: groupsWithPercentages.filter((g) => g.count >= 2),
-          single: groupsWithPercentages.filter((g) => g.count === 1),
+          multiple: sortedGroups.filter((g) => g.count >= 2),
+          single: sortedGroups.filter((g) => g.count === 1),
           isExpanded: this.isMonthExpanded(year, monthIndex),
         };
       })
@@ -175,6 +173,11 @@ export class MostCommonTransactionComponent {
             totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
         }));
 
+        // Sort by percentage descending
+        const sortedGroups = groupsWithPercentages.sort(
+          (a, b) => b.percentageOfTotal - a.percentageOfTotal,
+        );
+
         const totalIncome = txs
           .filter((t) => (t.amount ?? 0) > 0)
           .reduce((s, t) => s + (t.amount ?? 0), 0);
@@ -190,8 +193,8 @@ export class MostCommonTransactionComponent {
           totalExpense,
           difference: totalIncome - totalExpense,
           transactionCount: txs.length,
-          multiple: groupsWithPercentages.filter((g) => g.count >= 2),
-          single: groupsWithPercentages.filter((g) => g.count === 1),
+          multiple: sortedGroups.filter((g) => g.count >= 2),
+          single: sortedGroups.filter((g) => g.count === 1),
           isExpanded: this.isYearExpanded(year),
         };
       })
