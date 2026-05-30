@@ -77,7 +77,7 @@ export namespace MonthlyTransactionChartUtils {
         valueDecimals: 2,
         headerFormat: '<b>{point.key}</b><br/>',
         pointFormat:
-          '<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:{series.color}; margin-right:8px;"></span> {series.name}: <b>${point.y:,.2f}</b><br/>',
+          '<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:{series.color}; margin-right:8px;"></span> {series.name}: <b>{point.y:,.2f}</b><br/>',
       },
       series: [
         {
@@ -97,6 +97,7 @@ export namespace MonthlyTransactionChartUtils {
           name: 'Net',
           data: netAmountData,
           color: Colors.YELLOW_500,
+          marker: { enabled: false },
         },
       ],
     };
