@@ -111,7 +111,7 @@
           class="actions__link"
           (click)="onNavigateTo(option.url)"
         >
-          <img [src]="'assets/icons/{{option.icon}}.svg'" />
+          <img [src]="'assets/icons/' + option.icon + '.svg'" />
         </button>
       }
     </div>
@@ -137,7 +137,7 @@
               class="dropdown-item"
               (click)="onNavigateTo(option.url); closeMenu()"
             >
-              <img [src]="'assets/icons/{{option.icon}}.svg'" />
+              <img [src]="'assets/icons/' + option.icon + '.svg'" />
               <span>{{ option.label }}</span>
             </button>
           }
