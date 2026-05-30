@@ -1,183 +1,625 @@
-<div class="card">
-  <div class="header">
-    <p-toggle-button
-      [options]="[{ label: 'Lunar' }, { label: 'Anual' }]"
-      [selected]="viewMode() === 'monthly' ? 'Lunar' : 'Anual'"
-      [gradient]="{
-        primaryColor: '#047f94',
-        secondaryColor: '#d5a326',
-      }"
-      (selectionChange)="onToggle($event)"
-    />
-    <div class="header-stats">
-      <span class="stat positive">
-        +{{ totalIncome() | numberFormat: "0.00" }}
-      </span>
-      <span class="stat negative">
-        -{{ totalExpense() | numberFormat: "0.00" }}
-      </span>
+<div class="transaction-analytics">
+  <div class="analytics-header">
+    <div class="text-center">
+      <p class="subtitle">Most Common Transactions Overview</p>
+    </div>
+    <div class="header-right">
+      <p-toggle-button
+        [options]="[{ label: 'Monthly' }, { label: 'Yearly' }]"
+        [selected]="viewMode() === 'monthly' ? 'Monthly' : 'Yearly'"
+        [gradient]="{
+          primaryColor: '#3b82f6',
+          secondaryColor: '#10b981',
+        }"
+        (selectionChange)="onToggle($event)"
+      />
     </div>
   </div>
 
-  <div class="content">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon income-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 2v20M17 7l-5-5-5 5M7 17l5 5 5-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Total Income</span>
+        <span class="stat-value positive"
+          >+{{ totalIncome() | numberFormat: "0.00" }}</span
+        >
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon expense-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 2v20M17 7l-5-5-5 5M7 17l5 5 5-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Total Expense</span>
+        <span class="stat-value negative"
+          >-{{ totalExpense() | numberFormat: "0.00" }}</span
+        >
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon balance-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M3 6h18M9 12h6M7 18h10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Net Balance</span>
+        <span
+          class="stat-value"
+          [class.positive]="totalIncome() - totalExpense() > 0"
+          [class.negative]="totalIncome() - totalExpense() < 0"
+        >
+          {{ totalIncome() - totalExpense() > 0 ? "+" : ""
+          }}{{ totalIncome() - totalExpense() | numberFormat: "0.00" }}
+        </span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon count-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M4 6h16M4 12h16M4 18h16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Total Transactions</span>
+        <span class="stat-value">{{ totalTransactions() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
     <!-- MONTHLY VIEW -->
     @if (viewMode() === "monthly") {
-      @for (
-        month of groupedByMonth();
-        track month.year + "-" + month.monthIndex
-      ) {
-        <div class="section">
-          <div
-            class="section-title"
-            (click)="toggleMonth(month.year, month.monthIndex)"
-          >
-            <div class="section-name">
-              <span class="expand-icon">{{
-                month.isExpanded ? "▼" : "▶"
-              }}</span>
-              {{ month.month }} {{ month.year }}
+      <div class="period-view">
+        @for (
+          period of groupedByMonth();
+          track period.year + "-" + period.monthIndex
+        ) {
+          <div class="period-card" [class.expanded]="period.isExpanded">
+            <div
+              class="period-header"
+              (click)="toggleMonth(period.year, period.monthIndex)"
+            >
+              <div class="period-info">
+                <span class="expand-indicator">{{
+                  period.isExpanded ? "▼" : "▶"
+                }}</span>
+                <div>
+                  <div class="period-title">
+                    {{ period.month }} {{ period.year }}
+                  </div>
+                  <div class="period-stats-mini">
+                    <span>{{ period.transactionCount }} transactions</span>
+                  </div>
+                </div>
+              </div>
+              <div class="period-totals">
+                @if (period.totalIncome > 0) {
+                  <span class="income-badge"
+                    >+{{ period.totalIncome | numberFormat: "0.00" }}</span
+                  >
+                }
+                @if (period.totalExpense > 0) {
+                  <span class="expense-badge"
+                    >-{{ period.totalExpense | numberFormat: "0.00" }}</span
+                  >
+                }
+                @if (period.difference !== 0) {
+                  <span
+                    class="diff-badge"
+                    [class.positive]="period.difference > 0"
+                    [class.negative]="period.difference < 0"
+                  >
+                    {{ period.difference > 0 ? "+" : ""
+                    }}{{ period.difference | numberFormat: "0.00" }}
+                  </span>
+                }
+              </div>
             </div>
-            <div class="section-totals">
-              @if (month.totalIncome > 0) {
-                <span class="income-total">
-                  +{{ month.totalIncome | numberFormat: "0.00" }}
-                </span>
-              }
-              @if (month.totalExpense > 0) {
-                <span class="expense-total">
-                  -{{ month.totalExpense | numberFormat: "0.00" }}
-                </span>
-              }
-              @if (month.difference !== 0) {
-                <span
-                  class="difference-total"
-                  [class.positive-diff]="month.difference > 0"
-                  [class.negative-diff]="month.difference < 0"
-                >
-                  {{ month.difference > 0 ? "+" : ""
-                  }}{{ month.difference | numberFormat: "0.00" }}
-                </span>
-              }
-            </div>
-          </div>
 
-          @if (month.isExpanded) {
-            <div class="section-content">
-              @for (g of month.multiple; track g.provider) {
-                <ng-container
-                  [ngTemplateOutlet]="rowTpl"
-                  [ngTemplateOutletContext]="{ g: g, viewMode: 'monthly' }"
-                />
-              }
-              @for (g of month.single; track g.provider) {
-                <ng-container
-                  [ngTemplateOutlet]="rowTpl"
-                  [ngTemplateOutletContext]="{
-                    g: g,
-                    single: true,
-                    viewMode: 'monthly',
-                  }"
-                />
-              }
-              @if (!month.multiple.length && !month.single.length) {
-                <div class="empty-section">No transactions this month</div>
-              }
-            </div>
-          }
-        </div>
-      }
-      @if (!groupedByMonth().length) {
-        <div class="empty">No transactions</div>
-      }
+            @if (period.isExpanded) {
+              <div class="period-content">
+                <div class="data-table-wrapper">
+                  <!-- Desktop Table -->
+                  <table class="data-table desktop-table">
+                    <thead>
+                      <tr>
+                        <th>Provider</th>
+                        <th>Count</th>
+                        <th>Avg. Amount</th>
+                        <th>Total</th>
+                        <th>% of Period</th>
+                        <th>Last Transaction</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of period.multiple; track item.provider) {
+                        <tr class="highlight-row">
+                          <td data-label="Provider" class="provider-cell">
+                            <span class="provider-badge multiple">{{
+                              item.provider
+                            }}</span>
+                          </td>
+                          <td data-label="Count" class="count-cell">
+                            {{ item.count }}x
+                          </td>
+                          <td data-label="Avg. Amount" class="amount-cell">
+                            {{ item.averageAmount | numberFormat: "0.00" }}
+                          </td>
+                          <td
+                            data-label="Total"
+                            class="amount-cell"
+                            [class.positive]="item.total > 0"
+                            [class.negative]="item.total < 0"
+                          >
+                            {{ item.total > 0 ? "+" : ""
+                            }}{{ item.total | numberFormat: "0.00" }}
+                          </td>
+                          <td data-label="% of Period" class="percentage-cell">
+                            <div class="percentage-bar">
+                              <div
+                                class="percentage-fill"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </td>
+                          <td data-label="Last Transaction" class="date-cell">
+                            {{ formatDate(item.latestDate) }}
+                          </td>
+                        </tr>
+                      }
+                      @for (item of period.single; track item.provider) {
+                        <tr>
+                          <td data-label="Provider" class="provider-cell">
+                            {{ item.provider }}
+                          </td>
+                          <td data-label="Count" class="count-cell">1x</td>
+                          <td data-label="Avg. Amount" class="amount-cell">
+                            {{ item.averageAmount | numberFormat: "0.00" }}
+                          </td>
+                          <td
+                            data-label="Total"
+                            class="amount-cell"
+                            [class.positive]="item.total > 0"
+                            [class.negative]="item.total < 0"
+                          >
+                            {{ item.total > 0 ? "+" : ""
+                            }}{{ item.total | numberFormat: "0.00" }}
+                          </td>
+                          <td data-label="% of Period" class="percentage-cell">
+                            <div class="percentage-bar">
+                              <div
+                                class="percentage-fill"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </td>
+                          <td data-label="Last Transaction" class="date-cell">
+                            {{ formatDate(item.latestDate) }}
+                          </td>
+                        </tr>
+                      }
+                      @if (!period.multiple.length && !period.single.length) {
+                        <tr>
+                          <td colspan="6" class="empty-cell">
+                            No transactions this period
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+
+                  <!-- Mobile Cards -->
+                  <div class="mobile-cards">
+                    @for (item of period.multiple; track item.provider) {
+                      <div class="mobile-card highlight-card">
+                        <div class="mobile-card-header">
+                          <span class="provider-badge multiple">{{
+                            item.provider
+                          }}</span>
+                          <span class="count-badge">{{ item.count }}x</span>
+                        </div>
+                        <div class="mobile-card-details">
+                          <div class="detail-row">
+                            <span class="detail-label">Average Amount:</span>
+                            <span class="detail-value">{{
+                              item.averageAmount | numberFormat: "0.00"
+                            }}</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span
+                              class="detail-value"
+                              [class.positive]="item.total > 0"
+                              [class.negative]="item.total < 0"
+                            >
+                              {{ item.total > 0 ? "+" : ""
+                              }}{{ item.total | numberFormat: "0.00" }}
+                            </span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Percentage:</span>
+                            <div class="percentage-bar-mobile">
+                              <div
+                                class="percentage-fill-mobile"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text-mobile"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Last Transaction:</span>
+                            <span class="detail-value">{{
+                              formatDate(item.latestDate)
+                            }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @for (item of period.single; track item.provider) {
+                      <div class="mobile-card">
+                        <div class="mobile-card-header">
+                          <span class="provider-name">{{ item.provider }}</span>
+                          <span class="count-badge">1x</span>
+                        </div>
+                        <div class="mobile-card-details">
+                          <div class="detail-row">
+                            <span class="detail-label">Average Amount:</span>
+                            <span class="detail-value">{{
+                              item.averageAmount | numberFormat: "0.00"
+                            }}</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span
+                              class="detail-value"
+                              [class.positive]="item.total > 0"
+                              [class.negative]="item.total < 0"
+                            >
+                              {{ item.total > 0 ? "+" : ""
+                              }}{{ item.total | numberFormat: "0.00" }}
+                            </span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Percentage:</span>
+                            <div class="percentage-bar-mobile">
+                              <div
+                                class="percentage-fill-mobile"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text-mobile"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Last Transaction:</span>
+                            <span class="detail-value">{{
+                              formatDate(item.latestDate)
+                            }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @if (!period.multiple.length && !period.single.length) {
+                      <div class="empty-mobile">
+                        No transactions this period
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (!groupedByMonth().length) {
+          <div class="empty-state">No transaction data available</div>
+        }
+      </div>
     }
 
     <!-- YEARLY VIEW -->
     @if (viewMode() === "yearly") {
-      @for (year of groupedByYear(); track year.year) {
-        <div class="section">
-          <div class="section-title" (click)="toggleYear(year.year)">
-            <div class="section-name">
-              <span class="expand-icon">{{ year.isExpanded ? "▼" : "▶" }}</span>
-              {{ year.year }}
+      <div class="period-view">
+        @for (period of groupedByYear(); track period.year) {
+          <div class="period-card" [class.expanded]="period.isExpanded">
+            <div class="period-header" (click)="toggleYear(period.year)">
+              <div class="period-info">
+                <span class="expand-indicator">{{
+                  period.isExpanded ? "▼" : "▶"
+                }}</span>
+                <div>
+                  <div class="period-title">{{ period.year }}</div>
+                  <div class="period-stats-mini">
+                    <span>{{ period.transactionCount }} transactions</span>
+                  </div>
+                </div>
+              </div>
+              <div class="period-totals">
+                @if (period.totalIncome > 0) {
+                  <span class="income-badge"
+                    >+{{ period.totalIncome | numberFormat: "0.00" }}</span
+                  >
+                }
+                @if (period.totalExpense > 0) {
+                  <span class="expense-badge"
+                    >-{{ period.totalExpense | numberFormat: "0.00" }}</span
+                  >
+                }
+                @if (period.difference !== 0) {
+                  <span
+                    class="diff-badge"
+                    [class.positive]="period.difference > 0"
+                    [class.negative]="period.difference < 0"
+                  >
+                    {{ period.difference > 0 ? "+" : ""
+                    }}{{ period.difference | numberFormat: "0.00" }}
+                  </span>
+                }
+              </div>
             </div>
-            <div class="section-totals">
-              @if (year.totalIncome > 0) {
-                <span class="income-total">
-                  +{{ year.totalIncome | numberFormat: "0.00" }}
-                </span>
-              }
-              @if (year.totalExpense > 0) {
-                <span class="expense-total">
-                  -{{ year.totalExpense | numberFormat: "0.00" }}
-                </span>
-              }
-              @if (year.difference !== 0) {
-                <span
-                  class="difference-total"
-                  [class.positive-diff]="year.difference > 0"
-                  [class.negative-diff]="year.difference < 0"
-                >
-                  {{ year.difference > 0 ? "+" : ""
-                  }}{{ year.difference | numberFormat: "0.00" }}
-                </span>
-              }
-            </div>
-          </div>
 
-          @if (year.isExpanded) {
-            <div class="section-content">
-              @for (g of year.multiple; track g.provider) {
-                <ng-container
-                  [ngTemplateOutlet]="rowTpl"
-                  [ngTemplateOutletContext]="{ g: g, viewMode: 'yearly' }"
-                />
-              }
-              @for (g of year.single; track g.provider) {
-                <ng-container
-                  [ngTemplateOutlet]="rowTpl"
-                  [ngTemplateOutletContext]="{
-                    g: g,
-                    single: true,
-                    viewMode: 'yearly',
-                  }"
-                />
-              }
-              @if (!year.multiple.length && !year.single.length) {
-                <div class="empty-section">No transactions this year</div>
-              }
-            </div>
-          }
-        </div>
-      }
-      @if (!groupedByYear().length) {
-        <div class="empty">No transactions</div>
-      }
+            @if (period.isExpanded) {
+              <div class="period-content">
+                <div class="data-table-wrapper">
+                  <!-- Desktop Table -->
+                  <table class="data-table desktop-table">
+                    <thead>
+                      <tr>
+                        <th>Provider</th>
+                        <th>Count</th>
+                        <th>Avg. Amount</th>
+                        <th>Total</th>
+                        <th>% of Year</th>
+                        <th>Last Transaction</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of period.multiple; track item.provider) {
+                        <tr class="highlight-row">
+                          <td data-label="Provider" class="provider-cell">
+                            <span class="provider-badge multiple">{{
+                              item.provider
+                            }}</span>
+                          </td>
+                          <td data-label="Count" class="count-cell">
+                            {{ item.count }}x
+                          </td>
+                          <td data-label="Avg. Amount" class="amount-cell">
+                            {{ item.averageAmount | numberFormat: "0.00" }}
+                          </td>
+                          <td
+                            data-label="Total"
+                            class="amount-cell"
+                            [class.positive]="item.total > 0"
+                            [class.negative]="item.total < 0"
+                          >
+                            {{ item.total > 0 ? "+" : ""
+                            }}{{ item.total | numberFormat: "0.00" }}
+                          </td>
+                          <td data-label="% of Year" class="percentage-cell">
+                            <div class="percentage-bar">
+                              <div
+                                class="percentage-fill"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </td>
+                          <td data-label="Last Transaction" class="date-cell">
+                            {{ formatMonthDay(item.latestDate) }}
+                          </td>
+                        </tr>
+                      }
+                      @for (item of period.single; track item.provider) {
+                        <tr>
+                          <td data-label="Provider" class="provider-cell">
+                            {{ item.provider }}
+                          </td>
+                          <td data-label="Count" class="count-cell">1x</td>
+                          <td data-label="Avg. Amount" class="amount-cell">
+                            {{ item.averageAmount | numberFormat: "0.00" }}
+                          </td>
+                          <td
+                            data-label="Total"
+                            class="amount-cell"
+                            [class.positive]="item.total > 0"
+                            [class.negative]="item.total < 0"
+                          >
+                            {{ item.total > 0 ? "+" : ""
+                            }}{{ item.total | numberFormat: "0.00" }}
+                          </td>
+                          <td data-label="% of Year" class="percentage-cell">
+                            <div class="percentage-bar">
+                              <div
+                                class="percentage-fill"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </td>
+                          <td data-label="Last Transaction" class="date-cell">
+                            {{ formatMonthDay(item.latestDate) }}
+                          </td>
+                        </tr>
+                      }
+                      @if (!period.multiple.length && !period.single.length) {
+                        <tr>
+                          <td colspan="6" class="empty-cell">
+                            No transactions this period
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+
+                  <!-- Mobile Cards -->
+                  <div class="mobile-cards">
+                    @for (item of period.multiple; track item.provider) {
+                      <div class="mobile-card highlight-card">
+                        <div class="mobile-card-header">
+                          <span class="provider-badge multiple">{{
+                            item.provider
+                          }}</span>
+                          <span class="count-badge">{{ item.count }}x</span>
+                        </div>
+                        <div class="mobile-card-details">
+                          <div class="detail-row">
+                            <span class="detail-label">Average Amount:</span>
+                            <span class="detail-value">{{
+                              item.averageAmount | numberFormat: "0.00"
+                            }}</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span
+                              class="detail-value"
+                              [class.positive]="item.total > 0"
+                              [class.negative]="item.total < 0"
+                            >
+                              {{ item.total > 0 ? "+" : ""
+                              }}{{ item.total | numberFormat: "0.00" }}
+                            </span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Percentage:</span>
+                            <div class="percentage-bar-mobile">
+                              <div
+                                class="percentage-fill-mobile"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text-mobile"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Last Transaction:</span>
+                            <span class="detail-value">{{
+                              formatMonthDay(item.latestDate)
+                            }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @for (item of period.single; track item.provider) {
+                      <div class="mobile-card">
+                        <div class="mobile-card-header">
+                          <span class="provider-name">{{ item.provider }}</span>
+                          <span class="count-badge">1x</span>
+                        </div>
+                        <div class="mobile-card-details">
+                          <div class="detail-row">
+                            <span class="detail-label">Average Amount:</span>
+                            <span class="detail-value">{{
+                              item.averageAmount | numberFormat: "0.00"
+                            }}</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span
+                              class="detail-value"
+                              [class.positive]="item.total > 0"
+                              [class.negative]="item.total < 0"
+                            >
+                              {{ item.total > 0 ? "+" : ""
+                              }}{{ item.total | numberFormat: "0.00" }}
+                            </span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Percentage:</span>
+                            <div class="percentage-bar-mobile">
+                              <div
+                                class="percentage-fill-mobile"
+                                [style.width.%]="item.percentageOfTotal"
+                              ></div>
+                              <span class="percentage-text-mobile"
+                                >{{
+                                  item.percentageOfTotal | numberFormat: "0.0"
+                                }}%</span
+                              >
+                            </div>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">Last Transaction:</span>
+                            <span class="detail-value">{{
+                              formatMonthDay(item.latestDate)
+                            }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @if (!period.multiple.length && !period.single.length) {
+                      <div class="empty-mobile">
+                        No transactions this period
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (!groupedByYear().length) {
+          <div class="empty-state">No transaction data available</div>
+        }
+      </div>
     }
   </div>
 </div>
-
-<!-- Reusable row -->
-<ng-template #rowTpl let-g="g" let-single="single" let-viewMode="viewMode">
-  <div class="group">
-    <div class="row">
-      <span class="provider">
-        {{ g.provider }}
-      </span>
-      <span class="date-badge">
-        @if (viewMode === "monthly") {
-          {{ formatDate(g.latestDate) }}
-        } @else {
-          {{ formatMonthDay(g.latestDate) }}
-        }
-        <span class="date-count" *ngIf="g.count > 1">({{ g.count }}x)</span>
-      </span>
-      <span
-        class="amount"
-        [class.positive]="g.total > 0"
-        [class.negative]="g.total < 0"
-      >
-        {{ g.total > 0 ? "+" : "" }}{{ g.total | numberFormat: "0.00" }}
-      </span>
-    </div>
-  </div>
-</ng-template>

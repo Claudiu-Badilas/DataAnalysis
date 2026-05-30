@@ -1,138 +1,235 @@
-:host {
-  display: block;
-  height: 100%;
-}
-.card {
+.transaction-analytics {
   background: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  height: 320px;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
-.header {
-  padding: 10px 16px;
+
+/* Header */
+.analytics-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 0.8125rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: #e5e7eb;
+}
+
+.stat-card {
   background: white;
-  flex-shrink: 0;
-}
-.header-stats {
+  padding: 16px 20px;
   display: flex;
-  gap: 5px;
-  font-weight: 700;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
 }
-.stat.positive {
+
+.stat-card:hover {
+  background: #f9fafb;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.income-icon {
+  background: #d1fae5;
   color: #10b981;
 }
-.stat.negative {
+
+.expense-icon {
+  background: #fee2e2;
   color: #ef4444;
 }
-.content {
+
+.balance-icon {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.count-icon {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.stat-value.positive {
+  color: #10b981;
+}
+
+.stat-value.negative {
+  color: #ef4444;
+}
+
+/* Table Container */
+.table-container {
   flex: 1;
   overflow-y: auto;
-  position: relative;
+  background: #f9fafb;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
 }
-.section {
-  position: relative;
+
+.period-view {
+  padding: 16px;
 }
-.section-title {
+
+/* Period Cards */
+.period-card {
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.period-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.period-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
-  background: #f1f5f9;
-  font-weight: 700;
+  padding: 16px 20px;
   cursor: pointer;
-  user-select: none;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  transition: background-color 0.2s ease;
-  border-bottom: 1px solid #e2e8f0;
+  background: white;
+  transition: background 0.2s ease;
 }
-.section-title:hover {
-  background: #e2e8f0;
+
+.period-header:hover {
+  background: #f9fafb;
 }
-.section-name {
+
+.period-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #1e293b;
-  flex: 1;
+  gap: 12px;
 }
-.expand-icon {
-  font-size: 10px;
+
+.expand-indicator {
+  font-size: 12px;
+  color: #6b7280;
   transition: transform 0.2s ease;
-  display: inline-block;
-  color: #64748b;
 }
-.section-totals {
+
+.period-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.period-stats-mini {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.period-totals {
   display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
+  gap: 8px;
 }
-.income-total {
-  color: #059669;
-  background-color: #d1fae5;
-  border: 1px solid #a7f3d0;
-  padding: 4px 8px;
-  border-radius: 6px;
+
+.income-badge,
+.expense-badge,
+.diff-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 12px;
-  min-width: 75px;
-  text-align: right;
-  box-sizing: border-box;
-  height: 26px;
 }
-.expense-total {
-  color: #dc2626;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 12px;
-  min-width: 75px;
-  text-align: right;
-  box-sizing: border-box;
-  height: 26px;
-}
-.difference-total {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 12px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  min-width: 75px;
-  text-align: right;
-  box-sizing: border-box;
-  height: 26px;
-}
-.positive-diff {
+
+.income-badge {
+  background: #d1fae5;
   color: #10b981;
 }
-.negative-diff {
+
+.expense-badge {
+  background: #fee2e2;
   color: #ef4444;
 }
-.section-content {
-  animation: slideDown 0.2s ease-out;
+
+.diff-badge {
+  background: #f3f4f6;
+  color: #6b7280;
 }
+
+.diff-badge.positive {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.diff-badge.negative {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Period Content */
+.period-content {
+  padding: 0 20px 20px 20px;
+  background: white;
+  border-top: 1px solid #f3f4f6;
+  animation: slideDown 0.3s ease;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -143,68 +240,404 @@
     transform: translateY(0);
   }
 }
-.group {
-  padding: 0 20px;
+
+/* Data Table Wrapper */
+.data-table-wrapper {
+  overflow-x: auto;
 }
-.row {
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f5f9;
-  gap: 5px;
-  transition: background-color 0.2s ease;
-  min-height: 40px;
+
+/* Desktop Table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
 }
-.row:hover {
-  background-color: #f8fafc;
+
+.data-table thead th {
+  text-align: left;
+  padding: 12px 8px;
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
 }
-.provider {
-  flex: 1;
-  font-size: 13px;
-  color: #1e293b;
-  line-height: 1.4;
+
+.data-table tbody td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #4b5563;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.data-table tbody tr.highlight-row {
+  background: #fef3c7;
+}
+
+.data-table tbody tr.highlight-row:hover {
+  background: #fde68a;
+}
+
+.provider-cell {
+  font-weight: 500;
+}
+
+.provider-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.provider-badge.multiple {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.count-cell {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.amount-cell {
+  font-weight: 600;
+}
+
+.amount-cell.positive {
+  color: #10b981;
+}
+
+.amount-cell.negative {
+  color: #ef4444;
+}
+
+.percentage-cell {
+  width: 120px;
+}
+
+.percentage-bar {
+  position: relative;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 24px;
   display: flex;
   align-items: center;
 }
 
-.date-badge {
-  background: #fef3c7;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #d97706;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  height: 22px;
-  line-height: 1;
+.percentage-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 10px;
+  transition: width 0.3s ease;
 }
-.date-count {
-  font-size: 10px;
-  opacity: 0.8;
-}
-.amount {
-  min-width: 100px;
-  text-align: right;
+
+.percentage-text {
+  position: relative;
+  z-index: 1;
+  font-size: 0.7rem;
   font-weight: 600;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  line-height: 1.4;
+  padding: 0 8px;
+  color: #1f2937;
 }
-.amount.positive {
+
+.date-cell {
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+/* Mobile Cards */
+.mobile-cards {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.2s ease;
+}
+
+.mobile-card.highlight-card {
+  background: #fef3c7;
+}
+
+.mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.provider-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+.count-badge {
+  background: #e5e7eb;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.mobile-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.detail-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.detail-value.positive {
   color: #10b981;
 }
-.amount.negative {
+
+.detail-value.negative {
   color: #ef4444;
 }
-.empty,
-.empty-section {
+
+.percentage-bar-mobile {
+  position: relative;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+  width: 120px;
+  display: flex;
+  align-items: center;
+}
+
+.percentage-fill-mobile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.percentage-text-mobile {
+  position: relative;
+  z-index: 1;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0 6px;
+  color: #1f2937;
+}
+
+.empty-mobile {
   text-align: center;
-  padding: 20px;
-  color: #94a3b8;
-  font-size: 13px;
+  padding: 24px;
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 32px;
+  color: #9ca3af;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: #9ca3af;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    text-align: center;
+    padding: 16px 20px;
+  }
+
+  .period-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .period-totals {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .period-content {
+    padding: 0 16px 16px 16px;
+  }
+
+  /* Hide desktop table on mobile */
+  .desktop-table {
+    display: none;
+  }
+
+  /* Show mobile cards */
+  .mobile-cards {
+    display: flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 12px 16px;
+  }
+
+  .period-view {
+    padding: 12px;
+  }
+
+  .period-title {
+    font-size: 0.875rem;
+  }
+
+  .income-badge,
+  .expense-badge,
+  .diff-badge {
+    padding: 2px 8px;
+    font-size: 0.6875rem;
+  }
+
+  .detail-row {
+    font-size: 0.6875rem;
+  }
+
+  .percentage-bar-mobile {
+    width: 100px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-analytics {
+    border-radius: 12px;
+  }
+
+  .analytics-header {
+    padding: 12px 16px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .subtitle {
+    font-size: 0.6875rem;
+  }
+
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stat-value {
+    font-size: 0.875rem;
+  }
+
+  .period-header {
+    padding: 10px 12px;
+  }
+
+  .period-info {
+    gap: 8px;
+  }
+
+  .period-title {
+    font-size: 0.8125rem;
+  }
+
+  .period-stats-mini {
+    font-size: 0.625rem;
+  }
+
+  .period-totals {
+    gap: 6px;
+  }
+
+  .income-badge,
+  .expense-badge,
+  .diff-badge {
+    padding: 2px 6px;
+    font-size: 0.625rem;
+  }
+
+  .period-content {
+    padding: 0 12px 12px 12px;
+  }
+
+  .mobile-card {
+    padding: 10px;
+  }
+
+  .provider-name {
+    font-size: 0.8125rem;
+  }
+
+  .count-badge {
+    font-size: 0.625rem;
+  }
+
+  .detail-label,
+  .detail-value {
+    font-size: 0.625rem;
+  }
+
+  .percentage-bar-mobile {
+    width: 80px;
+    height: 16px;
+  }
+
+  .percentage-text-mobile {
+    font-size: 0.5625rem;
+    padding: 0 4px;
+  }
 }

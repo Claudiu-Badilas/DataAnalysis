@@ -11,35 +11,15 @@ interface GroupedTransaction {
   currency: string | null;
   latestDate: Date | null;
   dates: Date[];
-}
-
-interface MonthlyGroup {
-  month: string;
-  year: number;
-  monthIndex: number;
-  totalIncome: number;
-  totalExpense: number;
-  difference: number;
-  multiple: GroupedTransaction[];
-  single: GroupedTransaction[];
-  isExpanded: boolean;
-}
-
-interface YearlyGroup {
-  year: number;
-  totalIncome: number;
-  totalExpense: number;
-  difference: number;
-  multiple: GroupedTransaction[];
-  single: GroupedTransaction[];
-  isExpanded: boolean;
+  averageAmount: number;
+  percentageOfTotal: number;
 }
 
 @Component({
   selector: 'p-most-common-transaction',
   imports: [CommonModule, NumberFormatPipe, ToggleButtonComponent],
   templateUrl: './most-common-transaction.component.html',
-  styleUrls: ['./most-common-transaction.component.scss'],
+  styleUrl: './most-common-transaction.component.scss',
 })
 export class MostCommonTransactionComponent {
   transactions = input<TransactionDomain[]>([]);
@@ -49,7 +29,7 @@ export class MostCommonTransactionComponent {
   private expandedYear = signal<number | null>(null);
 
   onToggle(value: string) {
-    this.viewMode.set(value === 'Lunar' ? 'monthly' : 'yearly');
+    this.viewMode.set(value === 'Monthly' ? 'monthly' : 'yearly');
     this.expandedMonth.set(null);
     this.expandedYear.set(null);
   }
@@ -127,6 +107,17 @@ export class MostCommonTransactionComponent {
       .map(([key, txs]) => {
         const [year, monthIndex] = key.split('-').map(Number);
         const grouped = this.groupLocal(txs);
+        const totalAmount = txs.reduce(
+          (s, t) => s + Math.abs(t.amount ?? 0),
+          0,
+        );
+
+        const groupsWithPercentages = grouped.map((g) => ({
+          ...g,
+          percentageOfTotal:
+            totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
+        }));
+
         const totalIncome = txs
           .filter((t) => (t.amount ?? 0) > 0)
           .reduce((s, t) => s + (t.amount ?? 0), 0);
@@ -145,8 +136,9 @@ export class MostCommonTransactionComponent {
           totalIncome,
           totalExpense,
           difference: totalIncome - totalExpense,
-          multiple: grouped.filter((g) => g.count >= 2),
-          single: grouped.filter((g) => g.count === 1),
+          transactionCount: txs.length,
+          multiple: groupsWithPercentages.filter((g) => g.count >= 2),
+          single: groupsWithPercentages.filter((g) => g.count === 1),
           isExpanded: this.isMonthExpanded(year, monthIndex),
         };
       })
@@ -172,6 +164,17 @@ export class MostCommonTransactionComponent {
     return Array.from(map.entries())
       .map(([year, txs]) => {
         const grouped = this.groupLocal(txs);
+        const totalAmount = txs.reduce(
+          (s, t) => s + Math.abs(t.amount ?? 0),
+          0,
+        );
+
+        const groupsWithPercentages = grouped.map((g) => ({
+          ...g,
+          percentageOfTotal:
+            totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
+        }));
+
         const totalIncome = txs
           .filter((t) => (t.amount ?? 0) > 0)
           .reduce((s, t) => s + (t.amount ?? 0), 0);
@@ -186,8 +189,9 @@ export class MostCommonTransactionComponent {
           totalIncome,
           totalExpense,
           difference: totalIncome - totalExpense,
-          multiple: grouped.filter((g) => g.count >= 2),
-          single: grouped.filter((g) => g.count === 1),
+          transactionCount: txs.length,
+          multiple: groupsWithPercentages.filter((g) => g.count >= 2),
+          single: groupsWithPercentages.filter((g) => g.count === 1),
           isExpanded: this.isYearExpanded(year),
         };
       })
@@ -209,6 +213,8 @@ export class MostCommonTransactionComponent {
     ),
   );
 
+  totalTransactions = computed(() => this.transactions()?.length ?? 0);
+
   private groupLocal(txs: TransactionDomain[]): GroupedTransaction[] {
     const map = new Map<string, GroupedTransaction>();
 
@@ -224,12 +230,15 @@ export class MostCommonTransactionComponent {
           currency: tx.currency,
           latestDate: null,
           dates: [],
+          averageAmount: 0,
+          percentageOfTotal: 0,
         });
       }
 
       const g = map.get(key)!;
       g.count++;
       g.total += tx.amount ?? 0;
+      g.averageAmount = g.total / g.count;
 
       if (date) {
         g.dates.push(date);
