@@ -1,42 +1,42 @@
-<p-top-bar>
+<p-top-bar [hasFiltersContent]="true">
   <ng-container module-navigation> </ng-container>
+  <ng-container filter-content>
+    <div class="mb-2">
+      <p-date-range-picker
+        [startDate]="startDate()"
+        [endDate]="endDate()"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        (valueChanged)="handleRangeChange($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-dropdown-select
+        [items]="providerDropDownSelectOptions()"
+        [selectedItem]="selectedProvider()"
+        placeholder="No Selection"
+        (selectionChange)="onProviderDropdownSelected($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-dropdown-select
+        [items]="dropDownSelectOptions()"
+        [selectedItem]="selectedServiceProvider()"
+        placeholder="No Selection"
+        (selectionChange)="onDropdownSelected($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-search-input (search)="onSearch($event)" />
+    </div>
+  </ng-container>
 </p-top-bar>
 
 <div class="row m-1">
   <!-- Date picker (full width on mobile) -->
-  <div class="col-12 col-md-6 col-lg-3 px-1 mb-2">
-    <p-date-range-picker
-      [startDate]="startDate()"
-      [endDate]="endDate()"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      (valueChanged)="handleRangeChange($event)"
-    />
-  </div>
-
-  <!-- Dropdowns side by side on mobile -->
-  <div class="col-6 col-md-6 col-lg-3 px-1 mb-2">
-    <p-dropdown-select
-      [items]="providerDropDownSelectOptions()"
-      [selectedItem]="selectedProvider()"
-      placeholder="No Selection"
-      (selectionChange)="onProviderDropdownSelected($event)"
-    />
-  </div>
-
-  <div class="col-6 col-md-6 col-lg-3 px-1 mb-2">
-    <p-dropdown-select
-      [items]="dropDownSelectOptions()"
-      [selectedItem]="selectedServiceProvider()"
-      placeholder="No Selection"
-      (selectionChange)="onDropdownSelected($event)"
-    />
-  </div>
-
-  <!-- Search (full width on mobile) -->
-  <div class="col-12 col-md-6 col-lg-3 px-1 mb-2">
-    <p-search-input (search)="onSearch($event)" />
-  </div>
 </div>
 
 <div class="px-2 pb-2">
