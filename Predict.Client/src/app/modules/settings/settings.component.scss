@@ -2,30 +2,47 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  min-height: calc(100vh - 50px);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .tabs-wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
-  border-radius: 12px;
-  margin: 16px;
-  box-shadow: var(--shadow-md);
+  background: white;
+  border-radius: 16px;
+  margin: 8px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.03);
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(229, 231, 235, 0.5);
 }
 
 .tabs-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-bottom: 2px solid #e0e7ff;
+  gap: 4px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
   overflow-x: auto;
   scroll-behavior: smooth;
+  padding: 0 20px;
 
   /* Smooth scrollbar styling */
   &::-webkit-scrollbar {
-    height: 4px;
+    height: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
   }
 }
 
@@ -35,21 +52,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 20px;
-  min-width: 120px;
-  height: 56px;
-  background: none;
+  padding: 0 20px;
+  height: 52px;
+  background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: #6366f1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
   white-space: nowrap;
+  transition: all 0.2s ease;
+  border-radius: 8px 8px 0 0;
+
+  &:hover {
+    color: #0f172a;
+    background: #f8fafc;
+  }
 
   &.active {
-    color: #4f46e5;
-    background-color: #dadce4;
-    border-radius: 5px 5px 0 0 !important;
+    color: #0284c7;
+    background: transparent;
 
     .tab-indicator {
       opacity: 1;
@@ -58,7 +80,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid #4f46e5;
+    outline: 2px solid #0284c7;
     outline-offset: -2px;
     border-radius: 4px;
   }
@@ -66,50 +88,77 @@
 
 .tab-label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .tab-indicator {
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
   right: 0;
-  height: 3px;
-  background: #4f46e5;
+  height: 2px;
+  background: #0284c7;
   border-radius: 2px 2px 0 0;
   opacity: 0;
   transform: scaleX(0.8);
   transform-origin: center;
-  transition: all var(--transition-smooth);
+  transition: all 0.2s ease;
 }
 
 .tabs-content {
   display: flex;
-  padding: 20px 0;
-  min-height: 120px;
+  padding: 24px;
+  min-height: 200px;
+  background: white;
+}
+
+.w-100 {
+  width: 100%;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .settings-container {
-    padding: 0;
+    min-height: calc(100vh - 50px);
   }
 
   .tabs-wrapper {
-    // margin: 8px;
-    border-radius: 8px;
+    margin: 8px;
+    border-radius: 12px;
   }
 
   .tabs-header {
     padding: 0 12px;
-    gap: 4px;
+    gap: 2px;
   }
 
   .tab-button {
-    padding: 10px 16px;
-    min-width: 100px;
+    padding: 0 16px;
     height: 48px;
-    font-size: 13px;
+    font-size: 0.8125rem;
+  }
+
+  .tabs-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .tabs-wrapper {
+    margin: 8px;
+    border-radius: 10px;
+  }
+
+  .tabs-header {
+    padding: 0 8px;
+  }
+
+  .tab-button {
+    padding: 0 12px;
+    height: 44px;
+    font-size: 0.75rem;
   }
 
   .tabs-content {
@@ -118,23 +167,46 @@
 }
 
 @media (max-width: 480px) {
+  .settings-container {
+    min-height: calc(100vh - 56px);
+  }
+
   .tabs-wrapper {
-    margin: 0;
-    border-radius: 0;
+    margin: 8px;
+    border-radius: 8px;
+  }
+
+  .tabs-header {
+    padding: 0 6px;
   }
 
   .tab-button {
-    padding: 8px 12px;
-    min-width: 80px;
-    height: 44px;
-    font-size: 12px;
+    padding: 0 10px;
+    height: 42px;
+    font-size: 0.6875rem;
   }
 
   .tab-label {
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .tabs-content {
     padding: 12px;
+  }
+}
+
+/* Animation for content */
+.tabs-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

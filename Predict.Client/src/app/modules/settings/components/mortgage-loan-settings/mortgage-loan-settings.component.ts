@@ -7,7 +7,6 @@ import { SuccessModalComponent } from 'src/app/shared/components/modals/success-
 
 @Component({
   selector: 'p-mortgage-loan-settings',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './mortgage-loan-settings.component.html',
   styleUrls: ['./mortgage-loan-settings.component.scss'],
