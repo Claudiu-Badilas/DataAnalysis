@@ -102,30 +102,22 @@ export namespace MortgageInterestProgressChartBarUtils {
       chart: { type: 'bar', spacing: [20, 20, 20, 20] },
       title: { text: null, align: 'left' },
       legend: { enabled: false },
-      tooltip: {
-        pointFormat:
-          '<span style="color:{point.color}">●</span> <b>{point.name}</b><br/>' +
-          'Amount: <b>{point.amountCompact} RON</b>',
-      },
+      tooltip: { enabled: false },
       xAxis: {
         type: 'category',
         categories: barChartData.map((d) => d.name),
         title: { text: null },
-        labels: { style: { fontSize: '11px', fontWeight: 'bold' } },
+        labels: { style: { fontSize: '9px' } },
         lineColor: '#E0E0E0',
         tickColor: '#E0E0E0',
       },
-      yAxis: {
-        title: { text: 'Amount (RON)' },
-        labels: { format: '{value} RON', style: { fontSize: '11px' } },
-        gridLineColor: '#F0F0F0',
-      },
+      yAxis: { title: { text: null }, labels: { enabled: false } },
       plotOptions: {
         bar: {
           dataLabels: {
             enabled: true,
             format: '{point.amountCompact} RON',
-            style: { fontSize: '11px', fontWeight: 'bold', color: '#333333' },
+            style: { fontSize: '9px', fontWeight: 'bold', color: '#333333' },
             position: 'right',
           },
         },
