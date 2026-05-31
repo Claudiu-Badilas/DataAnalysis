@@ -1,5 +1,11 @@
 <p-top-bar [hasFiltersContent]="true">
-  <ng-container module-navigation> </ng-container>
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Overview', 'Insights']"
+      [selected]="'Overview'"
+      (selectionChange)="onSelectionChange($event)"
+    />
+  </ng-container>
   <ng-container filter-content>
     <div class="mb-2">
       <p-date-range-picker

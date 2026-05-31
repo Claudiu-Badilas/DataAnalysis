@@ -73,9 +73,8 @@ export const getEndDate = createSelector(
   (state) => state.endDate,
 );
 
-export const getTransactions = createSelector(
-  getTransactionsState,
-  (state) => state.transactions,
+export const getTransactions = createSelector(getTransactionsState, (state) =>
+  state.transactions.filter((t) => !t.ignored),
 );
 
 export const getSelectedProvider = createSelector(
