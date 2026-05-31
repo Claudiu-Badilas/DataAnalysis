@@ -5,10 +5,6 @@ export const loadTransactions = createAction(
   '[Transactions] Load Transactions',
 );
 
-export const loadTransactions2 = createAction(
-  '[Transactions] Load Transactions2',
-);
-
 export const setTransactionsSuccess = createAction(
   '[Transactions] Set Transactions Success',
   props<{ transactions: TransactionDomain[] }>(),

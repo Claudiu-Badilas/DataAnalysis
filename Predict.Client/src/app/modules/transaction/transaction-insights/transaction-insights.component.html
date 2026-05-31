@@ -1,14 +1,3 @@
-<p-top-bar [hasModuleNavContent]="true" [hasFiltersContent]="false">
-  <ng-container module-navigation>
-    <p-toggle-button-actions
-      [options]="['Overview', 'Insights']"
-      [selected]="'Insights'"
-      (selectionChange)="onSelectionChange($event)"
-    />
-  </ng-container>
-  <ng-container filter-content> </ng-container>
-</p-top-bar>
-
 <p-transaction-insights-body
   [transactions]="transactions()"
 ></p-transaction-insights-body>

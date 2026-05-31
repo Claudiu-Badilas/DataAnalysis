@@ -7,7 +7,6 @@ import * as TransactionsActions from 'src/app/modules/transaction/actions/transa
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import * as LayoutActions from 'src/app/store/actions/layout.actions';
 import { TransactionService } from '../services/transaction.service';
-import { DateUtils } from 'src/app/shared/utils/date.utils';
 
 @Injectable()
 export class TransactionsEffects {
@@ -32,26 +31,6 @@ export class TransactionsEffects {
         TransactionsActions.setTransactionsSuccess({ transactions }),
         LayoutActions.spinnerOff(),
       ]),
-    ),
-  );
-
-  loadTransactions2$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TransactionsActions.loadTransactions2),
-      tap(() => LayoutActions.spinnerOn()),
-      switchMap(() =>
-        this._transactionService.getTransactions(
-          DateUtils.getStartOfTheYear({ subtractYears: 8 }),
-          new Date(),
-        ),
-      ),
-      switchMap((transactions) => {
-        console.log('🚀 ~ TransactionsEffects ~ transactions:', transactions);
-        return [
-          TransactionsActions.setTransactionsSuccess({ transactions }),
-          LayoutActions.spinnerOff(),
-        ];
-      }),
     ),
   );
 }

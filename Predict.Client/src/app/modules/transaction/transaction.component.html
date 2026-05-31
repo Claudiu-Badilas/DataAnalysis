@@ -1,1 +1,41 @@
-<router-outlet></router-outlet>
+<p-top-bar [hasModuleNavContent]="true" [hasFiltersContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Overview', 'Insights']"
+      [selected]="'Overview'"
+      (selectionChange)="onSelectionChange($event)"
+    />
+  </ng-container>
+  <ng-container filter-content>
+    <div class="mb-2">
+      <p-date-range-picker
+        [startDate]="startDate()"
+        [endDate]="endDate()"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        (valueChanged)="handleRangeChange($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-dropdown-select
+        [items]="providerDropDownSelectOptions()"
+        [selectedItem]="selectedProvider()"
+        placeholder="No Selection"
+        (selectionChange)="onProviderDropdownSelected($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-dropdown-select
+        [items]="dropDownSelectOptions()"
+        [selectedItem]="selectedServiceProvider()"
+        placeholder="No Selection"
+        (selectionChange)="onDropdownSelected($event)"
+      />
+    </div>
+
+    <div class="mb-2">
+      <p-search-input (search)="onSearch($event)" />
+    </div> </ng-container></p-top-bar
+><router-outlet></router-outlet>
