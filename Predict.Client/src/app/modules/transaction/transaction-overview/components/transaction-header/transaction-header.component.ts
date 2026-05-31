@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
-import { TransactionDomain } from '../../models/transactions.model';
 import { MostCommonTransactionComponent } from '../most-common-transaction/most-common-transaction.component';
+import { TransactionDomain } from '../../../models/transactions.model';
 
 @Component({
   selector: 'p-transaction-header',

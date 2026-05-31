@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
-import { TransactionDomain } from '../../models/transactions.model';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
+import { TransactionDomain } from '../../../models/transactions.model';
 
 interface GroupedTransaction {
   provider: string;

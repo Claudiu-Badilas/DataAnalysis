@@ -1,7 +1,7 @@
 import { Colors } from 'src/app/shared/styles/colors';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { ObjectUtil } from 'src/app/shared/utils/object.utils';
-import { TransactionDomain } from '../models/transactions.model';
+import { TransactionDomain } from '../../models/transactions.model';
 
 export namespace MonthlyTransactionChartUtils {
   export function getChart(

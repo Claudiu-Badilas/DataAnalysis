@@ -4,7 +4,7 @@ import { Colors } from 'src/app/shared/styles/colors';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { ObjectUtil } from 'src/app/shared/utils/object.utils';
-import { TransactionDomain } from '../models/transactions.model';
+import { TransactionDomain } from '../../models/transactions.model';
 
 export namespace DailyTransactionChartUtils {
   export function getChart(

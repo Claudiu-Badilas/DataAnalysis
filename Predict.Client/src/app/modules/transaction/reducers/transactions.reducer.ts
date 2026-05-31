@@ -8,8 +8,7 @@ import {
 import * as TransactionsActions from 'src/app/modules/transaction/actions/transactions.actions';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { TransactionDomain } from '../models/transactions.model';
-import { MonthlyTransactionChartUtils } from '../utils/monthly-transactions.chart.util';
-import { DailyTransactionChartUtils } from '../utils/daily-transactions.chart.util';
+import { MonthlyTransactionChartUtils } from '../transaction-overview/utils/monthly-transactions.chart.util';
 
 export interface State {
   transactions: TransactionDomain[];
