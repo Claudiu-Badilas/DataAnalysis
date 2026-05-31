@@ -11,7 +11,6 @@ export namespace DailyTransactionChartUtils {
     startDate: Date,
     endDate: Date,
     transactions: TransactionDomain[],
-    { loadExpenses = true } = {},
   ): Highcharts.Options {
     const validTransactions = transactions.filter((t) => !t.ignored);
     const incomes = validTransactions.filter((t) => t.amount > 0);
@@ -48,8 +47,6 @@ export namespace DailyTransactionChartUtils {
         };
       });
     };
-
-    const baseColor = loadExpenses ? Colors.PINK_500 : Colors.GREEN_500;
 
     return {
       title: { text: null },
@@ -129,17 +126,16 @@ export namespace DailyTransactionChartUtils {
 
       series: [
         {
-          type: 'areaspline',
-          data: loadExpenses ? getData(expenses, -1) : getData(incomes, 1),
-          name: loadExpenses ? 'Expenses' : 'Income',
-          color: baseColor,
-          fillColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-            stops: [
-              [0, baseColor],
-              [1, 'rgba(255,255,255,0)'],
-            ],
-          },
+          type: 'scatter',
+          data: getData(expenses, -1),
+          name: 'Expenses',
+          color: Colors.PINK_500,
+        },
+        {
+          type: 'scatter',
+          data: getData(incomes, 1),
+          name: 'Income',
+          color: Colors.GREEN_500,
         },
       ],
     };

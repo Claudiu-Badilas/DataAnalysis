@@ -56,7 +56,7 @@ export namespace MonthlyTransactionChartUtils {
 
     return {
       chart: { zooming: { type: 'x' } },
-      title: { text: 'Monthly Transactions', align: 'left' },
+      title: { text: null },
       legend: { enabled: false },
       xAxis: { categories },
       yAxis: {

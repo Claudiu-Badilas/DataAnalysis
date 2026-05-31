@@ -50,7 +50,6 @@ export class TransactionOverviewComponent {
       this.startDate(),
       this.endDate(),
       this.transactions(),
-      { loadExpenses: this.transactionType() === 'Expense' },
     ),
   );
 
@@ -62,10 +61,10 @@ export class TransactionOverviewComponent {
   }
 
   colors = Colors;
-  transactionType = signal<'Expense' | 'Income'>('Expense');
+  transactionType = signal<'Daily' | 'Monthly'>('Daily');
 
   onTransactionTypeChange($event: string) {
-    this.transactionType.set($event as 'Expense' | 'Income');
+    this.transactionType.set($event as 'Daily' | 'Monthly');
   }
 
   onSelectionChange(module: string) {
