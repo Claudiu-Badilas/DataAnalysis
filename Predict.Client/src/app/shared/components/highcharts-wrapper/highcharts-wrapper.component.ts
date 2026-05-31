@@ -5,9 +5,11 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
 } from '@angular/core';
-import * as Highcharts from 'highcharts';
+import Highcharts from 'highcharts';
+
 export const tooltipPositioner: Highcharts.TooltipPositionerCallbackFunction =
   function (
     this: Highcharts.Tooltip,
@@ -30,6 +32,7 @@ export const tooltipPositioner: Highcharts.TooltipPositionerCallbackFunction =
 
     return { x: x, y: y };
   };
+
 @Component({
   selector: 'p-highcharts-wrapper',
   template: `<div class="card">
@@ -38,14 +41,15 @@ export const tooltipPositioner: Highcharts.TooltipPositionerCallbackFunction =
   </div> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HighchartWrapperComponent implements OnChanges, AfterViewInit {
+export class HighchartWrapperComponent
+  implements OnChanges, AfterViewInit, OnDestroy
+{
   @Input({ required: true }) chartOptions: Highcharts.Options;
   private chart: Highcharts.Chart | undefined;
 
   constructor(private el: ElementRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // ✅ Only recreate chart if options changed and chart exists
     if (this.chart && changes['chartOptions']) {
       this.updateChart();
     } else if (this.chartOptions) {
@@ -61,13 +65,12 @@ export class HighchartWrapperComponent implements OnChanges, AfterViewInit {
     const container = this.el.nativeElement.querySelector('.chart-container');
     if (!container || this.chart) return;
 
-    // ✅ Merge chart options with tooltip positioner
     const options: Highcharts.Options = {
       ...this.chartOptions,
       credits: { enabled: false },
       tooltip: {
         ...this.chartOptions.tooltip,
-        positioner: tooltipPositioner, // ✅ Apply imported tooltip positioner
+        positioner: tooltipPositioner,
       },
     };
 
@@ -76,7 +79,6 @@ export class HighchartWrapperComponent implements OnChanges, AfterViewInit {
 
   private updateChart(): void {
     if (this.chart && this.chartOptions) {
-      // ✅ Update chart while preserving tooltip positioner
       const updatedOptions: Highcharts.Options = {
         ...this.chartOptions,
         tooltip: {
@@ -89,7 +91,6 @@ export class HighchartWrapperComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  // ✅ Clean up chart on component destroy
   ngOnDestroy(): void {
     if (this.chart) {
       this.chart.destroy();
