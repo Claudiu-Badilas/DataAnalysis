@@ -42,6 +42,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
             </div>
           </div>
         </div>
+
         <!-- Key Metrics -->
         <div class="metrics-grid">
           <div class="metric-card">
@@ -88,6 +89,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           </div>
         </div>
 
+        <!-- Spending by Category Chart -->
         <div class="chart-card">
           <p-highcharts-wrapper
             class="chart-wrapper"
@@ -133,36 +135,132 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           </div>
         </div>
 
-        <!-- Recent Transactions -->
-        <div class="transactions-card">
-          <h3>📋 Recent Transactions</h3>
-          <div class="transactions-list">
-            <div
-              *ngFor="let transaction of recentTransactions"
-              class="transaction-item"
-            >
-              <div class="transaction-date">
-                {{ transaction.completionDate | date: 'MMM d, y' }}
+        <!-- Transactions Table with Category Selection -->
+        <div class="transactions-table-card">
+          <div class="table-header">
+            <h3>📋 Transactions</h3>
+            <div class="table-controls">
+              <div class="search-box">
+                <input
+                  type="text"
+                  [(ngModel)]="searchTerm"
+                  (input)="filterTransactions()"
+                  placeholder="🔍 Search transactions..."
+                  class="search-input"
+                />
               </div>
-              <div
-                class="transaction-category"
-                [style.backgroundColor]="getCategoryColor(transaction.category)"
+              <div class="category-filter">
+                <select
+                  [(ngModel)]="selectedCategoryFilter"
+                  (change)="filterTransactions()"
+                  class="category-select"
+                >
+                  <option value="">All Categories</option>
+                  <option *ngFor="let cat of categoryList" [value]="cat.value">
+                    {{ cat.label }}
+                  </option>
+                </select>
+              </div>
+              <button
+                (click)="saveCategoryChanges()"
+                class="save-btn"
+                [disabled]="!hasChanges"
               >
-                {{ transaction.categoryLabel }}
-              </div>
-              <div class="transaction-description">
-                {{ transaction.description }}
-              </div>
-              <div
-                class="transaction-amount"
-                [class.positive]="(transaction.amount || 0) > 0"
-                [class.negative]="(transaction.amount || 0) < 0"
-              >
-                {{
-                  transaction.amount || 0 | currency: 'RON' : 'symbol' : '1.2-2'
-                }}
-              </div>
+                💾 Save Changes
+              </button>
             </div>
+          </div>
+
+          <div class="table-container">
+            <table class="transactions-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Category</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let transaction of paginatedTransactions;
+                    let i = index
+                  "
+                >
+                  <td class="date-cell">
+                    {{ transaction.completionDate | date: 'yyyy-MM-dd' }}
+                  </td>
+                  <td
+                    class="description-cell"
+                    [title]="transaction.description"
+                  >
+                    {{ truncateText(transaction.description || '', 60) }}
+                  </td>
+                  <td
+                    class="amount-cell"
+                    [class.positive]="(transaction.amount || 0) > 0"
+                    [class.negative]="(transaction.amount || 0) < 0"
+                  >
+                    {{
+                      transaction.amount || 0
+                        | currency: 'RON' : 'symbol' : '1.2-2'
+                    }}
+                  </td>
+                  <td class="category-cell">
+                    <select
+                      [(ngModel)]="transaction.category"
+                      (change)="onCategoryChange(transaction, $event)"
+                      class="category-edit-select"
+                      [style.backgroundColor]="
+                        getCategoryColor(transaction.category)
+                      "
+                    >
+                      <option
+                        *ngFor="let cat of categoryList"
+                        [value]="cat.value"
+                      >
+                        {{ cat.label }}
+                      </option>
+                    </select>
+                  </td>
+                  <td class="actions-cell">
+                    <button
+                      (click)="updateTransactionCategory(transaction)"
+                      class="update-btn"
+                      [disabled]="!isCategoryChanged(transaction)"
+                    >
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage === 1"
+              class="page-btn"
+            >
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ currentPage }} of {{ totalPages }} ({{
+                filteredTransactions.length
+              }}
+              transactions)
+            </span>
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages"
+              class="page-btn"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
@@ -259,7 +357,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       }
 
       .merchants-card,
-      .transactions-card,
+      .transactions-table-card,
       .insights-card {
         background: white;
         border-radius: 12px;
@@ -269,10 +367,213 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       }
 
       .merchants-card h3,
-      .transactions-card h3,
+      .transactions-table-card h3,
       .insights-card h3 {
         margin: 0 0 20px 0;
         color: #2d3436;
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .table-controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: #6c5ce7;
+      }
+
+      .category-select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        min-width: 150px;
+      }
+
+      .save-btn {
+        padding: 8px 16px;
+        background: #00b894;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .save-btn:hover:not(:disabled) {
+        background: #019874;
+        transform: translateY(-2px);
+      }
+
+      .save-btn:disabled {
+        background: #bdbdbd;
+        cursor: not-allowed;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        border: 1px solid #eee;
+      }
+
+      .transactions-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .transactions-table th {
+        background: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #2d3436;
+        border-bottom: 2px solid #eee;
+      }
+
+      .transactions-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+      }
+
+      .transactions-table tr:hover {
+        background: #f8f9fa;
+      }
+
+      .date-cell {
+        white-space: nowrap;
+        color: #666;
+        font-size: 12px;
+      }
+
+      .description-cell {
+        max-width: 300px;
+        word-break: break-word;
+        color: #2d3436;
+      }
+
+      .amount-cell {
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .amount-cell.positive {
+        color: #00b894;
+      }
+
+      .amount-cell.negative {
+        color: #d63031;
+      }
+
+      .category-cell {
+        min-width: 180px;
+      }
+
+      .category-edit-select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        color: white;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .category-edit-select:focus {
+        outline: none;
+        border-color: #6c5ce7;
+        box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+      }
+
+      .actions-cell {
+        white-space: nowrap;
+      }
+
+      .update-btn {
+        padding: 4px 12px;
+        background: #6c5ce7;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+
+      .update-btn:hover:not(:disabled) {
+        background: #5b4bc4;
+        transform: translateY(-1px);
+      }
+
+      .update-btn:disabled {
+        background: #bdbdbd;
+        cursor: not-allowed;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #eee;
+      }
+
+      .page-btn {
+        padding: 6px 12px;
+        background: #6c5ce7;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .page-btn:hover:not(:disabled) {
+        background: #5b4bc4;
+        transform: translateY(-1px);
+      }
+
+      .page-btn:disabled {
+        background: #bdbdbd;
+        cursor: not-allowed;
+      }
+
+      .page-info {
+        color: #666;
+        font-size: 14px;
       }
 
       .merchants-list {
@@ -332,61 +633,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         transition: width 0.3s;
       }
 
-      .transactions-list {
-        max-height: 500px;
-        overflow-y: auto;
-      }
-
-      .transaction-item {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 12px;
-        border-bottom: 1px solid #eee;
-        transition: background 0.2s;
-      }
-
-      .transaction-item:hover {
-        background: #f8f9fa;
-      }
-
-      .transaction-date {
-        min-width: 90px;
-        font-size: 12px;
-        color: #666;
-      }
-
-      .transaction-category {
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 500;
-        color: white;
-        min-width: 90px;
-        text-align: center;
-      }
-
-      .transaction-description {
-        flex: 1;
-        font-size: 14px;
-        color: #2d3436;
-      }
-
-      .transaction-amount {
-        font-weight: 600;
-        font-size: 14px;
-        min-width: 100px;
-        text-align: right;
-      }
-
-      .transaction-amount.positive {
-        color: #00b894;
-      }
-
-      .transaction-amount.negative {
-        color: #d63031;
-      }
-
       .insights-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -428,13 +674,21 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           gap: 12px;
         }
 
-        .transaction-item {
-          flex-wrap: wrap;
+        .table-header {
+          flex-direction: column;
+          align-items: stretch;
         }
 
-        .transaction-date,
-        .transaction-category {
-          flex: 1;
+        .table-controls {
+          flex-direction: column;
+        }
+
+        .description-cell {
+          max-width: 150px;
+        }
+
+        .category-cell {
+          min-width: 140px;
         }
       }
     `,
@@ -443,12 +697,29 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   @Input() transactions: TransactionDomain[] = [];
   @Input() isLoading: boolean = false;
+  @Input() onCategoryUpdate?: (
+    transaction: TransactionDomain,
+    newCategory: TransactionCategory,
+  ) => void;
 
   private numberFormatPipe = inject(NumberFormatPipe);
 
   filteredTransactions: TransactionDomain[] = [];
-  selectedMonth: string = '';
+  paginatedTransactions: TransactionDomain[] = [];
 
+  // Search and filter
+  searchTerm: string = '';
+  selectedCategoryFilter: string = '';
+
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 20;
+  totalPages: number = 1;
+
+  // Category tracking
+  categoryChanges: Map<number, TransactionCategory> = new Map();
+
+  // Metrics
   totalIncome = 0;
   totalExpenses = 0;
   savings = 0;
@@ -456,12 +727,19 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   transactionsCount = 0;
   savingsRate = 0;
 
+  // Chart options
   pieChartOptions: Highcharts.Options = {};
+
+  // Data
   topMerchants: any[] = [];
-  recentTransactions: TransactionDomain[] = [];
   insights: any[] = [];
 
-  constructor() {}
+  // Category list for dropdown
+  categoryList: { value: TransactionCategory; label: string }[] = [];
+
+  constructor() {
+    this.initializeCategoryList();
+  }
 
   ngOnInit() {
     this.processTransactions();
@@ -473,38 +751,114 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     }
   }
 
+  private initializeCategoryList() {
+    this.categoryList = Object.values(TransactionCategory).map((cat) => ({
+      value: cat,
+      label: this.getCategoryLabel(cat),
+    }));
+  }
+
   private processTransactions() {
     if (this.transactions && this.transactions.length > 0) {
       this.filteredTransactions = [...this.transactions];
+      // this.applyFilters();
+      this.calculateMetrics();
+      this.updateCharts();
+      this.updatePagination();
+    }
+  }
+
+  filterTransactions() {
+    let filtered = [...this.transactions];
+
+    // Apply search filter
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (t) =>
+          t.description?.toLowerCase().includes(term) ||
+          t.serviceProvider?.toLowerCase().includes(term),
+      );
+    }
+
+    // Apply category filter
+    if (this.selectedCategoryFilter) {
+      filtered = filtered.filter(
+        (t) => t.category === this.selectedCategoryFilter,
+      );
+    }
+
+    this.filteredTransactions = filtered;
+    this.currentPage = 1;
+    this.updatePagination();
+    this.calculateMetrics();
+    this.updateCharts();
+  }
+
+  private updatePagination() {
+    this.totalPages = Math.ceil(
+      this.filteredTransactions.length / this.pageSize,
+    );
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedTransactions = this.filteredTransactions.slice(start, end);
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  onCategoryChange(transaction: TransactionDomain, event: any) {
+    const newCategory = event.target.value as TransactionCategory;
+    this.categoryChanges.set(transaction.id!, newCategory);
+  }
+
+  isCategoryChanged(transaction: TransactionDomain): boolean {
+    return this.categoryChanges.has(transaction.id!);
+  }
+
+  updateTransactionCategory(transaction: TransactionDomain) {
+    const newCategory = this.categoryChanges.get(transaction.id!);
+    if (newCategory && this.onCategoryUpdate) {
+      this.onCategoryUpdate(transaction, newCategory);
+      this.categoryChanges.delete(transaction.id!);
+
+      // Update local transaction category
+      transaction.category = newCategory;
+      transaction.categoryLabel = this.getCategoryLabel(newCategory);
+
+      // Refresh charts and metrics
       this.calculateMetrics();
       this.updateCharts();
     }
   }
 
-  filterByMonth() {
-    if (this.selectedMonth) {
-      const [year, month] = this.selectedMonth.split('-');
-      this.filteredTransactions = this.transactions.filter((t) => {
-        if (t.completionDate) {
-          return (
-            t.completionDate.getFullYear() === parseInt(year) &&
-            t.completionDate.getMonth() + 1 === parseInt(month)
-          );
-        }
-        return false;
-      });
-    } else {
-      this.filteredTransactions = [...this.transactions];
+  saveCategoryChanges() {
+    for (const [transactionId, newCategory] of this.categoryChanges) {
+      const transaction = this.transactions.find((t) => t.id === transactionId);
+      if (transaction && this.onCategoryUpdate) {
+        this.onCategoryUpdate(transaction, newCategory);
+        transaction.category = newCategory;
+        transaction.categoryLabel = this.getCategoryLabel(newCategory);
+      }
     }
+    this.categoryChanges.clear();
     this.calculateMetrics();
     this.updateCharts();
   }
 
-  resetFilters() {
-    this.selectedMonth = '';
-    this.filteredTransactions = [...this.transactions];
-    this.calculateMetrics();
-    this.updateCharts();
+  get hasChanges(): boolean {
+    return this.categoryChanges.size > 0;
   }
 
   calculateMetrics() {
@@ -531,7 +885,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     this.savingsRate =
       this.totalIncome > 0 ? (this.savings / this.totalIncome) * 100 : 0;
 
-    // Calculate daily average
     const spendTransactions = this.filteredTransactions.filter(
       (t) => t.amount && t.amount < 0,
     );
@@ -545,13 +898,12 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   updateCharts() {
     this.updatePieChart();
     this.updateTopMerchants();
-    this.updateRecentTransactions();
     this.updateInsights();
   }
 
   updatePieChart() {
     const categorySummary = this.getCategorySummary(this.filteredTransactions);
-    const self = this; // Store reference to component instance
+    const self = this;
 
     const pieData = categorySummary.map((item) => ({
       name: this.getCategoryLabel(item.category),
@@ -574,7 +926,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
         formatter: function (this: any) {
           const percentage = this.percentage?.toFixed(1) || '0';
           const amount = this.y || 0;
-          // Use the component's formatCurrency method
           const formattedAmount = self.formatCurrency(amount);
           return `${this.series.name}: <b>${percentage}%</b><br/>Amount: <b>${formattedAmount}</b>`;
         },
@@ -670,20 +1021,9 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
       .map(([merchant, data]) => ({ merchant, ...data }));
   }
 
-  updateRecentTransactions() {
-    this.recentTransactions = [...this.filteredTransactions]
-      .sort(
-        (a, b) =>
-          (b.completionDate?.getTime() || 0) -
-          (a.completionDate?.getTime() || 0),
-      )
-      .slice(0, 20);
-  }
-
   updateInsights() {
     this.insights = [];
 
-    // Get category summary for insights
     const categorySummary = this.getCategorySummary(this.filteredTransactions);
     const topCategory = categorySummary[0];
 
@@ -699,7 +1039,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
       });
     }
 
-    // Insight 2: Savings rate
     if (this.savingsRate > 20) {
       this.insights.push({
         icon: '🌟',
@@ -722,7 +1061,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
       });
     }
 
-    // Insight 3: Top merchant
     const topMerchant = this.topMerchants[0];
     if (topMerchant) {
       this.insights.push({
@@ -731,7 +1069,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
       });
     }
 
-    // Insight 4: Daily average
     if (this.dailyAverage > 0) {
       const monthlyProjection = this.dailyAverage * 30;
       if (monthlyProjection > this.totalIncome && this.totalIncome > 0) {
@@ -748,6 +1085,13 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     }
   }
 
+  truncateText(text: string, maxLength: number): string {
+    if (!text) return '';
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + '...'
+      : text;
+  }
+
   formatCurrency(value: number): string {
     return this.numberFormatPipe.transform(value, 'RON');
   }
@@ -756,21 +1100,43 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     const colors: Record<TransactionCategory, string> = {
       [TransactionCategory.SUPERMARKET]: '#4CAF50',
       [TransactionCategory.RESTAURANT_FASTFOOD]: '#FF9800',
+      [TransactionCategory.CAFE_BAKERY]: '#FFB74D',
       [TransactionCategory.DELIVERY]: '#FF5722',
       [TransactionCategory.GAS_STATION]: '#2196F3',
-      [TransactionCategory.UTILITIES]: '#9C27B0',
-      [TransactionCategory.SHOPPING]: '#E91E63',
-      [TransactionCategory.PHARMACY]: '#00BCD4',
-      [TransactionCategory.SALARY]: '#8BC34A',
-      [TransactionCategory.TRANSFER]: '#607D8B',
       [TransactionCategory.TRANSPORT]: '#795548',
-      [TransactionCategory.MOBILE_BILL]: '#3F51B5',
-      [TransactionCategory.SUBSCRIPTION]: '#009688',
+      [TransactionCategory.PARKING_TOLLS]: '#5D4037',
+      [TransactionCategory.UTILITIES]: '#9C27B0',
+      [TransactionCategory.RENT]: '#8D6E63',
+      [TransactionCategory.HOME_MAINTENANCE]: '#6D4C41',
+      [TransactionCategory.HOME_IMPROVEMENT]: '#8D6E63',
+      [TransactionCategory.SHOPPING]: '#E91E63',
+      [TransactionCategory.CLOTHING_ACCESSORIES]: '#EC407A',
+      [TransactionCategory.ELECTRONICS]: '#26C6DA',
+      [TransactionCategory.SPORTS_OUTDOOR]: '#66BB6A',
+      [TransactionCategory.PHARMACY]: '#00BCD4',
       [TransactionCategory.HEALTHCARE]: '#FF4081',
+      [TransactionCategory.GYM_FITNESS]: '#7C4DFF',
       [TransactionCategory.ENTERTAINMENT]: '#FFC107',
-      [TransactionCategory.OTHER]: '#9E9E9E',
+      [TransactionCategory.ONLINE_GAMING]: '#7C4DFF',
+      [TransactionCategory.SUBSCRIPTION]: '#009688',
+      [TransactionCategory.SALARY]: '#8BC34A',
       [TransactionCategory.RECEIVED]: '#CDDC39',
+      [TransactionCategory.TRANSFER]: '#607D8B',
       [TransactionCategory.INTERNAL_TRANSFER]: '#BDBDBD',
+      [TransactionCategory.REFUNDS]: '#4DB6AC',
+      [TransactionCategory.BANK_FEES]: '#BDBDBD',
+      [TransactionCategory.ATM_WITHDRAWAL]: '#EF5350',
+      [TransactionCategory.MOBILE_BILL]: '#3F51B5',
+      [TransactionCategory.TRAVEL_ACCOMMODATION]: '#FF6F00',
+      [TransactionCategory.EDUCATION]: '#66BB6A',
+      [TransactionCategory.INSURANCE]: '#42A5F5',
+      [TransactionCategory.PERSONAL_CARE]: '#FFA726',
+      [TransactionCategory.GIFTS]: '#EC407A',
+      [TransactionCategory.PET_CARE]: '#A1887F',
+      [TransactionCategory.TAXES_FINES]: '#F44336',
+      [TransactionCategory.DONATIONS]: '#AB47BC',
+      [TransactionCategory.INVESTMENTS]: '#26A69A',
+      [TransactionCategory.OTHER]: '#9E9E9E',
     };
     return colors[category] || '#9E9E9E';
   }
@@ -779,21 +1145,43 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     const labels: Record<TransactionCategory, string> = {
       [TransactionCategory.SUPERMARKET]: 'Supermarket',
       [TransactionCategory.RESTAURANT_FASTFOOD]: 'Restaurants',
+      [TransactionCategory.CAFE_BAKERY]: 'Cafe & Bakery',
       [TransactionCategory.DELIVERY]: 'Food Delivery',
       [TransactionCategory.GAS_STATION]: 'Fuel',
-      [TransactionCategory.UTILITIES]: 'Utilities',
-      [TransactionCategory.SHOPPING]: 'Shopping',
-      [TransactionCategory.PHARMACY]: 'Pharmacy',
-      [TransactionCategory.SALARY]: 'Salary',
-      [TransactionCategory.TRANSFER]: 'Transfers',
       [TransactionCategory.TRANSPORT]: 'Transport',
-      [TransactionCategory.MOBILE_BILL]: 'Mobile',
-      [TransactionCategory.SUBSCRIPTION]: 'Subscriptions',
+      [TransactionCategory.PARKING_TOLLS]: 'Parking & Tolls',
+      [TransactionCategory.UTILITIES]: 'Utilities',
+      [TransactionCategory.RENT]: 'Rent',
+      [TransactionCategory.HOME_MAINTENANCE]: 'Home Maintenance',
+      [TransactionCategory.HOME_IMPROVEMENT]: 'Home Improvement',
+      [TransactionCategory.SHOPPING]: 'Shopping',
+      [TransactionCategory.CLOTHING_ACCESSORIES]: 'Clothing',
+      [TransactionCategory.ELECTRONICS]: 'Electronics',
+      [TransactionCategory.SPORTS_OUTDOOR]: 'Sports & Outdoor',
+      [TransactionCategory.PHARMACY]: 'Pharmacy',
       [TransactionCategory.HEALTHCARE]: 'Healthcare',
+      [TransactionCategory.GYM_FITNESS]: 'Gym & Fitness',
       [TransactionCategory.ENTERTAINMENT]: 'Entertainment',
-      [TransactionCategory.OTHER]: 'Other',
-      [TransactionCategory.RECEIVED]: 'Received',
+      [TransactionCategory.ONLINE_GAMING]: 'Online Gaming',
+      [TransactionCategory.SUBSCRIPTION]: 'Subscriptions',
+      [TransactionCategory.SALARY]: 'Salary',
+      [TransactionCategory.RECEIVED]: 'Money Received',
+      [TransactionCategory.TRANSFER]: 'Bank Transfer',
       [TransactionCategory.INTERNAL_TRANSFER]: 'Internal Transfer',
+      [TransactionCategory.REFUNDS]: 'Refunds',
+      [TransactionCategory.BANK_FEES]: 'Bank Fees',
+      [TransactionCategory.ATM_WITHDRAWAL]: 'ATM Withdrawal',
+      [TransactionCategory.MOBILE_BILL]: 'Mobile Bill',
+      [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel',
+      [TransactionCategory.EDUCATION]: 'Education',
+      [TransactionCategory.INSURANCE]: 'Insurance',
+      [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
+      [TransactionCategory.GIFTS]: 'Gifts',
+      [TransactionCategory.PET_CARE]: 'Pet Care',
+      [TransactionCategory.TAXES_FINES]: 'Taxes & Fines',
+      [TransactionCategory.DONATIONS]: 'Donations',
+      [TransactionCategory.INVESTMENTS]: 'Investments',
+      [TransactionCategory.OTHER]: 'Other',
     };
     return labels[category] || 'Other';
   }

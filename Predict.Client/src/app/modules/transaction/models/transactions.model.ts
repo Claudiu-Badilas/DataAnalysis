@@ -1,31 +1,5 @@
+// transaction.model.ts - Complete version
 import { DateUtils } from 'src/app/shared/utils/date.utils';
-
-export enum TransactionCategory {
-  SUPERMARKET = 'supermarket',
-  RESTAURANT_FASTFOOD = 'restaurant_fastfood',
-  DELIVERY = 'delivery',
-  GAS_STATION = 'gas_station',
-  UTILITIES = 'utilities',
-  SHOPPING = 'shopping',
-  PHARMACY = 'pharmacy',
-  SALARY = 'salary',
-  TRANSFER = 'transfer',
-  TRANSPORT = 'transport',
-  MOBILE_BILL = 'mobile_bill',
-  SUBSCRIPTION = 'subscription',
-  HEALTHCARE = 'healthcare',
-  ENTERTAINMENT = 'entertainment',
-  OTHER = 'other',
-  RECEIVED = 'received',
-  INTERNAL_TRANSFER = 'internal_transfer',
-}
-
-export interface CategoryRule {
-  keywords: string[];
-  category: TransactionCategory;
-  descriptionContains?: string[];
-  amountRange?: { min?: number; max?: number };
-}
 
 export interface TransactionResponse {
   id: number | null;
@@ -38,6 +12,65 @@ export interface TransactionResponse {
   transactionType: string | null;
   provider: string | null;
   referenceId: number | null;
+}
+
+export enum TransactionCategory {
+  MOBILE_BILL = 'mobile_bill',
+  // Food & Dining
+  SUPERMARKET = 'supermarket',
+  RESTAURANT_FASTFOOD = 'restaurant_fastfood',
+  CAFE_BAKERY = 'cafe_bakery',
+  DELIVERY = 'delivery',
+
+  // Transportation
+  GAS_STATION = 'gas_station',
+  TRANSPORT = 'transport',
+  PARKING_TOLLS = 'parking_tolls',
+
+  // Home & Utilities
+  UTILITIES = 'utilities',
+  RENT = 'rent',
+  HOME_MAINTENANCE = 'home_maintenance',
+
+  // Shopping
+  SHOPPING = 'shopping',
+  CLOTHING_ACCESSORIES = 'clothing_accessories',
+  ELECTRONICS = 'electronics',
+  HOME_IMPROVEMENT = 'home_improvement',
+  SPORTS_OUTDOOR = 'sports_outdoor',
+
+  // Health
+  PHARMACY = 'pharmacy',
+  HEALTHCARE = 'healthcare',
+  GYM_FITNESS = 'gym_fitness',
+
+  // Entertainment
+  ENTERTAINMENT = 'entertainment',
+  ONLINE_GAMING = 'online_gaming',
+  SUBSCRIPTION = 'subscription',
+
+  // Financial
+  SALARY = 'salary',
+  RECEIVED = 'received',
+  TRANSFER = 'transfer',
+  INTERNAL_TRANSFER = 'internal_transfer',
+  REFUNDS = 'refunds',
+  BANK_FEES = 'bank_fees',
+  ATM_WITHDRAWAL = 'atm_withdrawal',
+
+  // Lifestyle
+  TRAVEL_ACCOMMODATION = 'travel_accommodation',
+  EDUCATION = 'education',
+  INSURANCE = 'insurance',
+  PERSONAL_CARE = 'personal_care',
+  GIFTS = 'gifts',
+  PET_CARE = 'pet_care',
+
+  // Other
+  TAXES_FINES = 'taxes_fines',
+  DONATIONS = 'donations',
+  INVESTMENTS = 'investments',
+  OTHER = 'other',
 }
 
 export class TransactionDomain {
@@ -53,11 +86,12 @@ export class TransactionDomain {
   referenceId: number | null;
 
   serviceProvider: string;
+  merchantName: string;
   ignored: boolean;
   category: TransactionCategory;
   categoryLabel: string;
 
-  constructor(res: TransactionResponse) {
+  constructor(res: any) {
     Object.assign(this, res);
 
     this.registrationDate = DateUtils.fromSplittedStringToJsDate(
@@ -67,33 +101,84 @@ export class TransactionDomain {
       res.completionDate,
     );
 
-    this.serviceProvider = res.description?.split('|')[0] ?? null;
+    // Extract merchant name from description
+    const descParts = res.description?.split('|') || [];
+    this.serviceProvider = descParts[0]?.trim() || '';
+
+    // Extract merchant from various patterns
+    this.merchantName = this.extractMerchantName(res.description || '');
+
     this.ignored = [
       'Transfer intre conturile proprii',
       'WWW.ORANGE.RO CONTUL-MEU',
-    ].some((x) => this.description.includes(x));
+    ].some((x) => this.description?.includes(x));
 
     this.category = TransactionCategorizer.categorize(this);
     this.categoryLabel = TransactionCategorizer.getCategoryLabel(this.category);
+  }
+
+  private extractMerchantName(description: string): string {
+    // Try to extract from common patterns
+    const patterns = [
+      /^([A-Z\s\.]+)\s+\|/, // MERCHANT NAME | rest
+      /^([A-Z\s\.]+)\s+/, // MERCHANT NAME rest
+      /\|([A-Z\s\.]+)\s+\|/, // | MERCHANT NAME |
+    ];
+
+    for (const pattern of patterns) {
+      const match = description.match(pattern);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+
+    // For OPIB/OPINS transactions
+    if (description.includes('OPIB/1') || description.includes('OPINS/1')) {
+      const parts = description.split('|');
+      if (parts.length > 1) return parts[1]?.trim() || description;
+    }
+
+    return description.substring(0, 50);
   }
 }
 
 class TransactionCategorizer {
   private static readonly rules: CategoryRule[] = [
-    // SALARIES & RECEIVED MONEY
+    // ============ INCOME & RECEIVED ============
     {
-      keywords: ['SALARIU', 'BONUS', 'INDEMNIZATIE', 'CHELT DEPL', 'DECONT'],
+      keywords: [
+        'SALARIU',
+        'BONUS',
+        'INDEMNIZATIE',
+        'CHELT DEPL',
+        'DECONT',
+        'virare salariu',
+      ],
       category: TransactionCategory.SALARY,
-      descriptionContains: ['OPH/1/23024602'],
+      amountRange: { min: 0 },
     },
     {
-      keywords: ['OPIB/1', 'OPINS'],
+      keywords: ['OPIB/1', 'OPINS', 'OPH/1'],
       category: TransactionCategory.RECEIVED,
       amountRange: { min: 0 },
-      descriptionContains: ['Transfer intre', 'Facturi', 'Pizza', 'cadou'],
+      descriptionContains: [
+        'Transfer intre',
+        'Facturi',
+        'Pizza',
+        'cadou',
+        'decont',
+        'virare',
+        'chirie',
+        'diurne',
+      ],
+    },
+    {
+      keywords: ['STORNO', 'RETURN', 'REFUND', 'RAMBURS', 'returnare'],
+      category: TransactionCategory.REFUNDS,
+      amountRange: { min: 0 },
     },
 
-    // SUPERMARKETS
+    // ============ SUPERMARKETS (all grocery stores) ============
     {
       keywords: [
         'LIDL',
@@ -103,17 +188,35 @@ class TransactionCategorizer {
         'PROFI',
         'Auchan',
         'MEGAIMAGE',
+        'CITY MARKET',
+        'DM DROGERIE',
+        'MARKET',
+        'SUPERMARKET',
+        'FRUCTE',
+        'LEGUME',
+        'CARN',
+        'MACELARIE',
+        'LA DOI PASI',
       ],
       category: TransactionCategory.SUPERMARKET,
+      excludeKeywords: ['CINEMA', 'RESTAURANT', 'PIZZA', 'BURGER'],
     },
 
-    // GAS STATIONS
+    // ============ GAS STATIONS ============
     {
-      keywords: ['OMV', 'MOL', 'ROMPETROL', 'LUKOIL', 'PETROL'],
+      keywords: [
+        'OMV',
+        'MOL',
+        'ROMPETROL',
+        'LUKOIL',
+        'PETROL',
+        'BENZINA',
+        'CARBURANT',
+      ],
       category: TransactionCategory.GAS_STATION,
     },
 
-    // UTILITIES
+    // ============ UTILITIES ============
     {
       keywords: [
         'ENGIE',
@@ -122,30 +225,33 @@ class TransactionCategorizer {
         'Pago*Digi',
         'Pago*Orange',
         'RCS RDS',
+        'APA CANAL',
+        'Pago*Apa Canal',
+        'ELECTRICA',
+        'GAZ',
+        'ENERGIE',
+        'factura gaz',
+        'factura electrica',
+        'factura apa',
       ],
       category: TransactionCategory.UTILITIES,
     },
 
-    // MOBILE BILLS
+    // ============ MOBILE & TELECOM ============
     {
-      keywords: ['WWW.ORANGE.RO', 'Orange Money'],
+      keywords: [
+        'WWW.ORANGE.RO',
+        'Orange Money',
+        'TELEKOM',
+        'VODAFONE',
+        'reincarcare',
+        'credit telefon',
+        'contul-m',
+      ],
       category: TransactionCategory.MOBILE_BILL,
     },
 
-    // SUBSCRIPTIONS
-    {
-      keywords: [
-        'NETFLIX',
-        'DISNEY PLUS',
-        'Google One',
-        'Google Payment',
-        'Apple',
-        'Prime Video',
-      ],
-      category: TransactionCategory.SUBSCRIPTION,
-    },
-
-    // RESTAURANTS & FAST FOOD
+    // ============ RESTAURANTS & FAST FOOD ============
     {
       keywords: [
         'KFC',
@@ -153,19 +259,66 @@ class TransactionCategorizer {
         'BURGER KING',
         'PIZZA',
         'TACO',
-        'STARBUCKS',
-        'FOOD',
+        'KUNG FU',
+        'CHOPSTIX',
+        'NOODLE',
+        'MESOPOTAMIA',
+        'GRILL',
+        'RESTAURANT',
+        'DONUT',
+        'FRYDAY',
+        'PEP&PEPPER',
+        'WONDER',
+        'PASSAGE FOOD',
+        'KAPTAN',
+        'SALAD',
+        'PASTA',
+        'SOUP',
+        'LA MORUN',
+        'IONUT RESTAURANTE',
+        'GELATO',
+        'ICE CREAM',
       ],
       category: TransactionCategory.RESTAURANT_FASTFOOD,
     },
 
-    // DELIVERY SERVICES
+    // ============ CAFE & BAKERY ============
     {
-      keywords: ['Glovo', 'Wolt', 'TAZZ', 'Foodpanda', 'Bolt Food'],
+      keywords: [
+        'CAFE',
+        'COFFEE',
+        '5 TO GO',
+        'STARBUCKS',
+        'BAKERY',
+        'PATISERIE',
+        'COFETARIE',
+        'DONUT',
+        'MR DONUT',
+        'CREMIAL',
+        'LAVORATOR',
+        'FIVE TO GO',
+        'To Go',
+      ],
+      category: TransactionCategory.CAFE_BAKERY,
+    },
+
+    // ============ DELIVERY SERVICES ============
+    {
+      keywords: [
+        'Glovo',
+        'Wolt',
+        'TAZZ',
+        'Foodpanda',
+        'Bolt Food',
+        'TAZZ.RO',
+        'tazz.ro',
+        'glovo',
+        'wolt',
+      ],
       category: TransactionCategory.DELIVERY,
     },
 
-    // PHARMACIES
+    // ============ PHARMACY ============
     {
       keywords: [
         'FARMACIE',
@@ -175,56 +328,17 @@ class TransactionCategorizer {
         'S.I.E.P.C.O.F.A.R.',
         'MEDIMFARM',
         'CLINICA SANTE',
+        'SIEPCOFAR',
+        'PHARMACY',
+        'MEDICAMENTE',
+        'FARMACEUTICA',
+        'ELISAFARM',
+        'MEDICALVET',
       ],
       category: TransactionCategory.PHARMACY,
     },
 
-    // SHOPPING
-    {
-      keywords: [
-        'H&M',
-        'PULL & BEAR',
-        'BERSHKA',
-        'ZARA',
-        'CROPP',
-        'LC WAIKIKI',
-        'NEW YORKER',
-        'PEPCO',
-        'DECATHLON',
-        'INTERSPORT',
-        'DEDEMAN',
-        'JYSK',
-        'EMAG',
-        'ALTEX',
-        'Trendyol',
-        'G2A.COM',
-        'STEAM',
-        'BOOKING.COM',
-      ],
-      category: TransactionCategory.SHOPPING,
-    },
-
-    // TRANSPORT
-    {
-      keywords: [
-        'TRANSURB',
-        'CFR',
-        'RATBV',
-        'UBER',
-        'BOLT',
-        'taxi',
-        'Transport',
-      ],
-      category: TransactionCategory.TRANSPORT,
-    },
-
-    // ENTERTAINMENT
-    {
-      keywords: ['CINEMA CITY', 'cinemacity', 'MOVIE', 'CONCERT', 'THEATRE'],
-      category: TransactionCategory.ENTERTAINMENT,
-    },
-
-    // HEALTHCARE
+    // ============ HEALTHCARE SERVICES ============
     {
       keywords: [
         'medlife',
@@ -234,114 +348,561 @@ class TransactionCategorizer {
         'CLINICA',
         'Spital',
         'FIZIOACTIV',
+        'DOCTOR',
+        'MEDIC',
+        'ANALIZE',
+        'CONSULTATIE',
+        'ARISTOMED',
+        'PADMD',
+        'ortopedie',
+        'neurologie',
       ],
       category: TransactionCategory.HEALTHCARE,
     },
 
-    // INTERNAL TRANSFERS
+    // ============ GYM & FITNESS ============
     {
-      keywords: ['Transfer intre conturile proprii', 'Transfer in cont'],
-      category: TransactionCategory.INTERNAL_TRANSFER,
+      keywords: [
+        'GYM',
+        'FITNESS',
+        'THE ONE GYM',
+        'STAY FIT',
+        'SALA',
+        'ANTRENAMENT',
+        'ABONAMENT SALA',
+      ],
+      category: TransactionCategory.GYM_FITNESS,
     },
 
-    // TRANSFERS (external)
+    // ============ CLOTHING & ACCESSORIES ============
     {
-      keywords: ['OPIB/1', 'OPINS/1'],
+      keywords: [
+        'H&M',
+        'PULL & BEAR',
+        'BERSHKA',
+        'ZARA',
+        'CROPP',
+        'LC WAIKIKI',
+        'NEW YORKER',
+        'RESERVED',
+        'SINSAY',
+        'C&A',
+        'STRADIVARIUS',
+        'H&M RO',
+        'PULL BEAR',
+        'LC WAIKIKI',
+      ],
+      category: TransactionCategory.CLOTHING_ACCESSORIES,
+    },
+
+    // ============ ELECTRONICS ============
+    {
+      keywords: [
+        'EMAG',
+        'ALTEX',
+        'FLANCO',
+        'MEDIA GALAXY',
+        'TECH',
+        'LAPTOP',
+        'PHONE',
+        'telefon',
+        'tableta',
+        'calculator',
+        'componente',
+      ],
+      category: TransactionCategory.ELECTRONICS,
+    },
+
+    // ============ HOME IMPROVEMENT ============
+    {
+      keywords: [
+        'DEDEMAN',
+        'JYSK',
+        'HORNBACH',
+        'Brico',
+        'MOBILA',
+        'DECOR',
+        'mobila',
+        'decoratiuni',
+        'unelte',
+        'scule',
+        'PRAVALIE',
+        'LA CHIFLA',
+      ],
+      category: TransactionCategory.HOME_IMPROVEMENT,
+    },
+
+    // ============ SPORTS & OUTDOOR ============
+    {
+      keywords: [
+        'DECATHLON',
+        'INTERSPORT',
+        'SPORT',
+        'OUTDOOR',
+        'HIKING',
+        'CAMPING',
+        'FITNESS',
+        'EQUIPAMENT SPORTIV',
+      ],
+      category: TransactionCategory.SPORTS_OUTDOOR,
+    },
+
+    // ============ SHOPPING (general) ============
+    {
+      keywords: [
+        'SHOPPING',
+        'MAGAZIN',
+        'STORE',
+        'ALTE',
+        'Cumparaturi',
+        'shopping',
+        'XIN NEW FASHION',
+        'China Shopping Mall',
+        'Galati Shopping City',
+        'MFM SHOPPING',
+        'SHOPPING CITY',
+      ],
+      category: TransactionCategory.SHOPPING,
+      excludeKeywords: ['CINEMA', 'RESTAURANT', 'PIZZA', 'GROCERY', 'MARKET'],
+    },
+
+    // ============ ONLINE GAMING ============
+    {
+      keywords: [
+        'STEAM',
+        'G2A.COM',
+        'GAMING',
+        'GAME',
+        'PLAYSTATION',
+        'XBOX',
+        'STEAMGAMES',
+        'Battle.net',
+        'EPIC GAMES',
+        'ORIGIN',
+        'UBISOFT',
+      ],
+      category: TransactionCategory.ONLINE_GAMING,
+    },
+
+    // ============ ENTERTAINMENT ============
+    {
+      keywords: [
+        'CINEMA CITY',
+        'cinemacity',
+        'MOVIE',
+        'CONCERT',
+        'THEATRE',
+        'TEATRU',
+        'FILM',
+        'CINEMA',
+        'EVENTBOOK',
+        'MUSEUM',
+      ],
+      category: TransactionCategory.ENTERTAINMENT,
+    },
+
+    // ============ SUBSCRIPTIONS ============
+    {
+      keywords: [
+        'NETFLIX',
+        'DISNEY PLUS',
+        'Google One',
+        'Google Payment',
+        'Apple',
+        'Prime Video',
+        'GOOGLE PLAY',
+        'Google YouTube',
+        'YOUTUBE',
+        'Spotify',
+        'HBO',
+        'Disney+',
+      ],
+      category: TransactionCategory.SUBSCRIPTION,
+    },
+
+    // ============ TRANSPORT ============
+    {
+      keywords: [
+        'TRANSURB',
+        'CFR',
+        'RATBV',
+        'UBER',
+        'BOLT',
+        'TAXI',
+        'Transport',
+        'AUTOBUZ',
+        'TRAMVAI',
+        'METROU',
+        'TRANSFEROVIAR',
+        'SNTFC',
+        'bilet tren',
+        'bilet autobuz',
+        'STB SA',
+      ],
+      category: TransactionCategory.TRANSPORT,
+    },
+
+    // ============ PARKING & TOLLS ============
+    {
+      keywords: ['PARKING', 'PARCARE', 'TOLL', 'POD', 'taxa pod', 'vigneta'],
+      category: TransactionCategory.PARKING_TOLLS,
+    },
+
+    // ============ TRAVEL & ACCOMMODATION ============
+    {
+      keywords: [
+        'BOOKING.COM',
+        'HOTEL',
+        'CAZARE',
+        'AIRBNB',
+        'ACCOMMODATION',
+        'FLIGHT',
+        'ZBOR',
+        'AVION',
+        'VACANTA',
+        'SEJOUR',
+        'HOSTEL',
+        'Pensiune',
+        'Motel',
+      ],
+      category: TransactionCategory.TRAVEL_ACCOMMODATION,
+    },
+
+    // ============ EDUCATION ============
+    {
+      keywords: [
+        'UNIVERSITATEA',
+        'CURS',
+        'COURSE',
+        'SCUOLA',
+        'SCHOOL',
+        'EDUCATION',
+        'TAX SCOLAR',
+        'UNIVERSITY',
+        'FACULTATE',
+        'LICENTA',
+        'MASTER',
+        'SCOALA',
+        'GRADINITA',
+      ],
+      category: TransactionCategory.EDUCATION,
+    },
+
+    // ============ RENT ============
+    {
+      keywords: ['CHIRIE', 'RENT', 'APARTMENT', 'GARSONIERA', 'LOUIER'],
+      category: TransactionCategory.RENT,
+    },
+
+    // ============ PERSONAL CARE ============
+    {
+      keywords: [
+        'SALON',
+        'HAIRCUT',
+        'FRIZER',
+        'MANICURE',
+        'PEDICURE',
+        'BEAUTY',
+        'SPA',
+        'cosmetica',
+        'parfum',
+        'TABAC',
+        'tigari',
+        'vaping',
+      ],
+      category: TransactionCategory.PERSONAL_CARE,
+    },
+
+    // ============ ATM WITHDRAWALS ============
+    {
+      keywords: [
+        'ATM',
+        'RETRAGERE',
+        'WITHDRAWAL',
+        'BANCOMAT',
+        'NCR',
+        'ATM OMNIA',
+        'ATM BTRA',
+        'ATM ALPHA',
+        'ATM MAGNUS',
+        'ATM1018',
+        'NCR06224',
+      ],
+      category: TransactionCategory.ATM_WITHDRAWAL,
+    },
+
+    // ============ BANK FEES ============
+    {
+      keywords: [
+        'COMMISION',
+        'FEE',
+        'TAXA ADMIN',
+        'BANK FEE',
+        'comision',
+        'taxa lunar',
+      ],
+      category: TransactionCategory.BANK_FEES,
+    },
+
+    // ============ INSURANCE ============
+    {
+      keywords: [
+        'ASIGURARE',
+        'INSURANCE',
+        'POLITA',
+        'RCA',
+        'CASCO',
+        'sanatate',
+      ],
+      category: TransactionCategory.INSURANCE,
+    },
+
+    // ============ PET CARE ============
+    {
+      keywords: [
+        'PET',
+        'VETERINAR',
+        'ANIMAL',
+        'DOG',
+        'CAT',
+        'PET SHOP',
+        'hrana caini',
+        'veterinary',
+      ],
+      category: TransactionCategory.PET_CARE,
+    },
+
+    // ============ GIFTS ============
+    {
+      keywords: ['CADOU', 'GIFT', 'PRESENT', 'BOUQUET', 'FLOWERS', 'flori'],
+      category: TransactionCategory.GIFTS,
+    },
+
+    // ============ TAXES & FINES ============
+    {
+      keywords: [
+        'TAXE',
+        'IMPozit',
+        'FINE',
+        'AMENDA',
+        'TAX',
+        'PENALTY',
+        'impozit',
+        'taxe locale',
+        'primaria',
+      ],
+      category: TransactionCategory.TAXES_FINES,
+    },
+
+    // ============ DONATIONS ============
+    {
+      keywords: ['DONATIE', 'DONATION', 'CHARITY', 'ONG', 'sponsorizare'],
+      category: TransactionCategory.DONATIONS,
+    },
+
+    // ============ INVESTMENTS ============
+    {
+      keywords: [
+        'INVESTITIE',
+        'STOCKS',
+        'ACTIUNI',
+        'FOND',
+        'INVESTMENT',
+        'trading',
+      ],
+      category: TransactionCategory.INVESTMENTS,
+    },
+
+    // ============ TRANSFERS ============
+    {
+      keywords: ['OPIB/1', 'OPINS/1', 'transfer bancar', 'plata catre'],
       category: TransactionCategory.TRANSFER,
-      descriptionContains: ['Plata catre alta banca', 'transfer', 'rata'],
+      descriptionContains: [
+        'Plata catre alta banca',
+        'transfer',
+        'rata',
+        'credit',
+      ],
+      amountRange: { max: 0 },
+    },
+
+    // ============ INTERNAL TRANSFERS ============
+    {
+      keywords: [
+        'Transfer intre conturile proprii',
+        'Transfer in cont',
+        'virare salariu',
+        'virare chirii',
+        'virare',
+        'depunere economii',
+      ],
+      category: TransactionCategory.INTERNAL_TRANSFER,
     },
   ];
 
   static categorize(transaction: TransactionDomain): TransactionCategory {
-    // If transaction is ignored, return other
+    // If transaction is ignored
     if (transaction.ignored) {
       return TransactionCategory.OTHER;
     }
 
-    // For received amounts that are positive
-    if (transaction.amount && transaction.amount > 0) {
-      if (transaction.description?.toLowerCase().includes('salariu')) {
+    const description = transaction.description?.toLowerCase() || '';
+    const serviceProvider = transaction.serviceProvider?.toLowerCase() || '';
+    const amount = transaction.amount || 0;
+    const absAmount = Math.abs(amount);
+
+    // RECEIVED MONEY (positive amounts)
+    if (amount > 0) {
+      // Salary detection
+      if (
+        description.includes('salariu') ||
+        description.includes('solda') ||
+        (description.includes('oph/1') && description.includes('salariu'))
+      ) {
         return TransactionCategory.SALARY;
       }
+
+      // Refunds
       if (
-        transaction.description?.toLowerCase().includes('opib/1') ||
-        transaction.description?.toLowerCase().includes('opins')
+        description.includes('storno') ||
+        description.includes('return') ||
+        description.includes('ramburs')
+      ) {
+        return TransactionCategory.REFUNDS;
+      }
+
+      // Received money
+      if (
+        description.includes('opib/1') ||
+        description.includes('opins') ||
+        description.includes('oph/1')
       ) {
         return TransactionCategory.RECEIVED;
       }
     }
 
-    const description = transaction.description?.toLowerCase() || '';
-    const serviceProvider = transaction.serviceProvider?.toLowerCase() || '';
-
-    // Check each rule
-    for (const rule of this.rules) {
-      // Check amount range if specified
-      if (rule.amountRange) {
+    // Check each rule for expenses (negative amounts)
+    if (amount < 0) {
+      for (const rule of this.rules) {
+        // Skip income-related rules
         if (
-          rule.amountRange.min !== undefined &&
-          (transaction.amount || 0) < rule.amountRange.min
-        )
-          continue;
-        if (
-          rule.amountRange.max !== undefined &&
-          (transaction.amount || 0) > rule.amountRange.max
-        )
-          continue;
-      }
-
-      // Check description contains patterns
-      let keywordMatch = false;
-      for (const keyword of rule.keywords) {
-        if (
-          description.includes(keyword.toLowerCase()) ||
-          serviceProvider.includes(keyword.toLowerCase())
+          rule.category === TransactionCategory.SALARY ||
+          rule.category === TransactionCategory.RECEIVED
         ) {
-          keywordMatch = true;
-          break;
+          continue;
         }
-      }
 
-      if (!keywordMatch) continue;
+        // Check exclude keywords
+        if (rule.excludeKeywords) {
+          let excluded = false;
+          for (const exclude of rule.excludeKeywords) {
+            if (description.includes(exclude.toLowerCase())) {
+              excluded = true;
+              break;
+            }
+          }
+          if (excluded) continue;
+        }
 
-      // Check additional description contains if specified
-      if (rule.descriptionContains) {
-        let containsMatch = false;
-        for (const pattern of rule.descriptionContains) {
-          if (description.includes(pattern.toLowerCase())) {
-            containsMatch = true;
+        // Check keywords
+        let matchFound = false;
+        for (const keyword of rule.keywords) {
+          const lowerKeyword = keyword.toLowerCase();
+          if (
+            description.includes(lowerKeyword) ||
+            serviceProvider.includes(lowerKeyword)
+          ) {
+            matchFound = true;
             break;
           }
         }
-        if (!containsMatch) continue;
-      }
 
-      return rule.category;
+        if (!matchFound) continue;
+
+        // Check descriptionContains if specified
+        if (rule.descriptionContains) {
+          let containsMatch = false;
+          for (const pattern of rule.descriptionContains) {
+            if (description.includes(pattern.toLowerCase())) {
+              containsMatch = true;
+              break;
+            }
+          }
+          if (!containsMatch) continue;
+        }
+
+        // Check amount range if specified
+        if (rule.amountRange) {
+          if (
+            rule.amountRange.min !== undefined &&
+            absAmount < rule.amountRange.min
+          )
+            continue;
+          if (
+            rule.amountRange.max !== undefined &&
+            absAmount > rule.amountRange.max
+          )
+            continue;
+        }
+
+        return rule.category;
+      }
     }
 
+    // Default
     return TransactionCategory.OTHER;
   }
 
   static getCategoryLabel(category: TransactionCategory): string {
     const labels: Record<TransactionCategory, string> = {
-      [TransactionCategory.SUPERMARKET]: 'Supermarket / Grocery',
-      [TransactionCategory.RESTAURANT_FASTFOOD]: 'Restaurant / Fast Food',
+      [TransactionCategory.SUPERMARKET]: 'Supermarket',
+      [TransactionCategory.RESTAURANT_FASTFOOD]: 'Restaurants',
+      [TransactionCategory.CAFE_BAKERY]: 'Cafe & Bakery',
       [TransactionCategory.DELIVERY]: 'Food Delivery',
-      [TransactionCategory.GAS_STATION]: 'Gas Station',
-      [TransactionCategory.UTILITIES]: 'Utilities',
-      [TransactionCategory.SHOPPING]: 'Shopping',
-      [TransactionCategory.PHARMACY]: 'Pharmacy',
-      [TransactionCategory.SALARY]: 'Salary / Bonus',
-      [TransactionCategory.TRANSFER]: 'Bank Transfer',
+      [TransactionCategory.GAS_STATION]: 'Fuel',
       [TransactionCategory.TRANSPORT]: 'Transport',
+      [TransactionCategory.PARKING_TOLLS]: 'Parking & Tolls',
+      [TransactionCategory.UTILITIES]: 'Utilities',
       [TransactionCategory.MOBILE_BILL]: 'Mobile Bill',
-      [TransactionCategory.SUBSCRIPTION]: 'Subscription',
+      [TransactionCategory.RENT]: 'Rent',
+      [TransactionCategory.HOME_MAINTENANCE]: 'Home Maintenance',
+      [TransactionCategory.SHOPPING]: 'Shopping',
+      [TransactionCategory.CLOTHING_ACCESSORIES]: 'Clothing',
+      [TransactionCategory.ELECTRONICS]: 'Electronics',
+      [TransactionCategory.HOME_IMPROVEMENT]: 'Home Improvement',
+      [TransactionCategory.SPORTS_OUTDOOR]: 'Sports & Outdoor',
+      [TransactionCategory.PHARMACY]: 'Pharmacy',
       [TransactionCategory.HEALTHCARE]: 'Healthcare',
+      [TransactionCategory.GYM_FITNESS]: 'Gym & Fitness',
       [TransactionCategory.ENTERTAINMENT]: 'Entertainment',
-      [TransactionCategory.OTHER]: 'Other',
+      [TransactionCategory.ONLINE_GAMING]: 'Online Gaming',
+      [TransactionCategory.SUBSCRIPTION]: 'Subscriptions',
+      [TransactionCategory.SALARY]: 'Salary',
       [TransactionCategory.RECEIVED]: 'Money Received',
+      [TransactionCategory.TRANSFER]: 'Bank Transfer',
       [TransactionCategory.INTERNAL_TRANSFER]: 'Internal Transfer',
+      [TransactionCategory.REFUNDS]: 'Refunds',
+      [TransactionCategory.BANK_FEES]: 'Bank Fees',
+      [TransactionCategory.ATM_WITHDRAWAL]: 'ATM Withdrawal',
+      [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel & Accommodation',
+      [TransactionCategory.EDUCATION]: 'Education',
+      [TransactionCategory.INSURANCE]: 'Insurance',
+      [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
+      [TransactionCategory.GIFTS]: 'Gifts',
+      [TransactionCategory.PET_CARE]: 'Pet Care',
+      [TransactionCategory.TAXES_FINES]: 'Taxes & Fines',
+      [TransactionCategory.DONATIONS]: 'Donations',
+      [TransactionCategory.INVESTMENTS]: 'Investments',
+      [TransactionCategory.OTHER]: 'Other',
     };
     return labels[category] || 'Other';
   }
+}
+
+interface CategoryRule {
+  keywords: string[];
+  category: TransactionCategory;
+  descriptionContains?: string[];
+  amountRange?: { min?: number; max?: number };
+  excludeKeywords?: string[];
 }
