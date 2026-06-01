@@ -1,4 +1,3 @@
-// transaction.model.ts - Complete version
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 
 export interface TransactionResponse {
@@ -25,12 +24,10 @@ export enum TransactionCategory {
   // Transportation
   GAS_STATION = 'gas_station',
   TRANSPORT = 'transport',
-  PARKING_TOLLS = 'parking_tolls',
 
   // Home & Utilities
   UTILITIES = 'utilities',
   RENT = 'rent',
-  HOME_MAINTENANCE = 'home_maintenance',
 
   // Shopping
   SHOPPING = 'shopping',
@@ -52,7 +49,6 @@ export enum TransactionCategory {
   // Financial
   SALARY = 'salary',
   RECEIVED = 'received',
-  TRANSFER = 'transfer',
   INTERNAL_TRANSFER = 'internal_transfer',
   REFUNDS = 'refunds',
   BANK_FEES = 'bank_fees',
@@ -61,15 +57,11 @@ export enum TransactionCategory {
   // Lifestyle
   TRAVEL_ACCOMMODATION = 'travel_accommodation',
   EDUCATION = 'education',
-  INSURANCE = 'insurance',
   PERSONAL_CARE = 'personal_care',
   GIFTS = 'gifts',
-  PET_CARE = 'pet_care',
 
   // Other
   TAXES_FINES = 'taxes_fines',
-  DONATIONS = 'donations',
-  INVESTMENTS = 'investments',
   OTHER = 'other',
 }
 
@@ -140,6 +132,14 @@ export class TransactionDomain {
 
     return description.substring(0, 50);
   }
+}
+
+interface CategoryRule {
+  keywords: string[];
+  category: TransactionCategory;
+  descriptionContains?: string[];
+  amountRange?: { min?: number; max?: number };
+  excludeKeywords?: string[];
 }
 
 export class TransactionCategorizer {
@@ -559,12 +559,6 @@ export class TransactionCategorizer {
       category: TransactionCategory.TRANSPORT,
     },
 
-    // ============ PARKING & TOLLS ============
-    {
-      keywords: ['PARKING', 'PARCARE', 'TOLL', 'POD', 'taxa pod', 'vigneta'],
-      category: TransactionCategory.PARKING_TOLLS,
-    },
-
     // ============ TRAVEL & ACCOMMODATION ============
     {
       keywords: [
@@ -665,34 +659,6 @@ export class TransactionCategorizer {
       category: TransactionCategory.BANK_FEES,
     },
 
-    // ============ INSURANCE ============
-    {
-      keywords: [
-        'ASIGURARE',
-        'INSURANCE',
-        'POLITA',
-        'RCA',
-        'CASCO',
-        'sanatate',
-      ],
-      category: TransactionCategory.INSURANCE,
-    },
-
-    // ============ PET CARE ============
-    {
-      keywords: [
-        'PET',
-        'VETERINAR',
-        'ANIMAL',
-        'DOG',
-        'CAT',
-        'PET SHOP',
-        'hrana caini',
-        'veterinary',
-      ],
-      category: TransactionCategory.PET_CARE,
-    },
-
     // ============ GIFTS ============
     {
       keywords: ['CADOU', 'GIFT', 'PRESENT', 'BOUQUET', 'FLOWERS', 'flori'],
@@ -713,38 +679,6 @@ export class TransactionCategorizer {
         'primaria',
       ],
       category: TransactionCategory.TAXES_FINES,
-    },
-
-    // ============ DONATIONS ============
-    {
-      keywords: ['DONATIE', 'DONATION', 'CHARITY', 'ONG', 'sponsorizare'],
-      category: TransactionCategory.DONATIONS,
-    },
-
-    // ============ INVESTMENTS ============
-    {
-      keywords: [
-        'INVESTITIE',
-        'STOCKS',
-        'ACTIUNI',
-        'FOND',
-        'INVESTMENT',
-        'trading',
-      ],
-      category: TransactionCategory.INVESTMENTS,
-    },
-
-    // ============ TRANSFERS ============
-    {
-      keywords: ['OPIB/1', 'OPINS/1', 'transfer bancar', 'plata catre'],
-      category: TransactionCategory.TRANSFER,
-      descriptionContains: [
-        'Plata catre alta banca',
-        'transfer',
-        'rata',
-        'credit',
-      ],
-      amountRange: { max: 0 },
     },
 
     // ============ INTERNAL TRANSFERS ============
@@ -883,11 +817,9 @@ export class TransactionCategorizer {
       [TransactionCategory.DELIVERY]: 'Food Delivery',
       [TransactionCategory.GAS_STATION]: 'Fuel',
       [TransactionCategory.TRANSPORT]: 'Transport',
-      [TransactionCategory.PARKING_TOLLS]: 'Parking & Tolls',
       [TransactionCategory.UTILITIES]: 'Utilities',
       [TransactionCategory.MOBILE_BILL]: 'Mobile Bill',
       [TransactionCategory.RENT]: 'Rent',
-      [TransactionCategory.HOME_MAINTENANCE]: 'Home Maintenance',
       [TransactionCategory.SHOPPING]: 'Shopping',
       [TransactionCategory.CLOTHING_ACCESSORIES]: 'Clothing',
       [TransactionCategory.ELECTRONICS]: 'Electronics',
@@ -901,20 +833,15 @@ export class TransactionCategorizer {
       [TransactionCategory.SUBSCRIPTION]: 'Subscriptions',
       [TransactionCategory.SALARY]: 'Salary',
       [TransactionCategory.RECEIVED]: 'Money Received',
-      [TransactionCategory.TRANSFER]: 'Bank Transfer',
       [TransactionCategory.INTERNAL_TRANSFER]: 'Internal Transfer',
       [TransactionCategory.REFUNDS]: 'Refunds',
       [TransactionCategory.BANK_FEES]: 'Bank Fees',
       [TransactionCategory.ATM_WITHDRAWAL]: 'ATM Withdrawal',
       [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel & Accommodation',
       [TransactionCategory.EDUCATION]: 'Education',
-      [TransactionCategory.INSURANCE]: 'Insurance',
       [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
       [TransactionCategory.GIFTS]: 'Gifts',
-      [TransactionCategory.PET_CARE]: 'Pet Care',
       [TransactionCategory.TAXES_FINES]: 'Taxes & Fines',
-      [TransactionCategory.DONATIONS]: 'Donations',
-      [TransactionCategory.INVESTMENTS]: 'Investments',
       [TransactionCategory.OTHER]: 'Other',
     };
     return labels[category] || 'Other';
@@ -928,10 +855,8 @@ export class TransactionCategorizer {
       [TransactionCategory.DELIVERY]: '#FF5722',
       [TransactionCategory.GAS_STATION]: '#2196F3',
       [TransactionCategory.TRANSPORT]: '#795548',
-      [TransactionCategory.PARKING_TOLLS]: '#5D4037',
       [TransactionCategory.UTILITIES]: '#9C27B0',
       [TransactionCategory.RENT]: '#8D6E63',
-      [TransactionCategory.HOME_MAINTENANCE]: '#6D4C41',
       [TransactionCategory.HOME_IMPROVEMENT]: '#8D6E63',
       [TransactionCategory.SHOPPING]: '#E91E63',
       [TransactionCategory.CLOTHING_ACCESSORIES]: '#EC407A',
@@ -945,7 +870,6 @@ export class TransactionCategorizer {
       [TransactionCategory.SUBSCRIPTION]: '#009688',
       [TransactionCategory.SALARY]: '#8BC34A',
       [TransactionCategory.RECEIVED]: '#CDDC39',
-      [TransactionCategory.TRANSFER]: '#607D8B',
       [TransactionCategory.INTERNAL_TRANSFER]: '#BDBDBD',
       [TransactionCategory.REFUNDS]: '#4DB6AC',
       [TransactionCategory.BANK_FEES]: '#BDBDBD',
@@ -953,23 +877,11 @@ export class TransactionCategorizer {
       [TransactionCategory.MOBILE_BILL]: '#3F51B5',
       [TransactionCategory.TRAVEL_ACCOMMODATION]: '#FF6F00',
       [TransactionCategory.EDUCATION]: '#66BB6A',
-      [TransactionCategory.INSURANCE]: '#42A5F5',
       [TransactionCategory.PERSONAL_CARE]: '#FFA726',
       [TransactionCategory.GIFTS]: '#EC407A',
-      [TransactionCategory.PET_CARE]: '#A1887F',
       [TransactionCategory.TAXES_FINES]: '#F44336',
-      [TransactionCategory.DONATIONS]: '#AB47BC',
-      [TransactionCategory.INVESTMENTS]: '#26A69A',
       [TransactionCategory.OTHER]: '#9E9E9E',
     };
     return colors[category] || '#9E9E9E';
   }
-}
-
-interface CategoryRule {
-  keywords: string[];
-  category: TransactionCategory;
-  descriptionContains?: string[];
-  amountRange?: { min?: number; max?: number };
-  excludeKeywords?: string[];
 }
