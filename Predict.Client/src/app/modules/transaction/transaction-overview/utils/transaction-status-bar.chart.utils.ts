@@ -59,7 +59,7 @@ export namespace TransactionStatusBarChartUtils {
             distance: 30,
           },
           showInLegend: true,
-          size: '40%',
+          size: '60%',
           center: ['50%', '50%'],
           borderRadius: 5,
           borderWidth: 2,
