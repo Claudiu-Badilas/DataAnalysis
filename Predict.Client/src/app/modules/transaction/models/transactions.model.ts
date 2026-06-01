@@ -142,7 +142,7 @@ export class TransactionDomain {
   }
 }
 
-class TransactionCategorizer {
+export class TransactionCategorizer {
   private static readonly rules: CategoryRule[] = [
     // ============ INCOME & RECEIVED ============
     {
@@ -455,7 +455,6 @@ class TransactionCategorizer {
         'CAMPING',
         'FITNESS',
         'EQUIPAMENT SPORTIV',
-        'Trendyol',
       ],
       category: TransactionCategory.SPORTS_OUTDOOR,
     },
@@ -476,6 +475,7 @@ class TransactionCategorizer {
         'MFM SHOPPING',
         'SHOPPING CITY',
         'PEPCO',
+        'Trendyol',
       ],
       category: TransactionCategory.SHOPPING,
       excludeKeywords: ['CINEMA', 'RESTAURANT', 'PIZZA', 'GROCERY', 'MARKET'],
@@ -918,6 +918,51 @@ class TransactionCategorizer {
       [TransactionCategory.OTHER]: 'Other',
     };
     return labels[category] || 'Other';
+  }
+
+  static getCategoryColor(category: TransactionCategory): string {
+    const colors: Record<TransactionCategory, string> = {
+      [TransactionCategory.SUPERMARKET]: '#4CAF50',
+      [TransactionCategory.RESTAURANT_FASTFOOD]: '#FF9800',
+      [TransactionCategory.CAFE_BAKERY]: '#FFB74D',
+      [TransactionCategory.DELIVERY]: '#FF5722',
+      [TransactionCategory.GAS_STATION]: '#2196F3',
+      [TransactionCategory.TRANSPORT]: '#795548',
+      [TransactionCategory.PARKING_TOLLS]: '#5D4037',
+      [TransactionCategory.UTILITIES]: '#9C27B0',
+      [TransactionCategory.RENT]: '#8D6E63',
+      [TransactionCategory.HOME_MAINTENANCE]: '#6D4C41',
+      [TransactionCategory.HOME_IMPROVEMENT]: '#8D6E63',
+      [TransactionCategory.SHOPPING]: '#E91E63',
+      [TransactionCategory.CLOTHING_ACCESSORIES]: '#EC407A',
+      [TransactionCategory.ELECTRONICS]: '#26C6DA',
+      [TransactionCategory.SPORTS_OUTDOOR]: '#66BB6A',
+      [TransactionCategory.PHARMACY]: '#00BCD4',
+      [TransactionCategory.HEALTHCARE]: '#FF4081',
+      [TransactionCategory.GYM_FITNESS]: '#7C4DFF',
+      [TransactionCategory.ENTERTAINMENT]: '#FFC107',
+      [TransactionCategory.ONLINE_GAMING]: '#7C4DFF',
+      [TransactionCategory.SUBSCRIPTION]: '#009688',
+      [TransactionCategory.SALARY]: '#8BC34A',
+      [TransactionCategory.RECEIVED]: '#CDDC39',
+      [TransactionCategory.TRANSFER]: '#607D8B',
+      [TransactionCategory.INTERNAL_TRANSFER]: '#BDBDBD',
+      [TransactionCategory.REFUNDS]: '#4DB6AC',
+      [TransactionCategory.BANK_FEES]: '#BDBDBD',
+      [TransactionCategory.ATM_WITHDRAWAL]: '#EF5350',
+      [TransactionCategory.MOBILE_BILL]: '#3F51B5',
+      [TransactionCategory.TRAVEL_ACCOMMODATION]: '#FF6F00',
+      [TransactionCategory.EDUCATION]: '#66BB6A',
+      [TransactionCategory.INSURANCE]: '#42A5F5',
+      [TransactionCategory.PERSONAL_CARE]: '#FFA726',
+      [TransactionCategory.GIFTS]: '#EC407A',
+      [TransactionCategory.PET_CARE]: '#A1887F',
+      [TransactionCategory.TAXES_FINES]: '#F44336',
+      [TransactionCategory.DONATIONS]: '#AB47BC',
+      [TransactionCategory.INVESTMENTS]: '#26A69A',
+      [TransactionCategory.OTHER]: '#9E9E9E',
+    };
+    return colors[category] || '#9E9E9E';
   }
 }
 

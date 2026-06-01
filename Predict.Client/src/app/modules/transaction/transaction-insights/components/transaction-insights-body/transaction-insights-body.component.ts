@@ -9,6 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
+  TransactionCategorizer,
   TransactionCategory,
   TransactionDomain,
 } from 'src/app/modules/transaction/models/transactions.model';
@@ -129,6 +130,59 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
             </div>
           </div>
 
+          <!-- Mobile Card View -->
+          <div class="mobile-cards">
+            <div
+              *ngFor="let transaction of paginatedTransactions; let i = index"
+              class="transaction-card"
+            >
+              <div class="card-header">
+                <div class="card-date">
+                  {{ transaction.completionDate | date: 'MMM dd, yyyy' }}
+                </div>
+                <div
+                  class="card-amount"
+                  [class.positive]="(transaction.amount || 0) > 0"
+                  [class.negative]="(transaction.amount || 0) < 0"
+                >
+                  {{
+                    transaction.amount || 0
+                      | currency: 'RON' : 'symbol' : '1.2-2'
+                  }}
+                </div>
+              </div>
+
+              <div class="card-description" [title]="transaction.description">
+                {{ truncateText(transaction.description || '', 80) }}
+              </div>
+
+              <div class="card-footer">
+                <div class="card-category">
+                  <select
+                    [(ngModel)]="transaction.category"
+                    (change)="onCategoryChange(transaction, $event)"
+                    class="category-edit-select-mobile"
+                    [style.backgroundColor]="
+                      getCategoryColor(transaction.category)
+                    "
+                  >
+                    <option
+                      *ngFor="let cat of categoryList"
+                      [value]="cat.value"
+                    >
+                      {{ cat.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="card-service" *ngIf="transaction.serviceProvider">
+                  <span class="service-icon">🏢</span>
+                  {{ truncateText(transaction.serviceProvider, 30) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Table View -->
           <div class="table-container">
             <table class="transactions-table">
               <thead>
@@ -612,6 +666,109 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         line-height: 1.4;
       }
 
+      /* Mobile Card View - Hidden on desktop, visible on mobile */
+      .mobile-cards {
+        display: none;
+      }
+
+      .transaction-card {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+        border: 1px solid #f0f0f0;
+      }
+
+      .transaction-card:active {
+        transform: scale(0.98);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .card-date {
+        font-size: 13px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .card-amount {
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .card-amount.positive {
+        color: #00b894;
+      }
+
+      .card-amount.negative {
+        color: #d63031;
+      }
+
+      .card-description {
+        font-size: 14px;
+        color: #2d3436;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .card-category {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .category-edit-select-mobile {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 13px;
+        cursor: pointer;
+        color: white;
+        font-weight: 500;
+        transition: all 0.2s;
+        background-size: 20px;
+      }
+
+      .category-edit-select-mobile:focus {
+        outline: none;
+        border-color: #6c5ce7;
+        box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+      }
+
+      .card-service {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #666;
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+
+      .service-icon {
+        font-size: 12px;
+      }
+
+      /* Responsive Design */
       @media (max-width: 768px) {
         .dashboard-container {
           padding: 12px;
@@ -622,21 +779,193 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           gap: 12px;
         }
 
+        .metric-card {
+          padding: 16px;
+        }
+
+        .metric-value {
+          font-size: 22px;
+        }
+
+        .metric-icon {
+          font-size: 28px;
+        }
+
         .table-header {
           flex-direction: column;
           align-items: stretch;
         }
 
+        .table-header h3 {
+          margin-bottom: 12px;
+        }
+
         .table-controls {
           flex-direction: column;
+          gap: 10px;
         }
 
-        .description-cell {
-          max-width: 150px;
+        .search-box {
+          width: 100%;
         }
 
-        .category-cell {
-          min-width: 140px;
+        .category-filter {
+          width: 100%;
+        }
+
+        .category-select {
+          width: 100%;
+        }
+
+        /* Hide desktop table on mobile */
+        .table-container {
+          display: none;
+        }
+
+        /* Show mobile cards on mobile */
+        .mobile-cards {
+          display: block;
+        }
+
+        .pagination {
+          flex-direction: column;
+          gap: 12px;
+          padding: 12px;
+        }
+
+        .page-info {
+          order: -1;
+          text-align: center;
+          width: 100%;
+        }
+
+        .page-btn {
+          padding: 10px 20px;
+          min-width: 120px;
+        }
+
+        .insights-list {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .insight-item {
+          padding: 12px;
+        }
+
+        .insight-text {
+          font-size: 13px;
+        }
+
+        .chart-card {
+          margin-bottom: 20px;
+        }
+
+        .chart-wrapper {
+          min-height: 300px;
+        }
+      }
+
+      /* Tablet view - optional hybrid layout */
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .mobile-cards {
+          display: none;
+        }
+
+        .table-container {
+          display: block;
+          overflow-x: auto;
+        }
+
+        .transactions-table {
+          min-width: 800px;
+        }
+
+        .category-edit-select {
+          min-width: 150px;
+        }
+      }
+
+      /* Desktop view */
+      @media (min-width: 1025px) {
+        .mobile-cards {
+          display: none;
+        }
+
+        .table-container {
+          display: block;
+        }
+      }
+
+      /* Small mobile devices */
+      @media (max-width: 480px) {
+        .dashboard-container {
+          padding: 8px;
+        }
+
+        .metrics-grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .transaction-card {
+          padding: 12px;
+        }
+
+        .card-amount {
+          font-size: 18px;
+        }
+
+        .card-date {
+          font-size: 11px;
+        }
+
+        .card-description {
+          font-size: 13px;
+        }
+
+        .category-edit-select-mobile {
+          font-size: 12px;
+          padding: 6px 10px;
+        }
+
+        .page-btn {
+          padding: 8px 16px;
+          font-size: 13px;
+        }
+
+        .page-info {
+          font-size: 12px;
+        }
+      }
+
+      /* Add touch-friendly improvements */
+      @media (hover: none) and (pointer: coarse) {
+        .page-btn,
+        .category-edit-select-mobile,
+        .search-input,
+        .category-select {
+          min-height: 44px; /* Better touch target size */
+        }
+
+        .transaction-card {
+          cursor: pointer;
+        }
+      }
+
+      /* Loading state improvements for mobile */
+      @media (max-width: 768px) {
+        .loading-state {
+          padding: 40px 16px;
+        }
+
+        .loading-state p {
+          font-size: 14px;
+        }
+
+        .spinner {
+          width: 40px;
+          height: 40px;
         }
       }
     `,
@@ -702,7 +1031,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   private initializeCategoryList() {
     this.categoryList = Object.values(TransactionCategory).map((cat) => ({
       value: cat,
-      label: this.getCategoryLabel(cat),
+      label: TransactionCategorizer.getCategoryLabel(cat),
     }));
   }
 
@@ -986,92 +1315,10 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   }
 
   getCategoryColor(category: TransactionCategory): string {
-    const colors: Record<TransactionCategory, string> = {
-      [TransactionCategory.SUPERMARKET]: '#4CAF50',
-      [TransactionCategory.RESTAURANT_FASTFOOD]: '#FF9800',
-      [TransactionCategory.CAFE_BAKERY]: '#FFB74D',
-      [TransactionCategory.DELIVERY]: '#FF5722',
-      [TransactionCategory.GAS_STATION]: '#2196F3',
-      [TransactionCategory.TRANSPORT]: '#795548',
-      [TransactionCategory.PARKING_TOLLS]: '#5D4037',
-      [TransactionCategory.UTILITIES]: '#9C27B0',
-      [TransactionCategory.RENT]: '#8D6E63',
-      [TransactionCategory.HOME_MAINTENANCE]: '#6D4C41',
-      [TransactionCategory.HOME_IMPROVEMENT]: '#8D6E63',
-      [TransactionCategory.SHOPPING]: '#E91E63',
-      [TransactionCategory.CLOTHING_ACCESSORIES]: '#EC407A',
-      [TransactionCategory.ELECTRONICS]: '#26C6DA',
-      [TransactionCategory.SPORTS_OUTDOOR]: '#66BB6A',
-      [TransactionCategory.PHARMACY]: '#00BCD4',
-      [TransactionCategory.HEALTHCARE]: '#FF4081',
-      [TransactionCategory.GYM_FITNESS]: '#7C4DFF',
-      [TransactionCategory.ENTERTAINMENT]: '#FFC107',
-      [TransactionCategory.ONLINE_GAMING]: '#7C4DFF',
-      [TransactionCategory.SUBSCRIPTION]: '#009688',
-      [TransactionCategory.SALARY]: '#8BC34A',
-      [TransactionCategory.RECEIVED]: '#CDDC39',
-      [TransactionCategory.TRANSFER]: '#607D8B',
-      [TransactionCategory.INTERNAL_TRANSFER]: '#BDBDBD',
-      [TransactionCategory.REFUNDS]: '#4DB6AC',
-      [TransactionCategory.BANK_FEES]: '#BDBDBD',
-      [TransactionCategory.ATM_WITHDRAWAL]: '#EF5350',
-      [TransactionCategory.MOBILE_BILL]: '#3F51B5',
-      [TransactionCategory.TRAVEL_ACCOMMODATION]: '#FF6F00',
-      [TransactionCategory.EDUCATION]: '#66BB6A',
-      [TransactionCategory.INSURANCE]: '#42A5F5',
-      [TransactionCategory.PERSONAL_CARE]: '#FFA726',
-      [TransactionCategory.GIFTS]: '#EC407A',
-      [TransactionCategory.PET_CARE]: '#A1887F',
-      [TransactionCategory.TAXES_FINES]: '#F44336',
-      [TransactionCategory.DONATIONS]: '#AB47BC',
-      [TransactionCategory.INVESTMENTS]: '#26A69A',
-      [TransactionCategory.OTHER]: '#9E9E9E',
-    };
-    return colors[category] || '#9E9E9E';
+    return TransactionCategorizer.getCategoryColor(category) || '#9E9E9E';
   }
 
   getCategoryLabel(category: TransactionCategory): string {
-    const labels: Record<TransactionCategory, string> = {
-      [TransactionCategory.SUPERMARKET]: 'Supermarket',
-      [TransactionCategory.RESTAURANT_FASTFOOD]: 'Restaurants',
-      [TransactionCategory.CAFE_BAKERY]: 'Cafe & Bakery',
-      [TransactionCategory.DELIVERY]: 'Food Delivery',
-      [TransactionCategory.GAS_STATION]: 'Fuel',
-      [TransactionCategory.TRANSPORT]: 'Transport',
-      [TransactionCategory.PARKING_TOLLS]: 'Parking & Tolls',
-      [TransactionCategory.UTILITIES]: 'Utilities',
-      [TransactionCategory.RENT]: 'Rent',
-      [TransactionCategory.HOME_MAINTENANCE]: 'Home Maintenance',
-      [TransactionCategory.HOME_IMPROVEMENT]: 'Home Improvement',
-      [TransactionCategory.SHOPPING]: 'Shopping',
-      [TransactionCategory.CLOTHING_ACCESSORIES]: 'Clothing',
-      [TransactionCategory.ELECTRONICS]: 'Electronics',
-      [TransactionCategory.SPORTS_OUTDOOR]: 'Sports & Outdoor',
-      [TransactionCategory.PHARMACY]: 'Pharmacy',
-      [TransactionCategory.HEALTHCARE]: 'Healthcare',
-      [TransactionCategory.GYM_FITNESS]: 'Gym & Fitness',
-      [TransactionCategory.ENTERTAINMENT]: 'Entertainment',
-      [TransactionCategory.ONLINE_GAMING]: 'Online Gaming',
-      [TransactionCategory.SUBSCRIPTION]: 'Subscriptions',
-      [TransactionCategory.SALARY]: 'Salary',
-      [TransactionCategory.RECEIVED]: 'Money Received',
-      [TransactionCategory.TRANSFER]: 'Bank Transfer',
-      [TransactionCategory.INTERNAL_TRANSFER]: 'Internal Transfer',
-      [TransactionCategory.REFUNDS]: 'Refunds',
-      [TransactionCategory.BANK_FEES]: 'Bank Fees',
-      [TransactionCategory.ATM_WITHDRAWAL]: 'ATM Withdrawal',
-      [TransactionCategory.MOBILE_BILL]: 'Mobile Bill',
-      [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel',
-      [TransactionCategory.EDUCATION]: 'Education',
-      [TransactionCategory.INSURANCE]: 'Insurance',
-      [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
-      [TransactionCategory.GIFTS]: 'Gifts',
-      [TransactionCategory.PET_CARE]: 'Pet Care',
-      [TransactionCategory.TAXES_FINES]: 'Taxes & Fines',
-      [TransactionCategory.DONATIONS]: 'Donations',
-      [TransactionCategory.INVESTMENTS]: 'Investments',
-      [TransactionCategory.OTHER]: 'Other',
-    };
-    return labels[category] || 'Other';
+    return TransactionCategorizer.getCategoryLabel(category) || 'Other';
   }
 }
