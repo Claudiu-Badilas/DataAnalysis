@@ -102,6 +102,9 @@ export class TransactionDomain {
 
     this.ignored = [
       'Transfer intre conturile proprii',
+      'Transfer intre conturi proprii',
+      'Trz IB conturi proprii',
+      //--------------------------------------
       'WWW.ORANGE.RO CONTUL-MEU',
     ].some((x) => this.description?.includes(x));
 
