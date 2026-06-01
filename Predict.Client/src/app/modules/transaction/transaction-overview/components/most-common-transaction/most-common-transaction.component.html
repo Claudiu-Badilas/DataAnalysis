@@ -1,4 +1,4 @@
-<div class="transaction-analytics">
+<div class="transaction-analytics mt-2">
   <div class="analytics-header">
     <div class="text-center">
       <p class="subtitle">Most Common Transactions Overview</p>
@@ -30,9 +30,9 @@
       </div>
       <div class="stat-info">
         <span class="stat-label">Total Income</span>
-        <span class="stat-value positive"
-          >+{{ totalIncome() | numberFormat: "0.00" }}</span
-        >
+        <span class="stat-value positive">{{
+          totalIncome() | numberFormat: "0.00"
+        }}</span>
       </div>
     </div>
 
@@ -73,8 +73,7 @@
           [class.positive]="totalIncome() - totalExpense() > 0"
           [class.negative]="totalIncome() - totalExpense() < 0"
         >
-          {{ totalIncome() - totalExpense() > 0 ? "+" : ""
-          }}{{ totalIncome() - totalExpense() | numberFormat: "0.00" }}
+          {{ totalIncome() - totalExpense() | numberFormat: "0.00" }}
         </span>
       </div>
     </div>
@@ -120,9 +119,9 @@
               <div class="period-totals">
                 <span class="buble">{{ period.transactionCount }} </span>
                 @if (period.totalIncome > 0) {
-                  <span class="income-badge"
-                    >+{{ period.totalIncome | numberFormat: "0.00" }}</span
-                  >
+                  <span class="income-badge">{{
+                    period.totalIncome | numberFormat: "0.00"
+                  }}</span>
                 }
                 @if (period.totalExpense > 0) {
                   <span class="expense-badge"
@@ -135,8 +134,7 @@
                     [class.positive]="period.difference > 0"
                     [class.negative]="period.difference < 0"
                   >
-                    {{ period.difference > 0 ? "+" : ""
-                    }}{{ period.difference | numberFormat: "0.00" }}
+                    {{ period.difference | numberFormat: "0.00" }}
                   </span>
                 }
               </div>
@@ -189,8 +187,7 @@
                             [class.positive]="item.total > 0"
                             [class.negative]="item.total < 0"
                           >
-                            {{ item.total > 0 ? "+" : ""
-                            }}{{ item.total | numberFormat: "0.00" }}
+                            {{ item.total | numberFormat: "0.00" }}
                           </td>
                           <td data-label="% of Period" class="percentage-cell">
                             <div class="percentage-bar">
@@ -232,8 +229,7 @@
                             [class.positive]="item.total > 0"
                             [class.negative]="item.total < 0"
                           >
-                            {{ item.total > 0 ? "+" : ""
-                            }}{{ item.total | numberFormat: "0.00" }}
+                            {{ item.total | numberFormat: "0.00" }}
                           </td>
                           <td data-label="% of Period" class="percentage-cell">
                             <div class="percentage-bar">
@@ -291,8 +287,7 @@
                               [class.positive]="item.total > 0"
                               [class.negative]="item.total < 0"
                             >
-                              {{ item.total > 0 ? "+" : ""
-                              }}{{ item.total | numberFormat: "0.00" }}
+                              {{ item.total | numberFormat: "0.00" }}
                             </span>
                           </div>
                           <div class="detail-row">
@@ -342,8 +337,7 @@
                               [class.positive]="item.total > 0"
                               [class.negative]="item.total < 0"
                             >
-                              {{ item.total > 0 ? "+" : ""
-                              }}{{ item.total | numberFormat: "0.00" }}
+                              {{ item.total | numberFormat: "0.00" }}
                             </span>
                           </div>
                           <div class="detail-row">
@@ -404,9 +398,9 @@
                 <span class="buble">{{ period.transactionCount }} </span>
 
                 @if (period.totalIncome > 0) {
-                  <span class="income-badge"
-                    >+{{ period.totalIncome | numberFormat: "0.00" }}</span
-                  >
+                  <span class="income-badge">{{
+                    period.totalIncome | numberFormat: "0.00"
+                  }}</span>
                 }
                 @if (period.totalExpense > 0) {
                   <span class="expense-badge"
@@ -419,8 +413,7 @@
                     [class.positive]="period.difference > 0"
                     [class.negative]="period.difference < 0"
                   >
-                    {{ period.difference > 0 ? "+" : ""
-                    }}{{ period.difference | numberFormat: "0.00" }}
+                    {{ period.difference | numberFormat: "0.00" }}
                   </span>
                 }
               </div>
@@ -472,8 +465,7 @@
                             [class.positive]="item.total > 0"
                             [class.negative]="item.total < 0"
                           >
-                            {{ item.total > 0 ? "+" : ""
-                            }}{{ item.total | numberFormat: "0.00" }}
+                            {{ item.total | numberFormat: "0.00" }}
                           </td>
                           <td data-label="% of Year" class="percentage-cell">
                             <div class="percentage-bar">
@@ -515,8 +507,7 @@
                             [class.positive]="item.total > 0"
                             [class.negative]="item.total < 0"
                           >
-                            {{ item.total > 0 ? "+" : ""
-                            }}{{ item.total | numberFormat: "0.00" }}
+                            {{ item.total | numberFormat: "0.00" }}
                           </td>
                           <td data-label="% of Year" class="percentage-cell">
                             <div class="percentage-bar">
@@ -574,8 +565,7 @@
                               [class.positive]="item.total > 0"
                               [class.negative]="item.total < 0"
                             >
-                              {{ item.total > 0 ? "+" : ""
-                              }}{{ item.total | numberFormat: "0.00" }}
+                              {{ item.total | numberFormat: "0.00" }}
                             </span>
                           </div>
                           <div class="detail-row">
@@ -625,8 +615,7 @@
                               [class.positive]="item.total > 0"
                               [class.negative]="item.total < 0"
                             >
-                              {{ item.total > 0 ? "+" : ""
-                              }}{{ item.total | numberFormat: "0.00" }}
+                              {{ item.total | numberFormat: "0.00" }}
                             </span>
                           </div>
                           <div class="detail-row">
