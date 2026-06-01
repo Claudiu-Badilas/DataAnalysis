@@ -2,7 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
-import { TransactionDomain } from '../../../models/transactions.model';
+import {
+  TransactionCategorizer,
+  TransactionCategory,
+  TransactionDomain,
+} from '../../../models/transactions.model';
 
 interface GroupedTransaction {
   provider: string;
@@ -11,7 +15,7 @@ interface GroupedTransaction {
   currency: string | null;
   latestDate: Date | null;
   dates: Date[];
-  averageAmount: number;
+  category: TransactionCategory;
   percentageOfTotal: number;
 }
 
@@ -65,22 +69,7 @@ export class MostCommonTransactionComponent {
     if (!date) return '';
     const month = date.toLocaleString('default', { month: 'short' });
     const day = date.getDate();
-    const suffix = this.getDaySuffix(day);
-    return `${month} ${day}${suffix}`;
-  }
-
-  private getDaySuffix(day: number): string {
-    if (day > 3 && day < 21) return 'th';
-    switch (day % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
+    return `${day} ${month} ${date.getFullYear()}`;
   }
 
   groupedByMonth = computed(() => {
@@ -129,7 +118,7 @@ export class MostCommonTransactionComponent {
           year,
           monthIndex,
           month: new Date(year, monthIndex).toLocaleString('default', {
-            month: 'long',
+            month: 'short',
           }),
           totalIncome,
           totalExpense,
@@ -233,7 +222,7 @@ export class MostCommonTransactionComponent {
           currency: tx.currency,
           latestDate: null,
           dates: [],
-          averageAmount: 0,
+          category: null,
           percentageOfTotal: 0,
         });
       }
@@ -241,7 +230,7 @@ export class MostCommonTransactionComponent {
       const g = map.get(key)!;
       g.count++;
       g.total += tx.amount ?? 0;
-      g.averageAmount = g.total / g.count;
+      g.category = tx.category;
 
       if (date) {
         g.dates.push(date);
@@ -256,5 +245,13 @@ export class MostCommonTransactionComponent {
         ? b.count - a.count
         : Math.abs(b.total) - Math.abs(a.total),
     );
+  }
+
+  getCategoryColor(category: TransactionCategory): string {
+    return TransactionCategorizer.getCategoryColor(category) || '#9E9E9E';
+  }
+
+  getCategoryLabel(category: TransactionCategory): string {
+    return TransactionCategorizer.getCategoryLabel(category) || 'Other';
   }
 }

@@ -129,7 +129,7 @@
 }
 
 .period-view {
-  padding: 16px;
+  padding: 5px;
 }
 
 /* Period Cards */
@@ -150,7 +150,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 10px;
   cursor: pointer;
   background: white;
   transition: background 0.2s ease;
@@ -191,6 +191,8 @@
 .income-badge,
 .expense-badge,
 .diff-badge {
+  width: 100px;
+  text-align: center;
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -213,13 +215,15 @@
 }
 
 .diff-badge.positive {
-  background: #d1fae5;
+  background: white;
   color: #10b981;
+  border: 1px solid #10b981;
 }
 
 .diff-badge.negative {
-  background: #fee2e2;
+  background: white;
   color: #ef4444;
+  border: 1px solid #ef4444;
 }
 
 /* Period Content */
@@ -495,7 +499,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 10px;
   }
 
   .period-content {
@@ -523,7 +527,7 @@
   }
 
   .period-view {
-    padding: 12px;
+    padding: 5px;
   }
 
   .period-title {
@@ -533,6 +537,8 @@
   .income-badge,
   .expense-badge,
   .diff-badge {
+    width: 75px;
+    text-align: center;
     padding: 2px 8px;
     font-size: 0.6875rem;
   }
@@ -579,7 +585,7 @@
   }
 
   .period-header {
-    padding: 10px 12px;
+    padding: 10px;
   }
 
   .period-info {
@@ -597,12 +603,14 @@
   .income-badge,
   .expense-badge,
   .diff-badge {
+    width: 75px;
+    text-align: center;
     padding: 2px 6px;
     font-size: 0.625rem;
   }
 
   .period-content {
-    padding: 0 12px 12px 12px;
+    padding: 0 10px 10px 10px;
   }
 
   .mobile-card {
@@ -631,4 +639,22 @@
     font-size: 0.5625rem;
     padding: 0 4px;
   }
+}
+
+.category-edit-select {
+  width: 100%;
+  text-align: center;
+  padding: 3px;
+  color: white;
+  border-radius: 8px;
+}
+
+.buble {
+  background: #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #4b5563;
+  padding: 4px 10px;
+  border-radius: 8px;
 }
