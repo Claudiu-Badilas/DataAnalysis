@@ -146,6 +146,10 @@
             </div>
 
             @if (period.isExpanded) {
+              <p-highcharts-wrapper
+                class="chart-wrapper"
+                [chartOptions]="updateBarChart(period.transactions)"
+              />
               <div class="period-content">
                 <div class="data-table-wrapper">
                   <!-- Desktop Table -->
@@ -431,6 +435,10 @@
             @if (period.isExpanded) {
               <div class="period-content">
                 <div class="data-table-wrapper">
+                  <p-highcharts-wrapper
+                    class="chart-wrapper card"
+                    [chartOptions]="updateBarChart(period.transactions)"
+                  />
                   <!-- Desktop Table -->
                   <table class="data-table desktop-table">
                     <thead>

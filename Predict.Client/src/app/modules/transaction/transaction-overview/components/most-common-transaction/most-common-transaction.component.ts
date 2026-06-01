@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import {
@@ -7,6 +7,8 @@ import {
   TransactionCategory,
   TransactionDomain,
 } from '../../../models/transactions.model';
+import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
+import { TransactionStatusBarChartUtils } from '../../utils/transaction-status-bar.chart.utils';
 
 interface GroupedTransaction {
   provider: string;
@@ -21,7 +23,13 @@ interface GroupedTransaction {
 
 @Component({
   selector: 'p-most-common-transaction',
-  imports: [CommonModule, NumberFormatPipe, ToggleButtonComponent],
+  imports: [
+    CommonModule,
+    NumberFormatPipe,
+    ToggleButtonComponent,
+    HighchartWrapperComponent,
+  ],
+  providers: [NumberFormatPipe],
   templateUrl: './most-common-transaction.component.html',
   styleUrl: './most-common-transaction.component.scss',
 })
@@ -31,6 +39,7 @@ export class MostCommonTransactionComponent {
   viewMode = signal<'monthly' | 'yearly'>('monthly');
   private expandedMonth = signal<string | null>(null);
   private expandedYear = signal<number | null>(null);
+  private numberFormatPipe = inject(NumberFormatPipe);
 
   onToggle(value: string) {
     this.viewMode.set(value === 'Monthly' ? 'monthly' : 'yearly');
@@ -127,6 +136,7 @@ export class MostCommonTransactionComponent {
           multiple: sortedGroups.filter((g) => g.count >= 2),
           single: sortedGroups.filter((g) => g.count === 1),
           isExpanded: this.isMonthExpanded(year, monthIndex),
+          transactions: txs,
         };
       })
       .sort((a, b) => {
@@ -185,6 +195,7 @@ export class MostCommonTransactionComponent {
           multiple: sortedGroups.filter((g) => g.count >= 2),
           single: sortedGroups.filter((g) => g.count === 1),
           isExpanded: this.isYearExpanded(year),
+          transactions: txs,
         };
       })
       .sort((a, b) => b.year - a.year);
@@ -253,5 +264,11 @@ export class MostCommonTransactionComponent {
 
   getCategoryLabel(category: TransactionCategory): string {
     return TransactionCategorizer.getCategoryLabel(category) || 'Other';
+  }
+
+  updateBarChart(
+    filteredTransactions: TransactionDomain[],
+  ): Highcharts.Options {
+    return TransactionStatusBarChartUtils.getChart(filteredTransactions);
   }
 }
