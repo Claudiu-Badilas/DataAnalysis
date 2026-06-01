@@ -282,7 +282,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </div>
 
               <div class="card-description" [title]="transaction.description">
-                {{ truncateText(transaction.description || '', 80) }}
+                {{ transaction.description || '' }}
               </div>
 
               <div class="card-footer">
@@ -298,7 +298,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                 </div>
                 <div class="card-service" *ngIf="transaction.serviceProvider">
                   <span class="service-icon">🏢</span>
-                  {{ truncateText(transaction.serviceProvider, 30) }}
+                  {{ transaction.serviceProvider }}
                 </div>
               </div>
             </div>
@@ -330,7 +330,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                     class="description-cell"
                     [title]="transaction.description"
                   >
-                    {{ truncateText(transaction.description || '', 60) }}
+                    {{ transaction.description || '' }}
                   </td>
                   <td
                     class="amount-cell"
@@ -1151,7 +1151,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
 
   // Pagination
   currentPage: number = 1;
-  pageSize: number = 20;
+  pageSize: number = 30;
   totalPages: number = 1;
 
   // Category tracking
@@ -1486,13 +1486,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
         });
       }
     }
-  }
-
-  truncateText(text: string, maxLength: number): string {
-    if (!text) return '';
-    return text.length > maxLength
-      ? text.substring(0, maxLength) + '...'
-      : text;
   }
 
   formatCurrency(value: number): string {
