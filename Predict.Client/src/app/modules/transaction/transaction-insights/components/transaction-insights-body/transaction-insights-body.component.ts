@@ -19,7 +19,12 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
 @Component({
   selector: 'p-transaction-insights-body',
-  imports: [CommonModule, FormsModule, HighchartWrapperComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HighchartWrapperComponent,
+    NumberFormatPipe,
+  ],
   providers: [NumberFormatPipe],
   template: `
     <div class="dashboard-container">
@@ -34,16 +39,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
       <!-- Dashboard Content -->
       <div *ngIf="transactions && transactions.length > 0">
-        <!-- Insights Summary -->
-        <div class="insights-card">
-          <div class="insights-list">
-            <div *ngFor="let insight of insights" class="insight-item">
-              <span class="insight-icon">{{ insight.icon }}</span>
-              <span class="insight-text">{{ insight.text }}</span>
-            </div>
-          </div>
-        </div>
-
         <!-- Key Metrics -->
         <div class="metrics-grid">
           <div class="metric-card">
@@ -65,7 +60,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </svg>
             </div>
             <div class="metric-value">
-              {{ totalIncome | currency: 'RON' : 'symbol' : '1.0-0' }}
+              {{ totalIncome | numberFormat: '0.00' }}
             </div>
             <div class="metric-label">Total Income</div>
           </div>
@@ -88,7 +83,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </svg>
             </div>
             <div class="metric-value">
-              {{ totalExpenses | currency: 'RON' : 'symbol' : '1.0-0' }}
+              {{ totalExpenses | numberFormat: '0.00' }}
             </div>
             <div class="metric-label">Total Expenses</div>
           </div>
@@ -122,7 +117,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </svg>
             </div>
             <div class="metric-value">
-              {{ savings | currency: 'RON' : 'symbol' : '1.0-0' }}
+              {{ savings | numberFormat: '0.00' }}
             </div>
             <div class="metric-label">Net Savings</div>
           </div>
@@ -145,7 +140,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </svg>
             </div>
             <div class="metric-value">
-              {{ dailyAverage | currency: 'RON' : 'symbol' : '1.0-0' }}
+              {{ dailyAverage | numberFormat: '0.00' }}
             </div>
             <div class="metric-label">Daily Average</div>
           </div>
@@ -432,12 +427,9 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
   styles: [
     `
       .dashboard-container {
-        padding: 20px;
+        padding: 10px;
         background: #f5f7fa;
         min-height: 100vh;
-        font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-          sans-serif;
       }
 
       .loading-state {
@@ -1333,7 +1325,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
 
   updateCharts() {
     this.updatePieChart();
-    this.updateInsights();
   }
 
   updatePieChart() {
@@ -1430,62 +1421,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     return Array.from(summary.entries())
       .sort((a, b) => b[1].total - a[1].total)
       .map(([category, data]) => ({ category, ...data }));
-  }
-
-  updateInsights() {
-    this.insights = [];
-
-    const categorySummary = this.getCategorySummary(this.filteredTransactions);
-    const topCategory = categorySummary[0];
-
-    if (topCategory) {
-      const topCategoryLabel = this.getCategoryLabel(topCategory.category);
-      const percentage = (
-        (topCategory.total / this.totalExpenses) *
-        100
-      ).toFixed(1);
-      this.insights.push({
-        icon: '🎯',
-        text: `Your biggest expense is ${topCategoryLabel} (${percentage}% of total spending)`,
-      });
-    }
-
-    if (this.savingsRate > 20) {
-      this.insights.push({
-        icon: '🌟',
-        text: `Great job! You're saving ${this.savingsRate.toFixed(0)}% of your income`,
-      });
-    } else if (this.savingsRate > 10) {
-      this.insights.push({
-        icon: '👍',
-        text: `Good savings rate of ${this.savingsRate.toFixed(0)}%. Try to reach 20%`,
-      });
-    } else if (this.savingsRate > 0) {
-      this.insights.push({
-        icon: '⚠️',
-        text: `Your savings rate is ${this.savingsRate.toFixed(0)}%. Consider reducing expenses`,
-      });
-    } else if (this.savingsRate < 0) {
-      this.insights.push({
-        icon: '🚨',
-        text: `You're spending more than you earn! Review your expenses`,
-      });
-    }
-
-    if (this.dailyAverage > 0) {
-      const monthlyProjection = this.dailyAverage * 30;
-      if (monthlyProjection > this.totalIncome && this.totalIncome > 0) {
-        this.insights.push({
-          icon: '📊',
-          text: `At current pace, you'll spend ~${monthlyProjection.toFixed(0)} RON/month, exceeding your income`,
-        });
-      } else {
-        this.insights.push({
-          icon: '📊',
-          text: `Average daily spending: ${this.dailyAverage.toFixed(0)} RON (approx ${(this.dailyAverage * 30).toFixed(0)} RON/month)`,
-        });
-      }
-    }
   }
 
   formatCurrency(value: number): string {
