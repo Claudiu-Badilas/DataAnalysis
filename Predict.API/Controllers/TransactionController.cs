@@ -44,7 +44,19 @@ public class TransactionController(ITransactionRepo transactionRepo, IAuthServic
     {
         var transactions = cache.GetOrSet(
             "GetTransactions",
-            () => RaiffeisenExcelAccountStatement.getTransactionsFromExcels(1),
+            () => RaiffeisenExcelAccountStatement.transactions(),
+            TimeSpan.FromDays(1)
+        );
+
+        return Ok(transactions);
+    }
+
+    [HttpGet("economii")]
+    public async Task<ActionResult> GetEconomii([FromHeader] string Authorization)
+    {
+        var transactions = cache.GetOrSet(
+            "GetEconomii",
+            () => RaiffeisenExcelAccountStatement.economii(),
             TimeSpan.FromDays(1)
         );
 

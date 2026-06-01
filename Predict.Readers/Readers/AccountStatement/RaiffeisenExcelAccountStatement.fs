@@ -104,8 +104,8 @@ module RaiffeisenExcelAccountStatement =
         |> List.map (fun f -> Path.Combine(path, f) |> WorkBook.Load)
 
     
-    let getTransactionsFromExcels dataOwnerId =
-        let excels = getLocalExcels @$"\AccountStatements\Raiffaisen"
+    let getTransactionsFromExcels dataOwnerId path =
+        let excels = getLocalExcels path
         let parsedTransactions =
             excels
             |> List.map (fun excel -> getTransactions excel dataOwnerId)
@@ -126,3 +126,9 @@ module RaiffeisenExcelAccountStatement =
                     DataOwnerId = dataOwnerId
                 ))
         transactions
+
+    let basePath = @$""
+    let transactionsPath = @$"{basePath}\AccountStatements\Raiffaisen2\Economii"
+
+    let transactions () = getTransactionsFromExcels 1 transactionsPath
+    let economii () = getTransactionsFromExcels 1 @$"{transactionsPath}\Economii"
