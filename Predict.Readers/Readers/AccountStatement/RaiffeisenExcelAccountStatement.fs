@@ -6,6 +6,9 @@ open Predict.Types.TransactionTypes
 open Predict.Types.CommonTypes
 open Predict.Utils
 open Predict.DatabaseAccess
+open Predict.Repository.TransactionRepo.Models
+open Predict.DatabaseAccess.StorerUtils
+open System.IO
 
 module RaiffeisenExcelAccountStatement =
 
@@ -91,3 +94,34 @@ module RaiffeisenExcelAccountStatement =
             |> List.distinctBy (fun t -> t.Identifier)
 
         StoreTransactions.storeTransaction dataOwnerId parsedTransaction
+
+
+    let getLocalExcels path =
+        Directory.EnumerateFiles(path, "*.xlsx")
+        |> Seq.append (Directory.EnumerateFiles(path, "*.xls"))
+        |> Seq.toList
+        |> List.map (fun f -> Path.Combine(path, f) |> WorkBook.Load)
+
+    
+    let getTransactionsFromExcels dataOwnerId =
+        let excels = getLocalExcels @$"\AccountStatements\Raiffaisen"
+        let parsedTransactions =
+            excels
+            |> List.map (fun excel -> getTransactions excel dataOwnerId)
+            |> List.concat
+            |> List.distinctBy (fun t -> t.Identifier)
+
+        let transactions =
+            parsedTransactions
+            |> List.map (fun t ->
+                new TransactionResponse(
+                    RegistrationDate = StorerUtils.getNullableDateTimeFromOption t.RegistrationDate,
+                    CompletionDate = StorerUtils.getNullableDateTimeFromOption t.CompletionDate,
+                    ReferenceId = StorerUtils.getNullableIntFromOption t.ReferenceId,
+                    Amount = StorerUtils.getNullableFloatFromOption t.Amount,
+                    Fee = StorerUtils.getNullableFloatFromOption t.Fee,
+                    Provider = t.Provider.Value.ToString(),
+                    Description = t.Description.Value,
+                    DataOwnerId = dataOwnerId
+                ))
+        transactions

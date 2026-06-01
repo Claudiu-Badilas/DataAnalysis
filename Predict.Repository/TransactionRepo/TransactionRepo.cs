@@ -58,7 +58,7 @@ public class TransactionRepo : ITransactionRepo {
         using (var connection = new NpgsqlConnection(_npsqlConnectionString)) {
             connection.Open();
             var sql = @"
-                    SELECT 
+                    SELECT distinct on (t.identifier)
                         t.id as Id, 
                         t.registration_date as RegistrationDate, 
                         t.completion_date as CompletionDate, 

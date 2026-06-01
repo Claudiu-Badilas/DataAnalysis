@@ -16,6 +16,7 @@ import {
 import * as Highcharts from 'highcharts';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
+import { TransactionStatusBarChartUtils } from '../../../transaction-overview/utils/transaction-status-bar.chart.utils';
 
 @Component({
   selector: 'p-transaction-insights-body',
@@ -1182,10 +1183,12 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   }
 
   private initializeCategoryList() {
-    this.categoryList = Object.values(TransactionCategory).map((cat) => ({
-      value: cat,
-      label: TransactionCategorizer.getCategoryLabel(cat),
-    }));
+    this.categoryList = Object.values(TransactionCategory)
+      .map((cat) => ({
+        value: cat,
+        label: TransactionCategorizer.getCategoryLabel(cat),
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   private processTransactions() {
@@ -1324,107 +1327,9 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   }
 
   updateCharts() {
-    this.updatePieChart();
-  }
-
-  updatePieChart() {
-    const categorySummary = this.getCategorySummary(this.filteredTransactions);
-    const self = this;
-
-    const pieData = categorySummary.map((item) => ({
-      name: this.getCategoryLabel(item.category),
-      y: item.total,
-      color: this.getCategoryColor(item.category),
-    }));
-
-    this.pieChartOptions = {
-      chart: {
-        type: 'pie',
-        backgroundColor: 'transparent',
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-      },
-      legend: { enabled: false },
-      title: {
-        text: undefined,
-      },
-      tooltip: {
-        formatter: function (this: any) {
-          const percentage = this.percentage?.toFixed(1) || '0';
-          const amount = this.y || 0;
-          const formattedAmount = self.formatCurrency(amount);
-          return `${this.point.name}: <b>${percentage}%</b><br/>Amount: <b>${formattedAmount}</b>`;
-        },
-      },
-      accessibility: {
-        point: {
-          valueSuffix: '%',
-        },
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f}%',
-            style: {
-              fontSize: '12px',
-              fontWeight: 'normal',
-            },
-          },
-          showInLegend: true,
-          size: '70%',
-        },
-      },
-      series: [
-        {
-          name: 'Spending',
-          type: 'pie',
-          data: pieData,
-        },
-      ],
-      credits: {
-        enabled: false,
-      },
-    };
-  }
-
-  getCategorySummary(transactions: TransactionDomain[]) {
-    const summary = new Map<
-      TransactionCategory,
-      { count: number; total: number; percentage: number }
-    >();
-    const totalSpend = transactions
-      .filter((t) => t.amount && t.amount < 0)
-      .reduce((sum, t) => sum + Math.abs(t.amount!), 0);
-
-    transactions.forEach((t) => {
-      if (t.amount && t.amount < 0) {
-        const category = t.category;
-        const amount = Math.abs(t.amount);
-
-        if (!summary.has(category)) {
-          summary.set(category, { count: 0, total: 0, percentage: 0 });
-        }
-
-        const current = summary.get(category)!;
-        current.count++;
-        current.total += amount;
-        current.percentage =
-          totalSpend > 0 ? (current.total / totalSpend) * 100 : 0;
-        summary.set(category, current);
-      }
-    });
-
-    return Array.from(summary.entries())
-      .sort((a, b) => b[1].total - a[1].total)
-      .map(([category, data]) => ({ category, ...data }));
-  }
-
-  formatCurrency(value: number): string {
-    return this.numberFormatPipe.transform(value, 'RON');
+    this.pieChartOptions = TransactionStatusBarChartUtils.getChart(
+      this.filteredTransactions,
+    );
   }
 
   getCategoryColor(category: TransactionCategory): string {

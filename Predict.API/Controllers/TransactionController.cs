@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Predict.Reader.MortgageLoan.BCR;
+using Predict.Readers.AccountStatement;
 using Predict.Repository.TransactionRepo;
 using Predict.Service.AuthorizationService;
 using Predict.Service.CacheServicel;
@@ -34,6 +35,18 @@ public class TransactionController(ITransactionRepo transactionRepo, IAuthServic
     )
     {
         var transactions = await cache.GetOrSetAsync("GetAllTransactions", transactionRepo.GetAllTransactions, TimeSpan.FromMinutes(15));
+
+        return Ok(transactions);
+    }
+
+    [HttpGet("transactions")]
+    public async Task<ActionResult> GetTransactions([FromHeader] string Authorization)
+    {
+        var transactions = cache.GetOrSet(
+            "GetTransactions",
+            () => RaiffeisenExcelAccountStatement.getTransactionsFromExcels(1),
+            TimeSpan.FromDays(1)
+        );
 
         return Ok(transactions);
     }
