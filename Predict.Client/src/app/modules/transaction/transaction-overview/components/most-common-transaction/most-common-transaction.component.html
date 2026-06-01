@@ -111,9 +111,6 @@
               (click)="toggleMonth(period.year, period.monthIndex)"
             >
               <div class="period-info">
-                <span class="expand-indicator">{{
-                  period.isExpanded ? "▼" : "▶"
-                }}</span>
                 <div>
                   <div class="period-title">
                     {{ period.month }} {{ period.year }}
@@ -396,9 +393,6 @@
           <div class="period-card" [class.expanded]="period.isExpanded">
             <div class="period-header" (click)="toggleYear(period.year)">
               <div class="period-info">
-                <span class="expand-indicator">{{
-                  period.isExpanded ? "▼" : "▶"
-                }}</span>
                 <div>
                   <div class="period-title">
                     {{ period.year }}
