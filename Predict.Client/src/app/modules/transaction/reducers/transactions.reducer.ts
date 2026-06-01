@@ -21,7 +21,7 @@ export interface State {
 
 const initialState: State = {
   transactions: [],
-  startDate: DateUtils.getStartOfTheYear({ subtractYears: 10 }),
+  startDate: new Date('17-12-2017),
   endDate: new Date(),
   selectedProvider: 'RAIFFEISEN',
   selectedServiceProvider: 'No Selection',
