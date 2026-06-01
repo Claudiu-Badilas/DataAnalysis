@@ -29,7 +29,7 @@ export class TransactionService {
     const source$ = cachedDtos
       ? of(cachedDtos)
       : this.httpClient
-          .get<TransactionResponse[]>('/server/api/v1/all-transactions')
+          .get<TransactionResponse[]>('/server/api/v1/transactions')
           .pipe(
             tap((dtos) =>
               this.localStorage.setItem(TransactionService_STORAGE_KEY, dtos),

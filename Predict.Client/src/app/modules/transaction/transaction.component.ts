@@ -66,7 +66,7 @@ export class TransactionComponent {
     return ['No Selection', ...new Set(t.map((x) => x.serviceProvider))];
   });
 
-  minDate = new Date('2018-01-01');
+  minDate = new Date('2016-01-01');
   maxDate = new Date('2030-01-01');
 
   constructor(private readonly store: Store<fromTransactions.State>) {

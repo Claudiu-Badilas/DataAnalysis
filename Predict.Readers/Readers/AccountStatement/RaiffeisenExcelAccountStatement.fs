@@ -45,7 +45,8 @@ module RaiffeisenExcelAccountStatement =
 
 
     let getTransactions (excel: WorkBook) userId : ParsedTransaction list =
-        ExcelUtils.getExcelValues excel
+        let values = ExcelUtils.getExcelValues excel
+        values
         |> Seq.toList
         |> List.indexed
         |> List.choose (fun (i, row) ->
@@ -83,7 +84,7 @@ module RaiffeisenExcelAccountStatement =
         |> List.groupBy (fun t -> t.RegistrationDate, t.Amount)
         |> List.map (fun (_, t) -> ParserUtils.mapTransactions t userId)
         |> List.concat
-        |> List.distinctBy (fun t -> t.Identifier)
+        //|> List.distinctBy (fun t -> t.Identifier)
 
 
     let readExcels dataOwnerId (excels: WorkBook list) =
@@ -109,7 +110,7 @@ module RaiffeisenExcelAccountStatement =
             excels
             |> List.map (fun excel -> getTransactions excel dataOwnerId)
             |> List.concat
-            |> List.distinctBy (fun t -> t.Identifier)
+            //|> List.distinctBy (fun t -> t.Identifier)
 
         let transactions =
             parsedTransactions
