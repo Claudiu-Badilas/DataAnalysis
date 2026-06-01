@@ -126,13 +126,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                   </option>
                 </select>
               </div>
-              <button
-                (click)="saveCategoryChanges()"
-                class="save-btn"
-                [disabled]="!hasChanges"
-              >
-                💾 Save Changes
-              </button>
             </div>
           </div>
 
@@ -144,7 +137,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                   <th>Description</th>
                   <th>Amount</th>
                   <th>Category</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -189,15 +181,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                         {{ cat.label }}
                       </option>
                     </select>
-                  </td>
-                  <td class="actions-cell">
-                    <button
-                      (click)="updateTransactionCategory(transaction)"
-                      class="update-btn"
-                      [disabled]="!isCategoryChanged(transaction)"
-                    >
-                      Update
-                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -788,40 +771,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     this.categoryChanges.set(transaction.id!, newCategory);
   }
 
-  isCategoryChanged(transaction: TransactionDomain): boolean {
-    return this.categoryChanges.has(transaction.id!);
-  }
-
-  updateTransactionCategory(transaction: TransactionDomain) {
-    const newCategory = this.categoryChanges.get(transaction.id!);
-    if (newCategory && this.onCategoryUpdate) {
-      this.onCategoryUpdate(transaction, newCategory);
-      this.categoryChanges.delete(transaction.id!);
-
-      // Update local transaction category
-      transaction.category = newCategory;
-      transaction.categoryLabel = this.getCategoryLabel(newCategory);
-
-      // Refresh charts and metrics
-      this.calculateMetrics();
-      this.updateCharts();
-    }
-  }
-
-  saveCategoryChanges() {
-    for (const [transactionId, newCategory] of this.categoryChanges) {
-      const transaction = this.transactions.find((t) => t.id === transactionId);
-      if (transaction && this.onCategoryUpdate) {
-        this.onCategoryUpdate(transaction, newCategory);
-        transaction.category = newCategory;
-        transaction.categoryLabel = this.getCategoryLabel(newCategory);
-      }
-    }
-    this.categoryChanges.clear();
-    this.calculateMetrics();
-    this.updateCharts();
-  }
-
   get hasChanges(): boolean {
     return this.categoryChanges.size > 0;
   }
@@ -862,7 +811,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
 
   updateCharts() {
     this.updatePieChart();
-    this.updateTopMerchants();
     this.updateInsights();
   }
 
@@ -960,31 +908,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     return Array.from(summary.entries())
       .sort((a, b) => b[1].total - a[1].total)
       .map(([category, data]) => ({ category, ...data }));
-  }
-
-  updateTopMerchants() {
-    const merchantMap = new Map<string, { count: number; total: number }>();
-
-    this.filteredTransactions.forEach((t) => {
-      if (t.amount && t.amount < 0 && t.serviceProvider) {
-        const merchant = t.serviceProvider;
-        const amount = Math.abs(t.amount);
-
-        if (!merchantMap.has(merchant)) {
-          merchantMap.set(merchant, { count: 0, total: 0 });
-        }
-
-        const current = merchantMap.get(merchant)!;
-        current.count++;
-        current.total += amount;
-        merchantMap.set(merchant, current);
-      }
-    });
-
-    this.topMerchants = Array.from(merchantMap.entries())
-      .sort((a, b) => b[1].total - a[1].total)
-      .slice(0, 10)
-      .map(([merchant, data]) => ({ merchant, ...data }));
   }
 
   updateInsights() {
