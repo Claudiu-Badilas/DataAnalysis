@@ -1007,8 +1007,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   // Chart options
   pieChartOptions: Highcharts.Options = {};
 
-  // Data
-  topMerchants: any[] = [];
+  // Insights
   insights: any[] = [];
 
   // Category list for dropdown
@@ -1038,7 +1037,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   private processTransactions() {
     if (this.transactions && this.transactions.length > 0) {
       this.filteredTransactions = [...this.transactions];
-      // this.applyFilters();
       this.calculateMetrics();
       this.updateCharts();
       this.updatePagination();
@@ -1276,14 +1274,6 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
       this.insights.push({
         icon: '🚨',
         text: `You're spending more than you earn! Review your expenses`,
-      });
-    }
-
-    const topMerchant = this.topMerchants[0];
-    if (topMerchant) {
-      this.insights.push({
-        icon: '🏪',
-        text: `Most spent at: ${topMerchant.merchant} (${topMerchant.total.toFixed(0)} RON over ${topMerchant.count} transactions)`,
       });
     }
 
