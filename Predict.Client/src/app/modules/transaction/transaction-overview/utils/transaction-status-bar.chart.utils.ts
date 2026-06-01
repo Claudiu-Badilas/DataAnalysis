@@ -28,13 +28,7 @@ export namespace TransactionStatusBarChartUtils {
         plotBorderWidth: null,
         plotShadow: false,
       },
-      title: {
-        text: 'Transaction Distribution by Category',
-        style: {
-          fontSize: '14px',
-          fontWeight: 'bold',
-        },
-      },
+      title: { text: null },
       tooltip: {
         formatter: function (this: any) {
           const percentage = this.point.percentage?.toFixed(1) || '0';
