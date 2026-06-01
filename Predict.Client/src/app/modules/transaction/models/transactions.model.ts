@@ -197,6 +197,9 @@ class TransactionCategorizer {
         'CARN',
         'MACELARIE',
         'LA DOI PASI',
+        'SF. ANDREI',
+        'TINERVIS GROUP BUCURESTI',
+        'DAROXTEO SRL Galati',
       ],
       category: TransactionCategory.SUPERMARKET,
       excludeKeywords: ['CINEMA', 'RESTAURANT', 'PIZZA', 'BURGER'],
@@ -220,6 +223,7 @@ class TransactionCategorizer {
     {
       keywords: [
         'ENGIE',
+        'Pago',
         'Pago*Engie',
         'Pago*Electrica',
         'Pago*Digi',
@@ -278,6 +282,9 @@ class TransactionCategorizer {
         'IONUT RESTAURANTE',
         'GELATO',
         'ICE CREAM',
+        'FOOD',
+        'MCD',
+        'ionut restaurante',
       ],
       category: TransactionCategory.RESTAURANT_FASTFOOD,
     },
@@ -298,6 +305,7 @@ class TransactionCategorizer {
         'LAVORATOR',
         'FIVE TO GO',
         'To Go',
+        'COFETARIA',
       ],
       category: TransactionCategory.CAFE_BAKERY,
     },
@@ -314,6 +322,9 @@ class TransactionCategorizer {
         'tazz.ro',
         'glovo',
         'wolt',
+        'union',
+        'FREDDYCAMPUS',
+        'FABRICA DE DISTRACTII GALATI',
       ],
       category: TransactionCategory.DELIVERY,
     },
@@ -342,6 +353,7 @@ class TransactionCategorizer {
     {
       keywords: [
         'medlife',
+        'MED LIFE',
         'CONSULT',
         'medical',
         'dental',
@@ -356,6 +368,7 @@ class TransactionCategorizer {
         'PADMD',
         'ortopedie',
         'neurologie',
+        'HIPERDIA',
       ],
       category: TransactionCategory.HEALTHCARE,
     },
@@ -398,7 +411,6 @@ class TransactionCategorizer {
     // ============ ELECTRONICS ============
     {
       keywords: [
-        'EMAG',
         'ALTEX',
         'FLANCO',
         'MEDIA GALAXY',
@@ -443,6 +455,7 @@ class TransactionCategorizer {
         'CAMPING',
         'FITNESS',
         'EQUIPAMENT SPORTIV',
+        'Trendyol',
       ],
       category: TransactionCategory.SPORTS_OUTDOOR,
     },
@@ -450,6 +463,7 @@ class TransactionCategorizer {
     // ============ SHOPPING (general) ============
     {
       keywords: [
+        'EMAG',
         'SHOPPING',
         'MAGAZIN',
         'STORE',
@@ -461,6 +475,7 @@ class TransactionCategorizer {
         'Galati Shopping City',
         'MFM SHOPPING',
         'SHOPPING CITY',
+        'PEPCO',
       ],
       category: TransactionCategory.SHOPPING,
       excludeKeywords: ['CINEMA', 'RESTAURANT', 'PIZZA', 'GROCERY', 'MARKET'],
@@ -538,6 +553,8 @@ class TransactionCategorizer {
         'bilet tren',
         'bilet autobuz',
         'STB SA',
+        'PAYPOINT SERVICES SRL BUCURESTI',
+        'PTP ONLINE BUCURESTI',
       ],
       category: TransactionCategory.TRANSPORT,
     },
@@ -627,6 +644,10 @@ class TransactionCategorizer {
         'ATM MAGNUS',
         'ATM1018',
         'NCR06224',
+        'CEC BANK GALATI',
+        'BRD GALATI',
+        'BANCOMAT GALATI',
+        'ATM GALATI',
       ],
       category: TransactionCategory.ATM_WITHDRAWAL,
     },
@@ -735,6 +756,7 @@ class TransactionCategorizer {
         'virare chirii',
         'virare',
         'depunere economii',
+        'Revolut',
       ],
       category: TransactionCategory.INTERNAL_TRANSFER,
     },

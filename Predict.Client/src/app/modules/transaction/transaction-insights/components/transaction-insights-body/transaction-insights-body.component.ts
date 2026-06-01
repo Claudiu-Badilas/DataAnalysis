@@ -82,11 +82,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
             <div class="metric-value">{{ transactionsCount }}</div>
             <div class="metric-label">Transactions</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-icon">🎯</div>
-            <div class="metric-value">{{ savingsRate | number: '1.0-0' }}%</div>
-            <div class="metric-label">Savings Rate</div>
-          </div>
         </div>
 
         <!-- Spending by Category Chart -->
@@ -103,36 +98,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
               </div>
             </ng-container>
           </p-highcharts-wrapper>
-        </div>
-
-        <!-- Top Merchants -->
-        <div class="merchants-card">
-          <h3>🏪 Top 10 Merchants by Spend</h3>
-          <div class="merchants-list">
-            <div
-              *ngFor="let merchant of topMerchants; let i = index"
-              class="merchant-item"
-            >
-              <div class="merchant-rank">{{ i + 1 }}</div>
-              <div class="merchant-name">{{ merchant.merchant }}</div>
-              <div class="merchant-stats">
-                <span class="merchant-count"
-                  >{{ merchant.count }} transactions</span
-                >
-                <span class="merchant-total">{{
-                  merchant.total | currency: 'RON' : 'symbol' : '1.0-0'
-                }}</span>
-              </div>
-              <div class="merchant-bar">
-                <div
-                  class="merchant-bar-fill"
-                  [style.width.%]="
-                    (merchant.total / topMerchants[0].total) * 100
-                  "
-                ></div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Transactions Table with Category Selection -->
@@ -919,6 +884,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
         plotBorderWidth: null,
         plotShadow: false,
       },
+      legend: { enabled: false },
       title: {
         text: undefined,
       },
@@ -927,7 +893,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
           const percentage = this.percentage?.toFixed(1) || '0';
           const amount = this.y || 0;
           const formattedAmount = self.formatCurrency(amount);
-          return `${this.series.name}: <b>${percentage}%</b><br/>Amount: <b>${formattedAmount}</b>`;
+          return `${this.point.name}: <b>${percentage}%</b><br/>Amount: <b>${formattedAmount}</b>`;
         },
       },
       accessibility: {
