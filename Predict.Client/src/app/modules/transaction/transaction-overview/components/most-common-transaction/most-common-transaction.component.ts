@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, signal } from '@angular/core';
-import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
+import { Component, computed, input, signal } from '@angular/core';
+import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
+import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import {
   TransactionCategorizer,
   TransactionCategory,
   TransactionDomain,
 } from '../../../models/transactions.model';
-import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { TransactionStatusBarChartUtils } from '../../utils/transaction-status-bar.chart.utils';
 
 interface GroupedTransaction {
@@ -29,7 +29,6 @@ interface GroupedTransaction {
     ToggleButtonComponent,
     HighchartWrapperComponent,
   ],
-  providers: [NumberFormatPipe],
   templateUrl: './most-common-transaction.component.html',
   styleUrl: './most-common-transaction.component.scss',
 })
@@ -39,7 +38,6 @@ export class MostCommonTransactionComponent {
   viewMode = signal<'monthly' | 'yearly'>('monthly');
   private expandedMonth = signal<string | null>(null);
   private expandedYear = signal<number | null>(null);
-  private numberFormatPipe = inject(NumberFormatPipe);
 
   onToggle(value: string) {
     this.viewMode.set(value === 'Monthly' ? 'monthly' : 'yearly');
@@ -258,17 +256,14 @@ export class MostCommonTransactionComponent {
     );
   }
 
-  getCategoryColor(category: TransactionCategory): string {
-    return TransactionCategorizer.getCategoryColor(category) || '#9E9E9E';
-  }
+  getCategoryColor = (category: TransactionCategory): string =>
+    TransactionCategorizer.getCategoryColor(category);
 
-  getCategoryLabel(category: TransactionCategory): string {
-    return TransactionCategorizer.getCategoryLabel(category) || 'Other';
-  }
+  getCategoryLabel = (category: TransactionCategory): string =>
+    TransactionCategorizer.getCategoryLabel(category);
 
-  updateBarChart(
+  updateBarChart = (
     filteredTransactions: TransactionDomain[],
-  ): Highcharts.Options {
-    return TransactionStatusBarChartUtils.getChart(filteredTransactions);
-  }
+  ): Highcharts.Options =>
+    TransactionStatusBarChartUtils.getChart(filteredTransactions);
 }
