@@ -47,14 +47,46 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         <!-- Key Metrics -->
         <div class="metrics-grid">
           <div class="metric-card">
-            <div class="metric-icon">💰</div>
+            <div class="metric-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2V4M12 20V22M4 12H2M6.31412 6.31412L4.8999 4.8999M17.6859 6.31412L19.1001 4.8999M6.31412 17.69L4.8999 19.1042M17.6859 17.69L19.1001 19.1042M22 12H20M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
             <div class="metric-value">
               {{ totalIncome | currency: 'RON' : 'symbol' : '1.0-0' }}
             </div>
             <div class="metric-label">Total Income</div>
           </div>
           <div class="metric-card">
-            <div class="metric-icon">💸</div>
+            <div class="metric-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 10H21M7 15H11M7 18H11M7 6H21M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
             <div class="metric-value">
               {{ totalExpenses | currency: 'RON' : 'symbol' : '1.0-0' }}
             </div>
@@ -65,21 +97,76 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
             [class.positive]="savings >= 0"
             [class.negative]="savings < 0"
           >
-            <div class="metric-icon">{{ savings >= 0 ? '📈' : '📉' }}</div>
+            <div class="metric-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 6V4M12 6C10.8954 6 10 6.89543 10 8C10 9.10457 10.8954 10 12 10M12 6C13.1046 6 14 6.89543 14 8M12 10V8M12 10C13.1046 10 14 9.10457 14 8M12 10V12M12 18V20M12 18C10.8954 18 10 18.8954 10 20H14C14 18.8954 13.1046 18 12 18ZM12 18V16M12 8V4M12 8V6M12 20V16"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 2V4M12 20V22M4 12H2M6.31412 6.31412L4.8999 4.8999M17.6859 6.31412L19.1001 4.8999M6.31412 17.69L4.8999 19.1042M17.6859 17.69L19.1001 19.1042M22 12H20"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
             <div class="metric-value">
               {{ savings | currency: 'RON' : 'symbol' : '1.0-0' }}
             </div>
             <div class="metric-label">Net Savings</div>
           </div>
           <div class="metric-card">
-            <div class="metric-icon">📊</div>
+            <div class="metric-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 8V12L15 15M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
             <div class="metric-value">
               {{ dailyAverage | currency: 'RON' : 'symbol' : '1.0-0' }}
             </div>
             <div class="metric-label">Daily Average</div>
           </div>
           <div class="metric-card">
-            <div class="metric-icon">🏦</div>
+            <div class="metric-icon">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M12 12H15M12 16H15M9 12H9.01M9 16H9.01"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
             <div class="metric-value">{{ transactionsCount }}</div>
             <div class="metric-label">Transactions</div>
           </div>
@@ -150,6 +237,48 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                       | currency: 'RON' : 'symbol' : '1.2-2'
                   }}
                 </div>
+                <div class="card-actions">
+                  <button
+                    class="action-btn filter-btn"
+                    (click)="onTransactionCategoryChange(transaction.category)"
+                    title="Filter by this category"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3 4H21M6 9H18M10 14H14M12 19H12.01"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg></button
+                  ><button
+                    class="action-btn apply-btn"
+                    (click)="onTransactionCategoryChange(null)"
+                    title="Apply category change"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5 13L9 17L19 7"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <div class="card-description" [title]="transaction.description">
@@ -158,21 +287,14 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
               <div class="card-footer">
                 <div class="card-category">
-                  <select
-                    [(ngModel)]="transaction.category"
-                    (change)="onCategoryChange(transaction, $event)"
+                  <div
                     class="category-edit-select-mobile"
                     [style.backgroundColor]="
                       getCategoryColor(transaction.category)
                     "
                   >
-                    <option
-                      *ngFor="let cat of categoryList"
-                      [value]="cat.value"
-                    >
-                      {{ cat.label }}
-                    </option>
-                  </select>
+                    {{ transaction.category }}
+                  </div>
                 </div>
                 <div class="card-service" *ngIf="transaction.serviceProvider">
                   <span class="service-icon">🏢</span>
@@ -191,6 +313,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                   <th>Description</th>
                   <th>Amount</th>
                   <th>Category</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -220,21 +343,59 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
                     }}
                   </td>
                   <td class="category-cell">
-                    <select
-                      [(ngModel)]="transaction.category"
-                      (change)="onCategoryChange(transaction, $event)"
+                    <div
                       class="category-edit-select"
                       [style.backgroundColor]="
                         getCategoryColor(transaction.category)
                       "
                     >
-                      <option
-                        *ngFor="let cat of categoryList"
-                        [value]="cat.value"
+                      {{ transaction.category }}
+                    </div>
+                  </td>
+                  <td class="actions-cell">
+                    <button
+                      class="action-btn-table filter-btn"
+                      (click)="
+                        onTransactionCategoryChange(transaction.category)
+                      "
+                      title="Filter by category"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        {{ cat.label }}
-                      </option>
-                    </select>
+                        <path
+                          d="M3 4H21M6 9H18M10 14H14M12 19H12.01"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="action-btn-table apply-btn"
+                      (click)="onTransactionCategoryChange(null)"
+                      title="Apply changes"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 6L18 18M18 6L6 18"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -325,8 +486,8 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       }
 
       .metric-icon {
-        font-size: 32px;
         margin-bottom: 12px;
+        color: #6c5ce7;
       }
 
       .metric-value {
@@ -502,8 +663,9 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       }
 
       .category-edit-select {
+        width: 100%;
         padding: 6px 10px;
-        border: 1px solid #ddd;
+        border: none;
         border-radius: 6px;
         font-size: 12px;
         cursor: pointer;
@@ -514,33 +676,56 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
       .category-edit-select:focus {
         outline: none;
-        border-color: #6c5ce7;
         box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
       }
 
       .actions-cell {
         white-space: nowrap;
+        display: flex;
+        gap: 8px;
       }
 
-      .update-btn {
-        padding: 4px 12px;
-        background: #6c5ce7;
-        color: white;
+      .action-btn-table {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
         font-size: 12px;
+        font-weight: 500;
         transition: all 0.2s;
       }
 
-      .update-btn:hover:not(:disabled) {
-        background: #5b4bc4;
+      .action-btn-table svg {
+        stroke: currentColor;
+      }
+
+      .action-btn-table.apply-btn {
+        background: #00b894;
+        color: white;
+      }
+
+      .action-btn-table.apply-btn:hover:not(:disabled) {
+        background: #019874;
         transform: translateY(-1px);
       }
 
-      .update-btn:disabled {
+      .action-btn-table.apply-btn:disabled {
         background: #bdbdbd;
         cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .action-btn-table.filter-btn {
+        background: #6c5ce7;
+        color: white;
+      }
+
+      .action-btn-table.filter-btn:hover {
+        background: #5b4bc4;
+        transform: translateY(-1px);
       }
 
       .pagination {
@@ -578,63 +763,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         font-size: 14px;
       }
 
-      .merchants-list {
-        max-height: 400px;
-        overflow-y: auto;
-      }
-
-      .merchant-item {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
-        position: relative;
-      }
-
-      .merchant-rank {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: bold;
-        color: #6c5ce7;
-        font-size: 14px;
-      }
-
-      .merchant-name {
-        margin-left: 40px;
-        font-weight: 500;
-        margin-bottom: 4px;
-      }
-
-      .merchant-stats {
-        margin-left: 40px;
-        font-size: 12px;
-        color: #666;
-      }
-
-      .merchant-count {
-        margin-right: 12px;
-      }
-
-      .merchant-total {
-        font-weight: 500;
-        color: #2d3436;
-      }
-
-      .merchant-bar {
-        margin-top: 8px;
-        margin-left: 40px;
-        height: 4px;
-        background: #eee;
-        border-radius: 2px;
-        overflow: hidden;
-      }
-
-      .merchant-bar-fill {
-        height: 100%;
-        background: #6c5ce7;
-        transition: width 0.3s;
-      }
-
       .insights-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -666,7 +794,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         line-height: 1.4;
       }
 
-      /* Mobile Card View - Hidden on desktop, visible on mobile */
+      /* Mobile Card View */
       .mobile-cards {
         display: none;
       }
@@ -689,9 +817,9 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        margin-bottom: 12px;
+        margin-bottom: 5px;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 5px;
       }
 
       .card-date {
@@ -727,6 +855,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         align-items: center;
         gap: 12px;
         flex-wrap: wrap;
+        margin-bottom: 12px;
       }
 
       .card-category {
@@ -737,19 +866,17 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       .category-edit-select-mobile {
         width: 100%;
         padding: 8px 12px;
-        border: 1px solid #ddd;
+        border: none;
         border-radius: 8px;
         font-size: 13px;
         cursor: pointer;
         color: white;
         font-weight: 500;
         transition: all 0.2s;
-        background-size: 20px;
       }
 
       .category-edit-select-mobile:focus {
         outline: none;
-        border-color: #6c5ce7;
         box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
       }
 
@@ -766,6 +893,53 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
       .service-icon {
         font-size: 12px;
+      }
+
+      .card-actions {
+        display: flex;
+      }
+
+      .action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .action-btn svg {
+        stroke: currentColor;
+      }
+
+      .action-btn.apply-btn {
+        background: #00b894;
+        color: white;
+      }
+
+      .action-btn.apply-btn:hover:not(:disabled) {
+        background: #019874;
+      }
+
+      .action-btn.apply-btn:disabled {
+        background: #bdbdbd;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .action-btn.filter-btn {
+        background: #6c5ce7;
+        color: white;
+      }
+
+      .action-btn.filter-btn:hover {
+        background: #5b4bc4;
       }
 
       /* Responsive Design */
@@ -787,8 +961,9 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           font-size: 22px;
         }
 
-        .metric-icon {
-          font-size: 28px;
+        .metric-icon svg {
+          width: 28px;
+          height: 28px;
         }
 
         .table-header {
@@ -866,7 +1041,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         }
       }
 
-      /* Tablet view - optional hybrid layout */
+      /* Tablet view */
       @media (min-width: 769px) and (max-width: 1024px) {
         .mobile-cards {
           display: none;
@@ -929,6 +1104,16 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
           padding: 6px 10px;
         }
 
+        .action-btn {
+          padding: 8px;
+          font-size: 13px;
+        }
+
+        .action-btn svg {
+          width: 16px;
+          height: 16px;
+        }
+
         .page-btn {
           padding: 8px 16px;
           font-size: 13px;
@@ -939,13 +1124,14 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         }
       }
 
-      /* Add touch-friendly improvements */
+      /* Touch-friendly improvements */
       @media (hover: none) and (pointer: coarse) {
         .page-btn,
         .category-edit-select-mobile,
         .search-input,
-        .category-select {
-          min-height: 44px; /* Better touch target size */
+        .category-select,
+        .action-btn {
+          min-height: 44px;
         }
 
         .transaction-card {
@@ -995,6 +1181,7 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
 
   // Category tracking
   categoryChanges: Map<number, TransactionCategory> = new Map();
+  originalCategories: Map<number, TransactionCategory> = new Map();
 
   // Metrics
   totalIncome = 0;
@@ -1037,9 +1224,42 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
   private processTransactions() {
     if (this.transactions && this.transactions.length > 0) {
       this.filteredTransactions = [...this.transactions];
+      this.storeOriginalCategories();
       this.calculateMetrics();
       this.updateCharts();
       this.updatePagination();
+    }
+  }
+
+  private storeOriginalCategories() {
+    this.originalCategories.clear();
+    this.transactions.forEach((transaction) => {
+      if (transaction.id) {
+        this.originalCategories.set(transaction.id, transaction.category);
+      }
+    });
+  }
+
+  hasCategoryChange(transaction: TransactionDomain): boolean {
+    const newCategory = this.categoryChanges.get(transaction.id!);
+    const originalCategory = this.originalCategories.get(transaction.id!);
+    return newCategory !== undefined && newCategory !== originalCategory;
+  }
+
+  applyCategoryChange(transaction: TransactionDomain) {
+    const newCategory = this.categoryChanges.get(transaction.id!);
+    if (newCategory && this.onCategoryUpdate) {
+      this.onCategoryUpdate(transaction, newCategory);
+      // Update original category after successful update
+      this.originalCategories.set(transaction.id!, newCategory);
+      this.categoryChanges.delete(transaction.id!);
+
+      // Update the transaction category in the local array
+      transaction.category = newCategory;
+
+      // Refresh metrics and charts
+      this.calculateMetrics();
+      this.updateCharts();
     }
   }
 
@@ -1093,9 +1313,9 @@ export class TransactionInsightsBodyComponent implements OnInit, OnChanges {
     }
   }
 
-  onCategoryChange(transaction: TransactionDomain, event: any) {
-    const newCategory = event.target.value as TransactionCategory;
-    this.categoryChanges.set(transaction.id!, newCategory);
+  onTransactionCategoryChange(category: TransactionCategory) {
+    this.selectedCategoryFilter = category;
+    this.filterTransactions();
   }
 
   get hasChanges(): boolean {
