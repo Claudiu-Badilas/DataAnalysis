@@ -467,8 +467,8 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       .metrics-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 5px;
+        margin-bottom: 10px;
       }
 
       .metric-card {
@@ -478,11 +478,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         text-align: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s;
-      }
-
-      .metric-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
       }
 
       .metric-icon {
@@ -510,7 +505,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
       }
 
       .chart-card {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
@@ -525,14 +520,14 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         background: white;
         border-radius: 12px;
         padding: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
       .merchants-card h3,
       .transactions-table-card h3,
       .insights-card h3 {
-        margin: 0 0 20px 0;
+        margin: 0 0 10px 0;
         color: #2d3436;
       }
 
@@ -540,7 +535,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         flex-wrap: wrap;
         gap: 16px;
       }
@@ -590,11 +585,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         cursor: pointer;
         font-size: 14px;
         transition: all 0.2s;
-      }
-
-      .save-btn:hover:not(:disabled) {
-        background: #019874;
-        transform: translateY(-2px);
       }
 
       .save-btn:disabled {
@@ -707,11 +697,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         color: white;
       }
 
-      .action-btn-table.apply-btn:hover:not(:disabled) {
-        background: #019874;
-        transform: translateY(-1px);
-      }
-
       .action-btn-table.apply-btn:disabled {
         background: #bdbdbd;
         cursor: not-allowed;
@@ -723,17 +708,12 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         color: white;
       }
 
-      .action-btn-table.filter-btn:hover {
-        background: #5b4bc4;
-        transform: translateY(-1px);
-      }
-
       .pagination {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 16px;
-        margin-top: 20px;
+        margin-top: 10px;
         padding-top: 16px;
         border-top: 1px solid #eee;
       }
@@ -746,11 +726,6 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s;
-      }
-
-      .page-btn:hover:not(:disabled) {
-        background: #5b4bc4;
-        transform: translateY(-1px);
       }
 
       .page-btn:disabled {
@@ -950,7 +925,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
         .metrics-grid {
           grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
+          gap: 5px;
         }
 
         .metric-card {
@@ -1033,7 +1008,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         }
 
         .chart-card {
-          margin-bottom: 20px;
+          margin-bottom: 10px;
         }
 
         .chart-wrapper {
@@ -1079,8 +1054,8 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
         }
 
         .metrics-grid {
-          grid-template-columns: 1fr;
-          gap: 10px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 5px;
         }
 
         .transaction-card {
