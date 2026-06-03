@@ -839,7 +839,7 @@ export class TransactionCategorizer {
       [TransactionCategory.INTERNAL_TRANSFER]: 'Internal Transfer',
       [TransactionCategory.REFUNDS]: 'Refunds',
       [TransactionCategory.BANK_FEES]: 'Bank Fees',
-      [TransactionCategory.ATM_WITHDRAWAL]: 'ATM Withdrawal',
+      [TransactionCategory.ATM_WITHDRAWAL]: 'ATM',
       [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel & Accommodation',
       [TransactionCategory.EDUCATION]: 'Education',
       [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
