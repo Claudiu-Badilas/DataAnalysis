@@ -207,49 +207,8 @@
                           </td>
                         </tr>
                       }
-                      @for (item of period.single; track item.provider) {
-                        <tr>
-                          <td data-label="Provider" class="provider-cell">
-                            {{ item.provider }}
-                          </td>
-                          <td data-label="Count" class="count-cell">1x</td>
-                          <td data-label="Category" class="amount-cell">
-                            <div
-                              class="category-edit-select"
-                              [style.backgroundColor]="
-                                getCategoryColor(item.category)
-                              "
-                            >
-                              {{ getCategoryLabel(item.category) }}
-                            </div>
-                          </td>
-                          <td
-                            data-label="Total"
-                            class="amount-cell"
-                            [class.positive]="item.total > 0"
-                            [class.negative]="item.total < 0"
-                          >
-                            {{ item.total | numberFormat: "0.00" }}
-                          </td>
-                          <td data-label="% of Period" class="percentage-cell">
-                            <div class="percentage-bar">
-                              <div
-                                class="percentage-fill"
-                                [style.width.%]="item.percentageOfTotal"
-                              ></div>
-                              <span class="percentage-text"
-                                >{{
-                                  item.percentageOfTotal | numberFormat: "0.0"
-                                }}%</span
-                              >
-                            </div>
-                          </td>
-                          <td data-label="Last Transaction" class="date-cell">
-                            {{ formatDay(item.latestDate) }}
-                          </td>
-                        </tr>
-                      }
-                      @if (!period.multiple.length && !period.single.length) {
+
+                      @if (!period.multiple.length) {
                         <tr>
                           <td colspan="6" class="empty-cell">
                             No transactions this period
@@ -313,57 +272,8 @@
                         </div>
                       </div>
                     }
-                    @for (item of period.single; track item.provider) {
-                      <div class="mobile-card">
-                        <div class="mobile-card-header">
-                          <span class="provider-name">{{ item.provider }}</span>
-                          <span class="count-badge">1x</span>
-                        </div>
-                        <div class="mobile-card-details">
-                          <div class="detail-row">
-                            <div
-                              class="category-edit-select"
-                              [style.backgroundColor]="
-                                getCategoryColor(item.category)
-                              "
-                            >
-                              {{ getCategoryLabel(item.category) }}
-                            </div>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Total:</span>
-                            <span
-                              class="detail-value"
-                              [class.positive]="item.total > 0"
-                              [class.negative]="item.total < 0"
-                            >
-                              {{ item.total | numberFormat: "0.00" }}
-                            </span>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Percentage:</span>
-                            <div class="percentage-bar-mobile">
-                              <div
-                                class="percentage-fill-mobile"
-                                [style.width.%]="item.percentageOfTotal"
-                              ></div>
-                              <span class="percentage-text-mobile"
-                                >{{
-                                  item.percentageOfTotal | numberFormat: "0.0"
-                                }}%</span
-                              >
-                            </div>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Last Transaction:</span>
-                            <span class="detail-value">{{
-                              formatDay(item.latestDate)
-                            }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    }
-                    @if (!period.multiple.length && !period.single.length) {
+
+                    @if (!period.multiple.length) {
                       <div class="empty-mobile">
                         No transactions this period
                       </div>
@@ -423,7 +333,7 @@
               <div class="period-content">
                 <div class="data-table-wrapper">
                   <p-highcharts-wrapper
-                    class="chart-wrapper card"
+                    class="chart-wrapper"
                     [chartOptions]="updateBarChart(period.transactions)"
                   />
                   <!-- Desktop Table -->
@@ -485,49 +395,8 @@
                           </td>
                         </tr>
                       }
-                      @for (item of period.single; track item.provider) {
-                        <tr>
-                          <td data-label="Provider" class="provider-cell">
-                            {{ item.provider }}
-                          </td>
-                          <td data-label="Count" class="count-cell">1x</td>
-                          <td data-label="Category" class="amount-cell">
-                            <div
-                              class="category-edit-select"
-                              [style.backgroundColor]="
-                                getCategoryColor(item.category)
-                              "
-                            >
-                              {{ getCategoryLabel(item.category) }}
-                            </div>
-                          </td>
-                          <td
-                            data-label="Total"
-                            class="amount-cell"
-                            [class.positive]="item.total > 0"
-                            [class.negative]="item.total < 0"
-                          >
-                            {{ item.total | numberFormat: "0.00" }}
-                          </td>
-                          <td data-label="% of Year" class="percentage-cell">
-                            <div class="percentage-bar">
-                              <div
-                                class="percentage-fill"
-                                [style.width.%]="item.percentageOfTotal"
-                              ></div>
-                              <span class="percentage-text"
-                                >{{
-                                  item.percentageOfTotal | numberFormat: "0.0"
-                                }}%</span
-                              >
-                            </div>
-                          </td>
-                          <td data-label="Last Transaction" class="date-cell">
-                            {{ formatDay(item.latestDate) }}
-                          </td>
-                        </tr>
-                      }
-                      @if (!period.multiple.length && !period.single.length) {
+
+                      @if (!period.multiple.length) {
                         <tr>
                           <td colspan="6" class="empty-cell">
                             No transactions this period
@@ -591,57 +460,8 @@
                         </div>
                       </div>
                     }
-                    @for (item of period.single; track item.provider) {
-                      <div class="mobile-card">
-                        <div class="mobile-card-header">
-                          <span class="provider-name">{{ item.provider }}</span>
-                          <span class="count-badge">1x</span>
-                        </div>
-                        <div class="mobile-card-details">
-                          <div class="detail-row">
-                            <div
-                              class="category-edit-select"
-                              [style.backgroundColor]="
-                                getCategoryColor(item.category)
-                              "
-                            >
-                              {{ getCategoryLabel(item.category) }}
-                            </div>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Total:</span>
-                            <span
-                              class="detail-value"
-                              [class.positive]="item.total > 0"
-                              [class.negative]="item.total < 0"
-                            >
-                              {{ item.total | numberFormat: "0.00" }}
-                            </span>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Percentage:</span>
-                            <div class="percentage-bar-mobile">
-                              <div
-                                class="percentage-fill-mobile"
-                                [style.width.%]="item.percentageOfTotal"
-                              ></div>
-                              <span class="percentage-text-mobile"
-                                >{{
-                                  item.percentageOfTotal | numberFormat: "0.0"
-                                }}%</span
-                              >
-                            </div>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Last Transaction:</span>
-                            <span class="detail-value">{{
-                              formatDay(item.latestDate)
-                            }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    }
-                    @if (!period.multiple.length && !period.single.length) {
+
+                    @if (!period.multiple.length) {
                       <div class="empty-mobile">
                         No transactions this period
                       </div>

@@ -107,7 +107,6 @@ export class MostCommonTransactionComponent {
             totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
         }));
 
-        // Sort by percentage descending
         const sortedGroups = groupsWithPercentages.sort(
           (a, b) => b.percentageOfTotal - a.percentageOfTotal,
         );
@@ -131,8 +130,7 @@ export class MostCommonTransactionComponent {
           totalExpense,
           difference: totalIncome - totalExpense,
           transactionCount: txs.length,
-          multiple: sortedGroups.filter((g) => g.count >= 2),
-          single: sortedGroups.filter((g) => g.count === 1),
+          multiple: sortedGroups,
           isExpanded: this.isMonthExpanded(year, monthIndex),
           transactions: txs,
         };
@@ -170,7 +168,6 @@ export class MostCommonTransactionComponent {
             totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
         }));
 
-        // Sort by percentage descending
         const sortedGroups = groupsWithPercentages.sort(
           (a, b) => b.percentageOfTotal - a.percentageOfTotal,
         );
@@ -190,8 +187,7 @@ export class MostCommonTransactionComponent {
           totalExpense,
           difference: totalIncome - totalExpense,
           transactionCount: txs.length,
-          multiple: sortedGroups.filter((g) => g.count >= 2),
-          single: sortedGroups.filter((g) => g.count === 1),
+          multiple: sortedGroups,
           isExpanded: this.isYearExpanded(year),
           transactions: txs,
         };
