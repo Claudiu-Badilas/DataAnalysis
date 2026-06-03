@@ -218,6 +218,7 @@ interface PeriodGroup {
                           <td data-label="Category" class="amount-cell">
                             <div
                               class="category-edit-select"
+                              (click)="onSelectCategory(item.category)"
                               [style.backgroundColor]="
                                 getCategoryColor(item.category)
                               "
@@ -291,6 +292,7 @@ interface PeriodGroup {
                           <div class="detail-row">
                             <div
                               class="category-edit-select"
+                              (click)="onSelectCategory(item.category)"
                               [style.backgroundColor]="
                                 getCategoryColor(item.category)
                               "
@@ -1016,6 +1018,16 @@ interface PeriodGroup {
 export class MostCommonTransactionComponent {
   transactions = input<TransactionDomain[]>([]);
 
+  selectedCategory = signal<TransactionCategory | null>(null);
+
+  selectedTransaction = computed(() =>
+    this.transactions().filter(
+      (t) =>
+        this.selectedCategory() === null ||
+        t.category === this.selectedCategory(),
+    ),
+  );
+
   viewMode = signal<'monthly' | 'yearly'>('monthly');
   private expandedPeriodId = signal<string | null>(null);
 
@@ -1050,7 +1062,7 @@ export class MostCommonTransactionComponent {
   });
 
   private groupedByMonth = computed((): PeriodGroup[] => {
-    const txs = this.transactions();
+    const txs = this.selectedTransaction();
     if (!txs?.length) return [];
 
     const map = new Map<string, TransactionDomain[]>();
@@ -1089,7 +1101,7 @@ export class MostCommonTransactionComponent {
   });
 
   private groupedByYear = computed((): PeriodGroup[] => {
-    const txs = this.transactions();
+    const txs = this.selectedTransaction();
     if (!txs?.length) return [];
 
     const map = new Map<number, TransactionDomain[]>();
@@ -1179,26 +1191,26 @@ export class MostCommonTransactionComponent {
 
   totalIncome = computed(
     () =>
-      this.transactions()
+      this.selectedTransaction()
         ?.filter((tx) => (tx.amount ?? 0) > 0)
         .reduce((s, tx) => s + (tx.amount ?? 0), 0) ?? 0,
   );
 
   totalExpense = computed(() =>
     Math.abs(
-      this.transactions()
+      this.selectedTransaction()
         ?.filter((tx) => (tx.amount ?? 0) < 0)
         .reduce((s, tx) => s + (tx.amount ?? 0), 0) ?? 0,
     ),
   );
 
-  totalTransactions = computed(() => this.transactions()?.length ?? 0);
+  totalTransactions = computed(() => this.selectedTransaction()?.length ?? 0);
 
   private groupLocal(txs: TransactionDomain[]): GroupedTransaction[] {
     const map = new Map<string, GroupedTransaction>();
 
     for (const tx of txs) {
-      const key = tx.serviceProvider || 'Unknown';
+      const key = `${tx.category}-${tx.serviceProvider || tx.description}`;
       const date = tx.completionDate || tx.registrationDate;
 
       if (!map.has(key)) {
@@ -1235,6 +1247,14 @@ export class MostCommonTransactionComponent {
         ? b.count - a.count
         : Math.abs(b.total) - Math.abs(a.total),
     );
+  }
+
+  onSelectCategory(category: TransactionCategory) {
+    if (this.selectedCategory() === null) {
+      this.selectedCategory.set(category);
+    } else {
+      this.selectedCategory.set(null);
+    }
   }
 
   getCategoryColor = (category: TransactionCategory): string =>
