@@ -9,7 +9,7 @@ import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { Colors } from 'src/app/shared/styles/colors';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
-import { TransactionHeaderComponent } from './components/transaction-header/transaction-header.component';
+import { MostCommonTransactionComponent } from './components/most-common-transaction/most-common-transaction.component';
 import { DailyTransactionChartUtils } from './utils/daily-transactions.chart.util';
 
 @Component({
@@ -17,7 +17,7 @@ import { DailyTransactionChartUtils } from './utils/daily-transactions.chart.uti
   imports: [
     CommonModule,
     CommonModule,
-    TransactionHeaderComponent,
+    MostCommonTransactionComponent,
     HighchartWrapperComponent,
     ToggleButtonComponent,
   ],
@@ -31,6 +31,10 @@ export class TransactionOverviewComponent {
   transactions = toSignal(
     this.store.select(fromTransactions.getAvailableTransactions),
     { initialValue: [] },
+  );
+
+  readonly validTransactions = computed(() =>
+    this.transactions().filter((t) => !t.ignored),
   );
 
   selectedProvider = toSignal(
