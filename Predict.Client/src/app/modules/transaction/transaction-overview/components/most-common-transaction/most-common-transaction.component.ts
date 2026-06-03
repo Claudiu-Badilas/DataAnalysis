@@ -21,6 +21,8 @@ interface GroupedTransaction {
   dates: Date[];
   category: TransactionCategory;
   percentageOfTotal: number;
+  percentageOfIncome: number;
+  percentageOfExpense: number;
 }
 
 interface PeriodGroup {
@@ -190,19 +192,19 @@ interface PeriodGroup {
                   <table class="data-table desktop-table">
                     <thead>
                       <tr>
+                        <th>Last Transaction</th>
                         <th>Provider</th>
                         <th>Category</th>
                         <th>Total</th>
-                        <th>
-                          % of
-                          {{ viewMode() === 'monthly' ? 'Period' : 'Year' }}
-                        </th>
-                        <th>Last Transaction</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
                       @for (item of period.multiple; track item.provider) {
                         <tr class="highlight-row">
+                          <td data-label="Last Transaction" class="date-cell">
+                            {{ formatDay(item.latestDate) }}
+                          </td>
                           <td data-label="Provider" class="provider-cell">
                             <span
                               class="provider-badge multiple"
@@ -231,21 +233,34 @@ interface PeriodGroup {
                           >
                             {{ item.total | numberFormat: '0.00' }}
                           </td>
-                          <td data-label="% of Period" class="percentage-cell">
-                            <div class="percentage-bar">
-                              <div
-                                class="percentage-fill"
-                                [style.width.%]="item.percentageOfTotal"
-                              ></div>
-                              <span class="percentage-text"
-                                >{{
-                                  item.percentageOfTotal | numberFormat: '0.0'
-                                }}%</span
-                              >
-                            </div>
-                          </td>
-                          <td data-label="Last Transaction" class="date-cell">
-                            {{ formatDay(item.latestDate) }}
+                          <td class="percentage-cell">
+                            @if (item.total > 0 && period.totalIncome > 0) {
+                              <div class="percentage-bar">
+                                <div
+                                  class="percentage-fill income-fill"
+                                  [style.width.%]="item.percentageOfIncome"
+                                ></div>
+                                <span class="percentage-text"
+                                  >{{
+                                    item.percentageOfIncome
+                                      | numberFormat: '0.0'
+                                  }}%</span
+                                >
+                              </div>
+                            } @else {
+                              <div class="percentage-bar">
+                                <div
+                                  class="percentage-fill expense-fill"
+                                  [style.width.%]="item.percentageOfExpense"
+                                ></div>
+                                <span class="percentage-text"
+                                  >{{
+                                    item.percentageOfExpense
+                                      | numberFormat: '0.0'
+                                  }}%</span
+                                >
+                              </div>
+                            }
                           </td>
                         </tr>
                       }
@@ -273,7 +288,7 @@ interface PeriodGroup {
                           >
                             {{ item.count }}x {{ item.provider }}
                           </span>
-                          <div class="detail-row w-25">
+                          <div class="detail-row">
                             <div
                               class="category-edit-select"
                               [style.backgroundColor]="
@@ -295,17 +310,35 @@ interface PeriodGroup {
                           >
                             {{ item.total | numberFormat: '0.00' }}
                           </span>
-                          <div class="percentage-bar-mobile">
-                            <div
-                              class="percentage-fill-mobile"
-                              [style.width.%]="item.percentageOfTotal"
-                            ></div>
-
-                            <span class="percentage-text-mobile"
-                              >{{
-                                item.percentageOfTotal | numberFormat: '0.0'
-                              }}%</span
-                            >
+                          <div class="mobile-percentages">
+                            @if (item.total > 0 && period.totalIncome > 0) {
+                              <div class="percentage-bar-mobile">
+                                <div
+                                  class="percentage-fill-mobile income-fill"
+                                  [style.width.%]="item.percentageOfIncome"
+                                ></div>
+                                <span class="percentage-text-mobile">
+                                  {{
+                                    item.percentageOfIncome
+                                      | numberFormat: '0.0'
+                                  }}%</span
+                                >
+                              </div>
+                            }
+                            @if (item.total < 0 && period.totalExpense > 0) {
+                              <div class="percentage-bar-mobile mt-1">
+                                <div
+                                  class="percentage-fill-mobile expense-fill"
+                                  [style.width.%]="item.percentageOfExpense"
+                                ></div>
+                                <span class="percentage-text-mobile">
+                                  {{
+                                    item.percentageOfExpense
+                                      | numberFormat: '0.0'
+                                  }}%</span
+                                >
+                              </div>
+                            }
                           </div>
                         </div>
                       </div>
@@ -645,7 +678,7 @@ interface PeriodGroup {
     }
 
     .percentage-cell {
-      width: 120px;
+      width: 140px;
     }
 
     .percentage-bar {
@@ -663,9 +696,16 @@ interface PeriodGroup {
       left: 0;
       top: 0;
       bottom: 0;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
       border-radius: 10px;
       transition: width 0.3s ease;
+    }
+
+    .income-fill {
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+    }
+
+    .expense-fill {
+      background: linear-gradient(90deg, #c61a54, #d5a326);
     }
 
     .percentage-text {
@@ -677,10 +717,16 @@ interface PeriodGroup {
       color: #1f2937;
     }
 
+    .no-percentage {
+      color: #9ca3af;
+      font-size: 0.75rem;
+    }
+
     .date-cell {
       font-size: 0.75rem;
       color: #6b7280;
       white-space: nowrap;
+      font-weight: 700;
     }
 
     /* Mobile Cards */
@@ -717,6 +763,10 @@ interface PeriodGroup {
       gap: 8px;
     }
 
+    .mobile-percentages {
+      margin-top: 8px;
+    }
+
     .detail-row {
       display: flex;
       justify-content: space-between;
@@ -748,7 +798,6 @@ interface PeriodGroup {
       border-radius: 10px;
       overflow: hidden;
       height: 20px;
-      width: 120px;
       display: flex;
       align-items: center;
     }
@@ -758,7 +807,6 @@ interface PeriodGroup {
       left: 0;
       top: 0;
       bottom: 0;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
       border-radius: 10px;
       transition: width 0.3s ease;
     }
@@ -770,6 +818,10 @@ interface PeriodGroup {
       font-weight: 600;
       padding: 0 6px;
       color: #1f2937;
+    }
+
+    .mt-1 {
+      margin-top: 4px;
     }
 
     .empty-mobile {
@@ -866,7 +918,6 @@ interface PeriodGroup {
       }
 
       .percentage-bar-mobile {
-        width: 100px;
         height: 18px;
       }
     }
@@ -939,20 +990,19 @@ interface PeriodGroup {
       }
 
       .percentage-bar-mobile {
-        width: 80px;
         height: 16px;
       }
 
       .percentage-text-mobile {
         font-size: 0.5625rem;
-        padding: 0 4px;
+        padding: 20px;
       }
     }
 
     .category-edit-select {
       width: 100%;
       text-align: center;
-      padding: 3px;
+      padding: 3px 10px;
       color: white;
       border-radius: 6px;
     }
@@ -1070,26 +1120,52 @@ export class MostCommonTransactionComponent {
   // Shared processing logic
   private processTransactions(txs: TransactionDomain[]) {
     const grouped = this.groupLocal(txs);
-    const totalAmount = txs.reduce((s, t) => s + Math.abs(t.amount ?? 0), 0);
 
-    const groupsWithPercentages = grouped.map((g) => ({
-      ...g,
-      percentageOfTotal:
-        totalAmount > 0 ? (Math.abs(g.total) / totalAmount) * 100 : 0,
-    }));
-
-    const sortedGroups = groupsWithPercentages.sort(
-      (a, b) => b.percentageOfTotal - a.percentageOfTotal,
-    );
-
+    // Calculate total income and expense separately
     const totalIncome = txs
       .filter((t) => (t.amount ?? 0) > 0)
       .reduce((s, t) => s + (t.amount ?? 0), 0);
+
     const totalExpense = Math.abs(
       txs
         .filter((t) => (t.amount ?? 0) < 0)
         .reduce((s, t) => s + (t.amount ?? 0), 0),
     );
+
+    const groupsWithPercentages = grouped.map((g) => ({
+      ...g,
+      percentageOfIncome:
+        g.total > 0 && totalIncome > 0 ? (g.total / totalIncome) * 100 : 0,
+      percentageOfExpense:
+        g.total < 0 && totalExpense > 0
+          ? (Math.abs(g.total) / totalExpense) * 100
+          : 0,
+    }));
+
+    // NEW SORTING LOGIC: Income first (by percentage desc), then Expense (by percentage desc)
+    const sortedGroups = groupsWithPercentages.sort((a, b) => {
+      // Determine if transaction is income or expense
+      const aIsIncome = a.total > 0;
+      const bIsIncome = b.total > 0;
+
+      // If both are income, sort by percentageOfIncome descending
+      if (aIsIncome && bIsIncome) {
+        return b.percentageOfIncome - a.percentageOfIncome;
+      }
+
+      // If both are expense, sort by percentageOfExpense descending
+      if (!aIsIncome && !bIsIncome) {
+        return b.percentageOfExpense - a.percentageOfExpense;
+      }
+
+      // If one is income and the other is expense, income comes first
+      if (aIsIncome && !bIsIncome) {
+        return -1;
+      }
+
+      // Expense comes after income
+      return 1;
+    });
 
     return {
       totalIncome,
@@ -1136,6 +1212,8 @@ export class MostCommonTransactionComponent {
           dates: [],
           category: null,
           percentageOfTotal: 0,
+          percentageOfIncome: 0,
+          percentageOfExpense: 0,
         });
       }
 
