@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
@@ -12,6 +13,7 @@ import { TransactionStatusBarChartUtils } from '../../utils/transaction-status-b
 
 interface GroupedTransaction {
   provider: string;
+  description: string;
   count: number;
   total: number;
   currency: string | null;
@@ -43,6 +45,7 @@ interface PeriodGroup {
     NumberFormatPipe,
     ToggleButtonComponent,
     HighchartWrapperComponent,
+    NgbTooltip,
   ],
   template: `<div class="transaction-analytics mt-2">
     <div class="analytics-header">
@@ -201,11 +204,15 @@ interface PeriodGroup {
                       @for (item of period.multiple; track item.provider) {
                         <tr class="highlight-row">
                           <td data-label="Provider" class="provider-cell">
-                            <span class="provider-badge multiple">
-                              {{ item.count }}x {{ item.provider }}</span
+                            <span
+                              class="provider-badge multiple"
+                              [ngbTooltip]="item.description"
+                              placement="top"
+                              container="body"
                             >
+                              {{ item.count }}x {{ item.provider }}
+                            </span>
                           </td>
-
                           <td data-label="Category" class="amount-cell">
                             <div
                               class="category-edit-select"
@@ -258,9 +265,14 @@ interface PeriodGroup {
                     @for (item of period.multiple; track item.provider) {
                       <div class="mobile-card highlight-card">
                         <div class="mobile-card-header">
-                          <span class="provider-badge multiple"
-                            >{{ item.count }}x {{ item.provider }}</span
+                          <span
+                            class="provider-badge multiple"
+                            [ngbTooltip]="item.description"
+                            placement="top"
+                            container="body"
                           >
+                            {{ item.count }}x {{ item.provider }}
+                          </span>
                           <div class="detail-row w-25">
                             <div
                               class="category-edit-select"
@@ -1116,6 +1128,7 @@ export class MostCommonTransactionComponent {
       if (!map.has(key)) {
         map.set(key, {
           provider: key,
+          description: tx.description || '',
           count: 0,
           total: 0,
           currency: tx.currency,

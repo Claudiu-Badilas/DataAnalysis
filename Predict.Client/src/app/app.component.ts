@@ -11,6 +11,6 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     <p-toast />
     <router-outlet />
   `,
-  styles: [],
+  styleUrls: ['app.component.scss'],
 })
 export class AppComponent {}
