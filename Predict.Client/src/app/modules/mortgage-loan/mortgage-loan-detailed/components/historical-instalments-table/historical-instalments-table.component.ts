@@ -228,19 +228,18 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                   >
                 </div>
                 <div class="mobile-group-total mobile-group-total-green">
+                  {{ subtotal.total | numberFormat: '0.00' }}
+                </div>
+                <div class="mobile-group-total mobile-group-total-blue">
+                  {{ subtotal.principal | numberFormat: '0.00' }}
+                </div>
+                <div class="mobile-group-total mobile-group-total-red">
                   {{
                     subtotal.interest + subtotal.insuranceCost
                       | numberFormat: '0.00'
                   }}
                 </div>
-                <div class="mobile-group-total mobile-group-total-blue">
-                  {{ subtotal.principal | numberFormat: '0.00' }}
-                </div>
-
-                <div class="mobile-group-total mobile-group-total-red">
-                  {{ subtotal.total | numberFormat: '0.00' }}
-                </div>
-                <div class="mobile-group-total mobile-group-total-green">
+                <div class="mobile-group-total mobile-group-total-black">
                   {{ subtotal.remainingBalance | numberFormat: '0.00' }}
                 </div>
               </div>
@@ -628,6 +627,11 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         &-green {
           color: #0f766e;
           border: 1px solid #0f766e;
+        }
+
+        &-black {
+          color: #212529;
+          border: 1px solid #212529;
         }
 
         &-blue {
