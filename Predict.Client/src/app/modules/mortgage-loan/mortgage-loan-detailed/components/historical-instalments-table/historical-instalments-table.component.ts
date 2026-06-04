@@ -138,6 +138,8 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                         {{ row.remainingBalance | numberFormat: '0.00' }}
                       </td>
                     </tr>
+
+                    <tr></tr>
                   }
                 }
               } @else {
@@ -206,7 +208,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         }
       </div>
 
-      <!-- Simplified Mobile View -->
+      <!-- Simplified Mobile View - 2 Row Layout without Total -->
       <div class="mobile-view">
         @for (group of monthlyInstalmentGroups(); track group.title) {
           @let hasValidPayments = hasInstallmentOrEarly(group);
@@ -220,23 +222,32 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                   <div class="mobile-group-title">
                     {{ group.title | date: 'dd MMM yyyy' }}
                   </div>
-                  <span class="mobile-group-count"
+                  <span class="mobile-group-count bold"
                     >{{ subtotal.instalmentsCount }} +
                     {{ subtotal.earlyCount }}</span
                   >
                 </div>
-                <div class="mobile-group-total">
+                <div class="mobile-group-total mobile-group-total-green">
+                  {{
+                    subtotal.interest + subtotal.insuranceCost
+                      | numberFormat: '0.00'
+                  }}
+                </div>
+                <div class="mobile-group-total mobile-group-total-blue">
+                  {{ subtotal.principal | numberFormat: '0.00' }}
+                </div>
+
+                <div class="mobile-group-total mobile-group-total-red">
                   {{ subtotal.total | numberFormat: '0.00' }}
+                </div>
+                <div class="mobile-group-total mobile-group-total-green">
+                  {{ subtotal.remainingBalance | numberFormat: '0.00' }}
                 </div>
               </div>
 
               @if (group.expanded) {
                 <div class="mobile-items-list">
                   @for (row of group.instalments; track row.index) {
-                    @let rowTotal =
-                      row.principalAmount +
-                      row.interestAmount +
-                      row.insuranceCost;
                     <div
                       class="mobile-item"
                       [class.orange-item]="row.instalmentPayment"
@@ -245,9 +256,12 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                         !row.instalmentPayment && !row.earlyPayment
                       "
                     >
+                      <!-- Row 1: Index, Date, Principal -->
                       <div class="mobile-item-row">
-                        <div class="mobile-item-col">
+                        <div class="mobile-item-col  ">
                           <span class="item-index">#{{ row.index }}</span>
+                        </div>
+                        <div class="mobile-item-col">
                           <span
                             class="item-date"
                             [class.strike]="
@@ -257,43 +271,34 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                             {{ row.paymentDate | date: 'dd MMM' }}
                           </span>
                         </div>
-                        <div class="mobile-item-col text-center">
-                          <span class="item-amount">{{
+                        <div class="mobile-item-col  ">
+                          <span class="item-label">Principal</span>
+                          <span class="item-value principal-value">{{
                             row.principalAmount | numberFormat: '0.00'
                           }}</span>
                         </div>
-                      </div>
-                      <div class="mobile-item-row">
-                        <div class="mobile-item-col">
-                          <span class="detail-label">Interest:</span>
+                        <div class="mobile-item-col  ">
+                          <span class="item-label">Interest</span>
                           <span
-                            class="detail-value"
+                            class="item-value interest-value"
                             [class.strike]="row.earlyPayment"
                           >
                             {{ row.interestAmount | numberFormat: '0.00' }}
                           </span>
                         </div>
-                        <div class="mobile-item-col">
-                          <span class="detail-label">PAD:</span>
+                        <div class="mobile-item-col ">
+                          <span class="item-label">PAD</span>
                           <span
-                            class="detail-value"
+                            class="item-value "
                             [class.strike]="row.earlyPayment"
                           >
                             {{ row.insuranceCost | numberFormat: '0.00' }}
                           </span>
                         </div>
-                        <div class="mobile-item-col">
-                          <span class="detail-label">Remaining:</span>
-                          <span class="detail-value">{{
+                        <div class="mobile-item-col  ">
+                          <span class="item-label">Remaining</span>
+                          <span class="item-value remaining-value">{{
                             row.remainingBalance | numberFormat: '0.00'
-                          }}</span>
-                        </div>
-                      </div>
-                      <div class="mobile-item-row">
-                        <div class="mobile-item-col">
-                          <span class="detail-label">Total:</span>
-                          <span class="detail-value bold">{{
-                            rowTotal | numberFormat: '0.00'
                           }}</span>
                         </div>
                       </div>
@@ -315,49 +320,43 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
               </div>
               <div class="mobile-items-list">
                 @for (row of group.instalments; track row.index) {
-                  @let rowTotal =
-                    row.principalAmount +
-                    row.interestAmount +
-                    row.insuranceCost;
                   <div class="mobile-item gray-item">
+                    <!-- Row 1: Index, Date, Principal -->
                     <div class="mobile-item-row">
-                      <div class="mobile-item-col">
+                      <div class="mobile-item-col col-index">
                         <span class="item-index">#{{ row.index }}</span>
+                      </div>
+                      <div class="mobile-item-col col-date">
                         <span class="item-date">{{
                           row.paymentDate | date: 'dd MMM'
                         }}</span>
                       </div>
-                      <div class="mobile-item-col text-center">
-                        <span class="item-amount">{{
+                      <div class="mobile-item-col col-principal">
+                        <span class="item-label">Principal</span>
+                        <span class="item-value principal-value">{{
                           row.principalAmount | numberFormat: '0.00'
                         }}</span>
                       </div>
                     </div>
+
+                    <!-- Row 2: Interest, PAD, Remaining Balance -->
                     <div class="mobile-item-row">
-                      <div class="mobile-item-col">
-                        <span class="detail-label">Interest:</span>
-                        <span class="detail-value">{{
+                      <div class="mobile-item-col col-interest">
+                        <span class="item-label">Interest</span>
+                        <span class="item-value interest-value">{{
                           row.interestAmount | numberFormat: '0.00'
                         }}</span>
                       </div>
-                      <div class="mobile-item-col">
-                        <span class="detail-label">PAD:</span>
-                        <span class="detail-value">{{
+                      <div class="mobile-item-col col-pad">
+                        <span class="item-label">PAD</span>
+                        <span class="item-value pad-value">{{
                           row.insuranceCost | numberFormat: '0.00'
                         }}</span>
                       </div>
-                      <div class="mobile-item-col">
-                        <span class="detail-label">Remaining:</span>
-                        <span class="detail-value">{{
+                      <div class="mobile-item-col col-remaining">
+                        <span class="item-label">Remaining</span>
+                        <span class="item-value remaining-value">{{
                           row.remainingBalance | numberFormat: '0.00'
-                        }}</span>
-                      </div>
-                    </div>
-                    <div class="mobile-item-row">
-                      <div class="mobile-item-col">
-                        <span class="detail-label">Total:</span>
-                        <span class="detail-value bold">{{
-                          rowTotal | numberFormat: '0.00'
                         }}</span>
                       </div>
                     </div>
@@ -535,7 +534,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       color: #9ca3af;
     }
 
-    /* Responsive */
+    /* Responsive - Mobile Styles */
     @media (max-width: 768px) {
       .table-wrapper {
         display: none;
@@ -551,15 +550,18 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       .mobile-group-card {
         background: white;
         border: 1px solid #e2e6ee;
-        border-radius: 8px;
-        margin-bottom: 12px;
+        border-radius: 12px;
+        margin-bottom: 6px;
         overflow: hidden;
+        box-shadow:
+          0 2px 4px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
 
       .mobile-normal-section {
         background: white;
         border: 1px solid #e2e6ee;
-        border-radius: 8px;
+        border-radius: 12px;
         margin-bottom: 12px;
         overflow: hidden;
       }
@@ -588,6 +590,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         padding: 12px;
         background: #eff6ff;
         cursor: pointer;
+        transition: background 0.2s ease;
       }
 
       .mobile-group-header:active {
@@ -597,8 +600,8 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       .mobile-group-info {
         display: flex;
         align-items: center;
-        gap: 8px;
-        flex: 1;
+        justify-content: space-between;
+        gap: 5px;
       }
 
       .mobile-group-title {
@@ -608,7 +611,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
 
       .mobile-group-count {
         color: #3b82f6;
-        font-size: 11px;
+        font-size: 10px;
         background: #eff6ff;
         padding: 2px 8px;
         border-radius: 30px;
@@ -617,9 +620,25 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
 
       .mobile-group-total {
-        font-weight: 700;
-        font-size: 14px;
-        color: #0f766e;
+        font-weight: 600;
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 12px;
+
+        &-green {
+          color: #0f766e;
+          border: 1px solid #0f766e;
+        }
+
+        &-blue {
+          color: #3b82f6;
+          border: 1px solid #3b82f6;
+        }
+
+        &-red {
+          color: #c5103e;
+          border: 1px solid #c5103e;
+        }
       }
 
       .mobile-items-list {
@@ -627,7 +646,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
 
       .mobile-item {
-        padding: 10px 12px;
+        padding: 12px;
         border-bottom: 1px solid #f0f0f0;
       }
 
@@ -650,6 +669,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         border-left: 3px solid #94a3b8;
       }
 
+      /* 2-Row Layout Grid */
       .mobile-item-row {
         display: flex;
         justify-content: space-between;
@@ -663,20 +683,45 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
 
       .mobile-item-col {
         display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      .mobile-item-col.text-center {
-        justify-content: flex-end;
+      /* Column widths for first row */
+      .col-index {
+        width: 42px;
+        flex-shrink: 0;
+      }
+      .col-date {
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .col-principal {
+        flex: 1;
+        align-items: flex-end;
+        text-align: right;
+      }
+
+      /* Column widths for second row */
+      .col-interest {
+        flex: 1;
+        align-items: flex-start;
+      }
+      .col-pad {
+        flex: 1;
+        align-items: flex-start;
+      }
+      .col-remaining {
+        width: 100px;
+        flex-shrink: 0;
+        align-items: flex-end;
+        text-align: right;
       }
 
       .item-index {
         font-weight: 700;
         font-size: 13px;
         color: #1f2937;
-        min-width: 40px;
       }
 
       .item-date {
@@ -684,23 +729,35 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         color: #6b7280;
       }
 
-      .item-amount {
-        font-weight: 700;
-        font-size: 13px;
+      .item-label {
+        font-size: 9px;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 2px;
+      }
+
+      .item-value {
+        font-weight: 600;
+        font-size: 12px;
+        color: #1f2937;
+      }
+
+      .principal-value {
         color: #f59e0b;
       }
 
-      .detail-label {
-        font-size: 10px;
-        color: #6b7280;
-        font-weight: 500;
-        min-width: 55px;
+      .interest-value {
+        color: #ef4444;
       }
 
-      .detail-value {
-        font-weight: 600;
-        font-size: 11px;
-        color: #1f2937;
+      .pad-value {
+        color: #3b82f6;
+      }
+
+      .remaining-value {
+        color: #10b981;
       }
 
       .strike {
@@ -709,6 +766,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
     }
 
+    /* Extra small screens */
     @media (max-width: 480px) {
       .mobile-view {
         padding: 8px;
@@ -729,37 +787,39 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
 
       .mobile-group-total {
-        font-size: 12px;
+        font-size: 9px;
       }
 
       .mobile-item {
-        padding: 8px 10px;
+        padding: 10px;
+      }
+
+      .col-index {
+        width: 36px;
+      }
+
+      .col-date {
+        width: 70px;
+      }
+
+      .col-remaining {
+        width: 85px;
       }
 
       .item-index {
         font-size: 11px;
-        min-width: 35px;
       }
 
       .item-date {
         font-size: 10px;
       }
 
-      .item-amount {
-        font-size: 11px;
+      .item-label {
+        font-size: 8px;
       }
 
-      .detail-label {
-        font-size: 9px;
-        min-width: 50px;
-      }
-
-      .detail-value {
+      .item-value {
         font-size: 10px;
-      }
-
-      .mobile-item-col {
-        gap: 4px;
       }
     }
   `,
