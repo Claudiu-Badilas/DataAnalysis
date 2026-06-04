@@ -42,17 +42,6 @@
           <img [src]="'assets/icons/' + option.icon + '.svg'" />
         </button>
       }
-
-      <!-- Filter Button - Mobile (only shown when there are filters AND no burger menu) -->
-      @if (hasFiltersContent) {
-        <button
-          type="button"
-          class="actions__link filter-btn"
-          (click)="openFilterPanel()"
-        >
-          <img src="assets/icons/filter.svg" alt="filter" />
-        </button>
-      }
     </div>
 
     <!-- Burger Menu - Only shown when module-nav has content AND on mobile -->
