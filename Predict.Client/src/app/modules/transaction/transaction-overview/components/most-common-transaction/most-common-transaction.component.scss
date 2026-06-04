@@ -19,13 +19,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 4px 0;
-  letter-spacing: -0.01em;
-}
-
 .subtitle {
   font-size: 0.8125rem;
   opacity: 0.9;
@@ -108,7 +101,6 @@
 
 /* Table Container */
 .table-container {
-  // flex: 1;
   overflow-y: auto;
   background: #f9fafb;
   height: 800px;
@@ -170,11 +162,6 @@
   font-weight: 600;
   font-size: 1rem;
   color: #1f2937;
-}
-
-.period-stats-mini {
-  font-size: 0.75rem;
-  color: #6b7280;
 }
 
 .period-totals {
@@ -302,6 +289,11 @@
 .provider-badge.multiple {
   background: #dbeafe;
   color: #1e40af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 4px;
+  font-size: 11px;
 }
 
 .count-cell {
@@ -322,7 +314,7 @@
 }
 
 .percentage-cell {
-  width: 120px;
+  width: 140px;
 }
 
 .percentage-bar {
@@ -340,9 +332,16 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   border-radius: 10px;
   transition: width 0.3s ease;
+}
+
+.income-fill {
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+
+.expense-fill {
+  background: linear-gradient(90deg, #c61a54, #d5a326);
 }
 
 .percentage-text {
@@ -354,22 +353,28 @@
   color: #1f2937;
 }
 
+.no-percentage {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
 .date-cell {
   font-size: 0.75rem;
   color: #6b7280;
   white-space: nowrap;
+  font-weight: 700;
 }
 
 /* Mobile Cards */
 .mobile-cards {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .mobile-card {
   background: #f9fafb;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 12px;
   transition: all 0.2s ease;
 }
@@ -387,25 +392,15 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.provider-name {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #1f2937;
-}
-
-.count-badge {
-  background: #e5e7eb;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: #4b5563;
-}
-
 .mobile-card-details {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
+}
+
+.mobile-percentages {
+  margin-top: 8px;
 }
 
 .detail-row {
@@ -439,7 +434,6 @@
   border-radius: 10px;
   overflow: hidden;
   height: 20px;
-  width: 120px;
   display: flex;
   align-items: center;
 }
@@ -449,7 +443,6 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   border-radius: 10px;
   transition: width 0.3s ease;
 }
@@ -461,6 +454,10 @@
   font-weight: 600;
   padding: 0 6px;
   color: #1f2937;
+}
+
+.mt-1 {
+  margin-top: 4px;
 }
 
 .empty-mobile {
@@ -557,7 +554,6 @@
   }
 
   .percentage-bar-mobile {
-    width: 100px;
     height: 18px;
   }
 }
@@ -569,10 +565,6 @@
 
   .analytics-header {
     padding: 12px 16px;
-  }
-
-  .title {
-    font-size: 1rem;
   }
 
   .subtitle {
@@ -605,10 +597,6 @@
     font-size: 0.8125rem;
   }
 
-  .period-stats-mini {
-    font-size: 0.625rem;
-  }
-
   .income-badge,
   .expense-badge,
   .diff-badge {
@@ -629,15 +617,7 @@
   }
 
   .mobile-card {
-    padding: 10px;
-  }
-
-  .provider-name {
-    font-size: 0.8125rem;
-  }
-
-  .count-badge {
-    font-size: 0.625rem;
+    padding: 8px;
   }
 
   .detail-label,
@@ -646,25 +626,24 @@
   }
 
   .percentage-bar-mobile {
-    width: 80px;
     height: 16px;
   }
 
   .percentage-text-mobile {
     font-size: 0.5625rem;
-    padding: 0 4px;
+    padding: 20px;
   }
 }
 
 .category-edit-select {
   width: 100%;
   text-align: center;
-  padding: 3px;
+  padding: 3px 10px;
   color: white;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .chart-wrapper {
   width: 100%;
-  min-height: 400px;
+  max-height: 400px;
 }
