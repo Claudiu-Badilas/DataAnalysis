@@ -99,25 +99,10 @@
   color: #ef4444;
 }
 
-/* Table Container */
 .table-container {
   overflow-y: auto;
   background: #f9fafb;
-  height: 800px;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #f1f5f9;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-  }
+  height: calc(100vh - 200px);
 }
 
 .period-view {
@@ -377,6 +362,9 @@
   border-radius: 6px;
   padding: 12px;
   transition: all 0.2s ease;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .mobile-card.highlight-card {
@@ -632,6 +620,12 @@
   .percentage-text-mobile {
     font-size: 0.5625rem;
     padding: 20px;
+  }
+
+  .table-container {
+    overflow-y: auto;
+    background: #f9fafb;
+    height: calc(100vh - 300px);
   }
 }
 
