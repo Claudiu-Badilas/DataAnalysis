@@ -55,9 +55,8 @@ export enum TransactionCategory {
   ATM_WITHDRAWAL = 'atm_withdrawal',
 
   // Lifestyle
-  TRAVEL_ACCOMMODATION = 'travel_accommodation',
+  ACCOMMODATION = 'travel_accommodation',
   EDUCATION = 'education',
-  PERSONAL_CARE = 'personal_care',
   GIFTS = 'gifts',
 
   // Other
@@ -562,7 +561,7 @@ export class TransactionCategorizer {
       category: TransactionCategory.TRANSPORT,
     },
 
-    // ============ TRAVEL & ACCOMMODATION ============
+    // ============ ACCOMMODATION ============
     {
       keywords: [
         'BOOKING.COM',
@@ -579,7 +578,7 @@ export class TransactionCategorizer {
         'Pensiune',
         'Motel',
       ],
-      category: TransactionCategory.TRAVEL_ACCOMMODATION,
+      category: TransactionCategory.ACCOMMODATION,
     },
 
     // ============ EDUCATION ============
@@ -606,25 +605,6 @@ export class TransactionCategorizer {
     {
       keywords: ['CHIRIE', 'RENT', 'APARTMENT', 'GARSONIERA', 'LOUIER'],
       category: TransactionCategory.RENT,
-    },
-
-    // ============ PERSONAL CARE ============
-    {
-      keywords: [
-        'SALON',
-        'HAIRCUT',
-        'FRIZER',
-        'MANICURE',
-        'PEDICURE',
-        'BEAUTY',
-        'SPA',
-        'cosmetica',
-        'parfum',
-        'TABAC',
-        'tigari',
-        'vaping',
-      ],
-      category: TransactionCategory.PERSONAL_CARE,
     },
 
     // ============ ATM WITHDRAWALS ============
@@ -840,9 +820,8 @@ export class TransactionCategorizer {
       [TransactionCategory.REFUNDS]: 'Refunds',
       [TransactionCategory.BANK_FEES]: 'Bank Fees',
       [TransactionCategory.ATM_WITHDRAWAL]: 'ATM',
-      [TransactionCategory.TRAVEL_ACCOMMODATION]: 'Travel & Accommodation',
+      [TransactionCategory.ACCOMMODATION]: 'Accommodation',
       [TransactionCategory.EDUCATION]: 'Education',
-      [TransactionCategory.PERSONAL_CARE]: 'Personal Care',
       [TransactionCategory.GIFTS]: 'Gifts',
       [TransactionCategory.TAXES_FINES]: 'Taxes & Fines',
       [TransactionCategory.OTHER]: 'Other',
@@ -878,9 +857,8 @@ export class TransactionCategorizer {
       [TransactionCategory.BANK_FEES]: '#BDBDBD',
       [TransactionCategory.ATM_WITHDRAWAL]: '#EF5350',
       [TransactionCategory.MOBILE_BILL]: '#3F51B5',
-      [TransactionCategory.TRAVEL_ACCOMMODATION]: '#FF6F00',
+      [TransactionCategory.ACCOMMODATION]: '#FF6F00',
       [TransactionCategory.EDUCATION]: '#66BB6A',
-      [TransactionCategory.PERSONAL_CARE]: '#FFA726',
       [TransactionCategory.GIFTS]: '#EC407A',
       [TransactionCategory.TAXES_FINES]: '#F44336',
       [TransactionCategory.OTHER]: '#9E9E9E',
