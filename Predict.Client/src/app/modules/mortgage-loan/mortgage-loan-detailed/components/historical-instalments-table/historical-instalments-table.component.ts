@@ -255,7 +255,6 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
                         !row.instalmentPayment && !row.earlyPayment
                       "
                     >
-                      <!-- Row 1: Index, Date, Principal -->
                       <div class="mobile-item-row">
                         <div class="mobile-item-col  ">
                           <span class="item-index">#{{ row.index }}</span>
@@ -309,50 +308,48 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
           } @else {
             <!-- Mobile Normal Rows -->
             <div class="mobile-normal-section">
-              <div class="mobile-normal-header">
-                <div class="mobile-group-title">
-                  {{ group.title | date: 'dd MMM yyyy' }}
-                </div>
-                <span class="mobile-normal-count"
-                  >{{ group.instalments.length }} rows</span
-                >
-              </div>
               <div class="mobile-items-list">
                 @for (row of group.instalments; track row.index) {
                   <div class="mobile-item gray-item">
-                    <!-- Row 1: Index, Date, Principal -->
                     <div class="mobile-item-row">
-                      <div class="mobile-item-col col-index">
+                      <div class="mobile-item-col  ">
                         <span class="item-index">#{{ row.index }}</span>
                       </div>
-                      <div class="mobile-item-col col-date">
-                        <span class="item-date">{{
-                          row.paymentDate | date: 'dd MMM'
-                        }}</span>
+                      <div class="mobile-item-col">
+                        <span
+                          class="item-date"
+                          [class.strike]="
+                            row.earlyPayment || row.instalmentPayment
+                          "
+                        >
+                          {{ row.paymentDate | date: 'dd MMM' }}
+                        </span>
                       </div>
-                      <div class="mobile-item-col col-principal">
+                      <div class="mobile-item-col  ">
                         <span class="item-label">Principal</span>
                         <span class="item-value principal-value">{{
                           row.principalAmount | numberFormat: '0.00'
                         }}</span>
                       </div>
-                    </div>
-
-                    <!-- Row 2: Interest, PAD, Remaining Balance -->
-                    <div class="mobile-item-row">
-                      <div class="mobile-item-col col-interest">
+                      <div class="mobile-item-col  ">
                         <span class="item-label">Interest</span>
-                        <span class="item-value interest-value">{{
-                          row.interestAmount | numberFormat: '0.00'
-                        }}</span>
+                        <span
+                          class="item-value interest-value"
+                          [class.strike]="row.earlyPayment"
+                        >
+                          {{ row.interestAmount | numberFormat: '0.00' }}
+                        </span>
                       </div>
-                      <div class="mobile-item-col col-pad">
+                      <div class="mobile-item-col ">
                         <span class="item-label">PAD</span>
-                        <span class="item-value pad-value">{{
-                          row.insuranceCost | numberFormat: '0.00'
-                        }}</span>
+                        <span
+                          class="item-value "
+                          [class.strike]="row.earlyPayment"
+                        >
+                          {{ row.insuranceCost | numberFormat: '0.00' }}
+                        </span>
                       </div>
-                      <div class="mobile-item-col col-remaining">
+                      <div class="mobile-item-col  ">
                         <span class="item-label">Remaining</span>
                         <span class="item-value remaining-value">{{
                           row.remainingBalance | numberFormat: '0.00'
@@ -557,14 +554,6 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
           0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
 
-      .mobile-normal-section {
-        background: white;
-        border: 1px solid #e2e6ee;
-        border-radius: 12px;
-        margin-bottom: 12px;
-        overflow: hidden;
-      }
-
       .mobile-normal-header {
         background: #f8fafc;
         padding: 10px 12px;
@@ -691,36 +680,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
         align-items: flex-start;
       }
 
-      /* Column widths for first row */
-      .col-index {
-        width: 42px;
-        flex-shrink: 0;
-      }
-      .col-date {
-        width: 80px;
-        flex-shrink: 0;
-      }
-      .col-principal {
-        flex: 1;
-        align-items: flex-end;
-        text-align: right;
-      }
-
       /* Column widths for second row */
-      .col-interest {
-        flex: 1;
-        align-items: flex-start;
-      }
-      .col-pad {
-        flex: 1;
-        align-items: flex-start;
-      }
-      .col-remaining {
-        width: 100px;
-        flex-shrink: 0;
-        align-items: flex-end;
-        text-align: right;
-      }
 
       .item-index {
         font-weight: 700;
@@ -749,7 +709,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
 
       .principal-value {
-        color: #f59e0b;
+        color: #10b981;
       }
 
       .interest-value {
@@ -761,7 +721,7 @@ import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.mo
       }
 
       .remaining-value {
-        color: #10b981;
+        color: #1f2937;
       }
 
       .strike {
