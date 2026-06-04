@@ -156,10 +156,12 @@ interface PeriodGroup {
         @if (viewMode() === 'all') {
           <div class="period-card expanded">
             <div class="period-content">
-              <p-highcharts-wrapper
-                class="chart-wrapper"
-                [chartOptions]="updateBarChart(selectedTransaction())"
-              />
+              @if (selectedCategory() === null) {
+                <p-highcharts-wrapper
+                  class="chart-wrapper"
+                  [chartOptions]="updateBarChart(selectedTransaction())"
+                />
+              }
               <div class="data-table-wrapper">
                 <!-- Desktop Table -->
                 <table class="data-table desktop-table">
@@ -365,10 +367,12 @@ interface PeriodGroup {
 
               @if (period.isExpanded) {
                 <div class="period-content">
-                  <p-highcharts-wrapper
-                    class="chart-wrapper"
-                    [chartOptions]="updateBarChart(period.transactions)"
-                  />
+                  @if (selectedCategory() === null) {
+                    <p-highcharts-wrapper
+                      class="chart-wrapper"
+                      [chartOptions]="updateBarChart(period.transactions)"
+                    />
+                  }
                   <div class="data-table-wrapper">
                     <!-- Desktop Table -->
                     <table class="data-table desktop-table">
