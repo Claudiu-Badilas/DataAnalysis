@@ -6,8 +6,8 @@ import {
   on,
 } from '@ngrx/store';
 import * as TransactionsActions from 'src/app/modules/transaction/actions/transactions.actions';
-import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { TransactionDomain } from '../models/transactions.model';
+import { DailyTransactionChartUtils } from '../transaction-overview/utils/daily-transactions.chart.util';
 import { MonthlyTransactionChartUtils } from '../transaction-overview/utils/monthly-transactions.chart.util';
 
 export interface State {
@@ -139,6 +139,13 @@ export const getAvailableTransactions = createSelector(
       return true;
     });
   },
+);
+
+export const getDailyTransactionsChart = createSelector(
+  getStartDate,
+  getEndDate,
+  getAvailableTransactionsBySearchTerm,
+  DailyTransactionChartUtils.getChart,
 );
 
 export const getMonthlyTransactionsChart = createSelector(
