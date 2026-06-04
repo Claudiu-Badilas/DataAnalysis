@@ -8,20 +8,18 @@ import { Store } from '@ngrx/store';
 import { RangeSelectorComponent } from 'src/app/shared/components/date-range-picker/date-range-picker.component';
 import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-select/dropdown-select.component';
 import { SearchInputComponent } from 'src/app/shared/components/search-input/search-input.component';
-import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 
 import * as TransactionsActions from 'src/app/modules/transaction/actions/transactions.actions';
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import { Colors } from 'src/app/shared/styles/colors';
-import * as NavigationAction from 'src/app/store/actions/navigation.actions';
+
 @Component({
   selector: 'p-transaction',
   imports: [
     CommonModule,
     CommonModule,
     RouterModule,
-    ToggleButtonActionsComponent,
     TopBarComponent,
     CommonModule,
     CommonModule,
@@ -29,7 +27,6 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
     DropdownSelectComponent,
     SearchInputComponent,
     TopBarComponent,
-    ToggleButtonActionsComponent,
   ],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss'],
@@ -108,13 +105,5 @@ export class TransactionComponent {
 
   onTransactionTypeChange($event: string) {
     this.transactionType.set($event as 'Expense' | 'Income');
-  }
-
-  onSelectionChange(module: string) {
-    this.store.dispatch(
-      NavigationAction.navigateTo({
-        route: `/transactions/${module.toLowerCase()}`,
-      }),
-    );
   }
 }
