@@ -308,7 +308,9 @@ import {
                     <div class="mobile-item-row">
                       <div class="mobile-item-col">
                         <div class="checkbox-group">
-                          <span class="item-index">{{ row.instalmentId }}</span>
+                          <span class="item-index"
+                            >#{{ row.instalmentId }}</span
+                          >
                           <input
                             type="checkbox"
                             [checked]="row.instalmentPayment"
@@ -390,46 +392,38 @@ import {
         } @else {
           <!-- Mobile Normal Rows (incomplete groups) -->
           <div class="mobile-normal-section">
-            <div class="mobile-group-header normal-header">
-              <div class="mobile-group-info">
-                <div class="mobile-group-title">
-                  {{ group.title | date: 'MMM yyyy' }}
-                </div>
-              </div>
-            </div>
             <div class="mobile-items-list">
               @for (row of group.instalments; track row.instalmentId) {
                 <div class="mobile-item gray-item">
                   <div class="mobile-item-row">
                     <div class="mobile-item-col">
-                      <span class="item-index">#{{ row.instalmentId }}</span>
-                    </div>
-                    <div class="mobile-item-col">
-                      <span class="item-date">
-                        {{ row.paymentDate | date: 'MMM yyyy' }}
-                      </span>
-                    </div>
-                    <label class="checkbox-label">
-                      <input
-                        type="checkbox"
-                        [checked]="row.instalmentPayment"
-                        [disabled]="row.disabled || row.earlyPayment"
-                        (change)="onSelectInstalmentPayment(row)"
-                      />
-                      <span>Rata</span>
-                    </label>
-                    <label class="checkbox-label">
-                      <input
-                        type="checkbox"
-                        [checked]="row.earlyPayment"
-                        [disabled]="row.disabled || row.instalmentPayment"
-                        (change)="onSelectEarlyPayment(row)"
-                      />
-                      <span>Anticipat</span>
-                    </label>
-                  </div>
+                      <div class="checkbox-group">
+                        <span class="item-index">#{{ row.instalmentId }}</span>
+                        <input
+                          type="checkbox"
+                          [checked]="row.instalmentPayment"
+                          [disabled]="row.disabled || row.earlyPayment"
+                          (change)="onSelectInstalmentPayment(row)"
+                        />
 
-                  <div class="mobile-item-row">
+                        <input
+                          type="checkbox"
+                          [checked]="row.earlyPayment"
+                          [disabled]="row.disabled || row.instalmentPayment"
+                          (change)="onSelectEarlyPayment(row)"
+                        />
+                      </div>
+                      <div class="checkbox-group">
+                        <span
+                          class="item-date"
+                          [class.strike]="
+                            row.earlyPayment || row.instalmentPayment
+                          "
+                        >
+                          {{ row.paymentDate | date: 'MMM yyyy' }}
+                        </span>
+                      </div>
+                    </div>
                     <div class="mobile-item-col">
                       <span class="item-label">Credit</span>
                       <span class="item-value principal-value"
@@ -521,7 +515,6 @@ import {
       position: sticky;
       left: 0;
       z-index: 30;
-      background: white;
     }
 
     /* Header first column above everything */
@@ -552,20 +545,12 @@ import {
       font-weight: 600;
     }
 
-    .hidden {
-      display: none;
-    }
-
     /* Group Header */
     .group-header-subtotal-row {
       cursor: pointer;
       font-size: 14px;
       background: #fff1f2;
       transition: background 0.2s ease;
-
-      &:hover {
-        background: #e0f2fe;
-      }
 
       td {
         padding: 10px 12px;
@@ -591,7 +576,7 @@ import {
       }
 
       td:last-child {
-        border-right: 4px solid #f59e0b;
+        border-right: 2px solid #f59e0b;
       }
 
       td {
@@ -608,7 +593,7 @@ import {
       }
 
       td:last-child {
-        border-right: 4px solid #10b981;
+        border-right: 2px solid #10b981;
       }
 
       .last-bottom-border {
@@ -625,7 +610,7 @@ import {
       }
 
       td:last-child {
-        border-right: 4px solid #676c72;
+        border-right: 2px solid #676c72;
       }
     }
 
@@ -680,8 +665,6 @@ import {
       .mobile-normal-section {
         background: white;
         border: 1px solid #e2e6ee;
-        border-radius: 12px;
-        margin-bottom: 12px;
         overflow: hidden;
       }
 
@@ -809,7 +792,7 @@ import {
 
       .checkbox-group {
         display: flex;
-        gap: 5px;
+        gap: 3px;
       }
 
       .checkbox-label {
