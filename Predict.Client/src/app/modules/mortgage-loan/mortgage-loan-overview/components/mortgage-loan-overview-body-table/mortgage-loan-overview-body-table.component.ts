@@ -487,7 +487,7 @@ import {
 
     th,
     td {
-      padding: 8px 12px;
+      padding: 5px 10px;
       border-bottom: 1px solid #eeeeee;
       vertical-align: middle;
       min-width: 80px;
@@ -552,7 +552,7 @@ import {
       transition: background 0.2s ease;
 
       td {
-        padding: 10px 12px;
+        padding: 8px 10px;
       }
     }
 
