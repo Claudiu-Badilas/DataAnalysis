@@ -34,6 +34,12 @@
   height: 18px;
   flex-shrink: 0;
 }
+@media (max-width: 768px) {
+  .checkbox-custom {
+    width: 12px;
+    height: 12px;
+  }
+}
 
 .checkbox-input {
   position: absolute;

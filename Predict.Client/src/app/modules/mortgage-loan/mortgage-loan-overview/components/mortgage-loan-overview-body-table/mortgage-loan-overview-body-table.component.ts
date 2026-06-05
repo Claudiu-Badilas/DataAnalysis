@@ -311,18 +311,18 @@ import {
                           <span class="item-index"
                             >#{{ row.instalmentId }}</span
                           >
-                          <input
-                            type="checkbox"
+                          <p-checkbox
+                            class="mx-1"
+                            [id]="row.instalmentId"
                             [checked]="row.instalmentPayment"
                             [disabled]="row.disabled || row.earlyPayment"
-                            (change)="onSelectInstalmentPayment(row)"
+                            (valueChange)="onSelectInstalmentPayment(row)"
                           />
-
-                          <input
-                            type="checkbox"
+                          <p-checkbox
+                            [id]="row.instalmentId"
                             [checked]="row.earlyPayment"
                             [disabled]="row.disabled || row.instalmentPayment"
-                            (change)="onSelectEarlyPayment(row)"
+                            (valueChange)="onSelectEarlyPayment(row)"
                           />
                         </div>
                         <div class="checkbox-group">
@@ -398,19 +398,18 @@ import {
                   <div class="mobile-item-row">
                     <div class="mobile-item-col">
                       <div class="checkbox-group">
-                        <span class="item-index">#{{ row.instalmentId }}</span>
-                        <input
-                          type="checkbox"
+                        <span class="item-index">#{{ row.instalmentId }}</span
+                        ><p-checkbox
+                          class="mx-1"
+                          [id]="row.instalmentId"
                           [checked]="row.instalmentPayment"
                           [disabled]="row.disabled || row.earlyPayment"
-                          (change)="onSelectInstalmentPayment(row)"
-                        />
-
-                        <input
-                          type="checkbox"
+                          (valueChange)="onSelectInstalmentPayment(row)"
+                        /><p-checkbox
+                          [id]="row.instalmentId"
                           [checked]="row.earlyPayment"
                           [disabled]="row.disabled || row.instalmentPayment"
-                          (change)="onSelectEarlyPayment(row)"
+                          (valueChange)="onSelectEarlyPayment(row)"
                         />
                       </div>
                       <div class="checkbox-group">
@@ -792,7 +791,8 @@ import {
 
       .checkbox-group {
         display: flex;
-        gap: 3px;
+        align-items: center;
+        gap: 2px;
       }
 
       .checkbox-label {
