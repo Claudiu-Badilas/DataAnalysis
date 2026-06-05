@@ -1,4 +1,5 @@
-<div class="table-wrapper">
+<!-- Desktop Table Wrapper -->
+<div class="table-wrapper desktop-view">
   <table>
     <thead>
       <tr>
@@ -19,79 +20,16 @@
               alt="no-image"
               (click)="onExpandAll()"
             />
-            <div class="menu-cell" #menuContainer>
-              <button class="burger-btn p-0" (click)="toggleMenu($event)">
-                ☰
-              </button>
-
-              @if (isMenuOpen) {
-                <div class="column-menu">
-                  @for (col of columns; track col.key) {
-                    <div>
-                      <label (click)="$event.stopPropagation()">
-                        <input
-                          type="checkbox"
-                          [(ngModel)]="col.visible"
-                          (click)="$event.stopPropagation()"
-                        />
-                        {{ col.label }}
-                      </label>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
           </div>
         </th>
         <th class="text-center">Data</th>
         <th class="text-center">Credit</th>
         <th class="text-center">Dobândă</th>
-
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('administrationFee')"
-        >
-          Administrare
-        </th>
-
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('insuranceCost')"
-        >
-          PAD
-        </th>
-
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('managementFee')"
-        >
-          Management
-        </th>
-
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('recalculatedInterest')"
-        >
-          Dobândă Recalculată
-        </th>
-
+        <th class="text-center">PAD</th>
         <th class="text-center">Total</th>
-        <th class="text-center" [class.hidden]="!isColumnVisible('halfTotal')">
-          1/2
-        </th>
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('earlyPayment')"
-        >
-          Anticipat
-        </th>
-
-        <th
-          class="text-center"
-          [class.hidden]="!isColumnVisible('remainingBalance')"
-        >
-          Sold
-        </th>
+        <th class="text-center">1/2</th>
+        <th class="text-center">Anticipat</th>
+        <th class="text-center">Sold</th>
       </tr>
     </thead>
 
@@ -100,7 +38,7 @@
         <!-- Group Header -->
         @if (group.completed) {
           <tr
-            class="group-header-subtotal-row rose"
+            class="group-header-subtotal-row"
             [class.expanded-group]="group.expanded"
             (click)="toggleGroup(group)"
           >
@@ -127,54 +65,21 @@
               {{ subtotal.interest | numberFormat: "0.00" }}
             </td>
 
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('administrationFee')"
-            >
-              {{ subtotal.administrationFee | numberFormat: "0.00" }}
-            </td>
-
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('insuranceCost')"
-            >
+            <td class="bold text-center">
               {{ subtotal.insurance | numberFormat: "0.00" }}
-            </td>
-
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('managementFee')"
-            >
-              {{ subtotal.managementFee | numberFormat: "0.00" }}
-            </td>
-
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('recalculatedInterest')"
-            >
-              {{ subtotal.recalculatedInterest | numberFormat: "0.00" }}
             </td>
 
             <td class="bold text-center subtotal-total">
               {{ subtotal.total | numberFormat: "0.00" }}
             </td>
 
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('halfTotal')"
-            >
+            <td class="bold text-center">
               {{ subtotal.total / 2 | numberFormat: "0.00" }}
             </td>
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('earlyPayment')"
-            >
+            <td class="bold text-center">
               {{ subtotal.earlyPaymenrt | numberFormat: "0.00" }}
             </td>
-            <td
-              class="bold text-center"
-              [class.hidden]="!isColumnVisible('remainingBalance')"
-            >
+            <td class="bold text-center">
               {{ subtotal.restant | numberFormat: "0.00" }}
             </td>
           </tr>
@@ -255,45 +160,8 @@
                   'last-bottom-border': last && row.earlyPayment,
                   disabled: !group.completed && row.disabled,
                 }"
-                [class.hidden]="!isColumnVisible('administrationFee')"
-              >
-                {{ row.administrationFee | numberFormat: "0.00" }}
-              </td>
-
-              <td
-                class="text-center"
-                [ngClass]="{
-                  strike: row.earlyPayment,
-                  'last-bottom-border': last && row.earlyPayment,
-                  disabled: !group.completed && row.disabled,
-                }"
-                [class.hidden]="!isColumnVisible('insuranceCost')"
               >
                 {{ row.insuranceCost | numberFormat: "0.00" }}
-              </td>
-
-              <td
-                class="text-center"
-                [ngClass]="{
-                  strike: row.earlyPayment,
-                  'last-bottom-border': last && row.earlyPayment,
-                  disabled: !group.completed && row.disabled,
-                }"
-                [class.hidden]="!isColumnVisible('managementFee')"
-              >
-                {{ row.managementFee | numberFormat: "0.00" }}
-              </td>
-
-              <td
-                class="text-center"
-                [ngClass]="{
-                  strike: row.earlyPayment,
-                  'last-bottom-border': last && row.earlyPayment,
-                  disabled: !group.completed && row.disabled,
-                }"
-                [class.hidden]="!isColumnVisible('recalculatedInterest')"
-              >
-                {{ row.recalculatedInterest | numberFormat: "0.00" }}
               </td>
 
               <td
@@ -318,7 +186,6 @@
                 }
               </td>
               <td
-                [class.hidden]="!isColumnVisible('halfTotal')"
                 class="text-center"
                 [ngClass]="{
                   'last-bottom-border': last && row.earlyPayment,
@@ -328,7 +195,6 @@
                 {{ row.batchTotalInstalment / 2 | numberFormat: "-" }}
               </td>
               <td
-                [class.hidden]="!isColumnVisible('earlyPayment')"
                 class="text-center"
                 [ngClass]="{
                   'last-bottom-border': last && row.earlyPayment,
@@ -347,7 +213,6 @@
                   'last-bottom-border': last && row.earlyPayment,
                   disabled: !group.completed && row.disabled,
                 }"
-                [class.hidden]="!isColumnVisible('remainingBalance')"
               >
                 {{ row.remainingBalance | numberFormat: "0.00" }}
               </td>
@@ -357,4 +222,201 @@
       }
     </tbody>
   </table>
+</div>
+
+<!-- Mobile View -->
+<div class="mobile-view">
+  @for (group of monthlyInstalmentGroups(); track group.id) {
+    @if (group.completed) {
+      @let subtotal = getSubtotal(group);
+      <!-- Mobile Group with Completed Payments -->
+      <div class="mobile-group-card">
+        <div class="mobile-group-header" (click)="toggleGroup(group)">
+          <div class="mobile-group-info">
+            <div class="mobile-group-title">
+              {{ group.title | date: "MMM yyyy" }}
+            </div>
+            <span class="mobile-group-count bold"
+              >{{ subtotal.instalmentsCount }}
+              @if (subtotal.earlyCount > 0) {
+                + {{ subtotal.earlyCount }}
+              }
+            </span>
+
+            <div class="mobile-group-total mobile-group-total-green">
+              {{ subtotal.principal | numberFormat: "0.00" }}
+            </div>
+            <div class="mobile-group-total mobile-group-total-red">
+              {{
+                subtotal.interest + subtotal.insurance | numberFormat: "0.00"
+              }}
+            </div>
+
+            <div class="mobile-group-total mobile-group-total-red">
+              {{ subtotal.total | numberFormat: "0.00" }}
+            </div>
+            <div class="mobile-group-total mobile-group-total-red">
+              {{ subtotal.total / 2 | numberFormat: "0.00" }}
+            </div>
+
+            <div class="mobile-group-total mobile-group-total-black">
+              {{ subtotal.restant | numberFormat: "0.00" }}
+            </div>
+          </div>
+        </div>
+
+        @if (group.expanded) {
+          <div class="mobile-items-list">
+            @for (row of group.instalments; track row.instalmentId) {
+              <div
+                class="mobile-item"
+                [class.orange-item]="row.instalmentPayment"
+                [class.green-item]="row.earlyPayment"
+                [class.gray-item]="!row.instalmentPayment && !row.earlyPayment"
+              >
+                <div class="mobile-item-row">
+                  <div class="mobile-item-col">
+                    <div class="checkbox-group">
+                      <span class="item-index">#{{ row.instalmentId }}</span>
+                      <p-checkbox
+                        class="mx-1"
+                        [id]="row.instalmentId"
+                        [checked]="row.instalmentPayment"
+                        [disabled]="row.disabled || row.earlyPayment"
+                        (valueChange)="onSelectInstalmentPayment(row)"
+                      />
+                      <p-checkbox
+                        [id]="row.instalmentId"
+                        [checked]="row.earlyPayment"
+                        [disabled]="row.disabled || row.instalmentPayment"
+                        (valueChange)="onSelectEarlyPayment(row)"
+                      />
+                    </div>
+                    <div class="checkbox-group">
+                      <span
+                        class="item-date"
+                        [class.strike]="
+                          row.earlyPayment || row.instalmentPayment
+                        "
+                      >
+                        {{ row.paymentDate | date: "MMM yyyy" }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">Credit</span>
+                    <span class="item-value principal-value"
+                      >{{ row.principalAmount | numberFormat: "0.00" }}
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">Dobândă</span>
+                    <span
+                      class="item-value interest-value"
+                      [class.strike]="row.earlyPayment"
+                    >
+                      {{
+                        row.interestAmount + row.insuranceCost
+                          | numberFormat: "0.00"
+                      }}
+                    </span>
+                  </div>
+
+                  <div class="mobile-item-col">
+                    <span class="item-label">Total</span>
+                    <span class="item-value total-value">
+                      @if (!row.earlyPayment && !row.instalmentPayment) {
+                        {{ row.totalInstalment | numberFormat: "0.00" }}
+                      } @else {
+                        {{ row.batchTotalInstalment | numberFormat: "-" }}
+                      }
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">1/2</span>
+                    <span class="item-value">
+                      {{ row.batchTotalInstalment / 2 | numberFormat: "-" }}
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">Anticipat</span>
+                    <span class="item-value early-value">
+                      {{ row.batchTotalEarlyPayment | numberFormat: "-" }}
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">Sold</span>
+                    <span class="item-value remaining-value">
+                      {{ row.remainingBalance | numberFormat: "0.00" }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Mobile Normal Rows (incomplete groups) -->
+      <div class="mobile-normal-section">
+        <div class="mobile-items-list">
+          @for (row of group.instalments; track row.instalmentId) {
+            <div class="mobile-item gray-item">
+              <div class="mobile-item-row">
+                <div class="mobile-item-col">
+                  <div class="checkbox-group">
+                    <span class="item-index">#{{ row.instalmentId }}</span
+                    ><p-checkbox
+                      class="mx-1"
+                      [id]="row.instalmentId"
+                      [checked]="row.instalmentPayment"
+                      [disabled]="row.disabled || row.earlyPayment"
+                      (valueChange)="onSelectInstalmentPayment(row)"
+                    /><p-checkbox
+                      [id]="row.instalmentId"
+                      [checked]="row.earlyPayment"
+                      [disabled]="row.disabled || row.instalmentPayment"
+                      (valueChange)="onSelectEarlyPayment(row)"
+                    />
+                  </div>
+                  <div class="checkbox-group">
+                    <span
+                      class="item-date"
+                      [class.strike]="row.earlyPayment || row.instalmentPayment"
+                    >
+                      {{ row.paymentDate | date: "MMM yyyy" }}
+                    </span>
+                  </div>
+                </div>
+                <div class="mobile-item-col">
+                  <span class="item-label">Credit</span>
+                  <span class="item-value principal-value"
+                    >{{ row.principalAmount | numberFormat: "0.00" }}
+                  </span>
+                </div>
+                <div class="mobile-item-col">
+                  <span class="item-label">Dobândă</span>
+                  <span class="item-value interest-value">
+                    {{ row.interestAmount | numberFormat: "0.00" }}
+                  </span>
+                </div>
+                <div class="mobile-item-col">
+                  <span class="item-label">Total</span>
+                  <span class="item-value total-value">
+                    {{ row.totalInstalment | numberFormat: "0.00" }}
+                  </span>
+                </div>
+                <div class="mobile-item-col">
+                  <span class="item-label">Sold</span>
+                  <span class="item-value remaining-value">
+                    {{ row.remainingBalance | numberFormat: "0.00" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
 </div>
