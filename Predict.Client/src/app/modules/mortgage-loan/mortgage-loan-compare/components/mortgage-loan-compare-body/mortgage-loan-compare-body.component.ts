@@ -36,18 +36,20 @@ export class MortgageLoanCompareBodyComponent {
 
   years = computed(() => {
     const leftManager =
-      this.leftHistoricalInstalmentPaymentBatchesManager().selected
-        .monthlyInstalments;
-    const leftFirstDate = leftManager.at(0)?.paymentDate;
-    const leftLastDate = leftManager.at(-1)?.paymentDate;
+      this.leftHistoricalInstalmentPaymentBatchesManager()?.selected
+        ?.monthlyInstalments;
+    const leftFirstDate = leftManager?.at(0)?.paymentDate;
+    const leftLastDate = leftManager?.at(-1)?.paymentDate;
     const rightManager =
-      this.rightHistoricalInstalmentPaymentBatchesManager().selected
-        .monthlyInstalments;
-    const rightFirstDate = rightManager.at(0)?.paymentDate;
-    const rightLastDate = rightManager.at(-1)?.paymentDate;
+      this.rightHistoricalInstalmentPaymentBatchesManager()?.selected
+        ?.monthlyInstalments;
+    const rightFirstDate = rightManager?.at(0)?.paymentDate;
+    const rightLastDate = rightManager?.at(-1)?.paymentDate;
 
     return this.getEvenlySpacedYears(
-      [leftFirstDate, leftLastDate, rightFirstDate, rightLastDate],
+      [leftFirstDate, leftLastDate, rightFirstDate, rightLastDate].filter(
+        Boolean,
+      ),
       30,
     );
   });
@@ -57,13 +59,13 @@ export class MortgageLoanCompareBodyComponent {
       this.leftHistoricalInstalmentPaymentBatchesManager(),
       this.rightHistoricalInstalmentPaymentBatchesManager(),
       this.baseHistoricalInstalmentPaymentBatchesManager(),
-    ];
+    ].filter(Boolean);
 
     const uniqueManagers = [];
     const seenNames = new Set();
 
     for (const manager of managers) {
-      if (!seenNames.has(manager.getBaseName())) {
+      if (manager && !seenNames.has(manager.getBaseName())) {
         seenNames.add(manager.getBaseName());
         uniqueManagers.push(manager);
       }
@@ -115,6 +117,6 @@ export class MortgageLoanCompareBodyComponent {
     years[0] = startYear;
     years[years.length - 1] = endYear;
 
-    return years;
+    return [...new Set(years)];
   }
 }

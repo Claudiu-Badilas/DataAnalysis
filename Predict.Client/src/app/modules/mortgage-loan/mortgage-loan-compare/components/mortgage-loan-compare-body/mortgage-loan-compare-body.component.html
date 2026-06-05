@@ -1,113 +1,135 @@
-<div class="comparison">
-  <!-- Totals -->
-  <div class="comparison__card">
-    <table class="comparison__table">
-      <thead>
-        <tr>
-          <th></th>
-          @for (manager of validManagers(); track $index) {
-            <th>
-              <div class="comparison__title">{{ manager.getBaseName() }}</div>
-            </th>
-          }
-        </tr>
-      </thead>
+<!-- Desktop View -->
+<div class="desktop-view">
+  <div class="comparison">
+    <!-- Totals -->
+    <div class="comparison__card">
+      <div class="comparison__table-wrapper">
+        <table class="comparison__table">
+          <thead>
+            <tr>
+              <th></th>
+              @for (manager of validManagers(); track $index) {
+                <th>
+                  <div class="comparison__title">
+                    {{ manager.getBaseName() }}
+                  </div>
+                </th>
+              }
+            </tr>
+          </thead>
 
-      <tbody>
-        <!-- Principal -->
-        <tr>
-          <td class="comparison__label">Principal</td>
-          @for (manager of validManagers(); track $index) {
-            <td>
-              {{ manager.getUnpaidPrincipalAmmount() | numberFormat: "0.00" }}
-            </td>
-          }
-        </tr>
+          <tbody>
+            <!-- Principal -->
+            <tr class="comparison__row">
+              <td class="comparison__label">Principal</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__value comparison__value--green">
+                  {{
+                    manager.getUnpaidPrincipalAmmount() | numberFormat: "0.00"
+                  }}
+                </td>
+              }
+            </tr>
 
-        <!-- Dobanda -->
-        <tr>
-          <td class="comparison__label">Dobanda</td>
-          @for (manager of validManagers(); track $index) {
-            <td>
-              {{ manager.getUnpaidAmmountInterest() | numberFormat: "0.00" }}
-            </td>
-          }
-        </tr>
+            <!-- Dobanda -->
+            <tr class="comparison__row">
+              <td class="comparison__label">Dobanda</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__value comparison__value--red">
+                  {{
+                    manager.getUnpaidAmmountInterest() | numberFormat: "0.00"
+                  }}
+                </td>
+              }
+            </tr>
 
-        <!-- PAD -->
-        <tr>
-          <td class="comparison__label">PAD</td>
-          @for (manager of validManagers(); track $index) {
-            <td>
-              {{ manager.getUnpaidInsuranceAmmount() | numberFormat: "0.00" }}
-            </td>
-          }
-        </tr>
+            <!-- PAD -->
+            <tr class="comparison__row">
+              <td class="comparison__label">PAD</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__value comparison__value--orange">
+                  {{
+                    manager.getUnpaidInsuranceAmmount() | numberFormat: "0.00"
+                  }}
+                </td>
+              }
+            </tr>
 
-        <!-- Paid -->
-        <tr class="comparison__row comparison__row--bold">
-          <td class="comparison__label">Paid</td>
-          @for (manager of validManagers(); track $index) {
-            <td>
-              {{ manager.getPaidAmmount() | numberFormat: "0.00" }}
-            </td>
-          }
-        </tr>
+            <!-- Paid -->
+            <tr class="comparison__row comparison__row--bold">
+              <td class="comparison__label">Paid</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__value comparison__value--primary">
+                  {{ manager.getPaidAmmount() | numberFormat: "0.00" }}
+                </td>
+              }
+            </tr>
 
-        <!-- Duration -->
-        <tr>
-          <td class="comparison__label">Last</td>
-          @for (manager of validManagers(); track $index) {
-            <td class="comparison__text comparison__text--primary">
-              {{
-                manager.selected.monthlyInstalments.at(-1)?.paymentDate
-                  | date: "MMM yyy"
-              }}
-            </td>
-          }
-        </tr>
-        <!-- Duration -->
-        <tr>
-          <td class="comparison__label">Duration</td>
-          @for (manager of validManagers(); track $index) {
-            <td class="comparison__text comparison__text--primary">
-              {{ manager.getDuration() ?? "-" }}
-            </td>
-          }
-        </tr>
-      </tbody>
-    </table>
-  </div>
+            <!-- Last Payment -->
+            <tr class="comparison__row">
+              <td class="comparison__label">Last</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__text comparison__text--primary">
+                  {{
+                    manager.selected.monthlyInstalments.at(-1)?.paymentDate
+                      | date: "MMM yyyy"
+                  }}
+                </td>
+              }
+            </tr>
 
-  <!-- Yearly -->
-  <div class="comparison__card" style="overflow-y: auto; height: 300px">
-    <table class="comparison__table">
-      <thead>
-        <tr>
-          <th></th>
-          @for (manager of validManagers(); track $index) {
-            <th>
-              <div class="comparison__title">{{ manager.getBaseName() }}</div>
-            </th>
-          }
-        </tr>
-      </thead>
+            <!-- Duration -->
+            <tr class="comparison__row">
+              <td class="comparison__label">Duration</td>
+              @for (manager of validManagers(); track $index) {
+                <td class="comparison__text comparison__text--primary">
+                  {{ manager.getDuration() ?? "-" }}
+                </td>
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      <tbody>
-        @for (year of years(); track $index) {
-          <tr>
-            <td class="comparison__year">
-              {{ getLabelDate(year) | date: "MMM yyyy" }}
-            </td>
+    <!-- Yearly -->
+    <div class="comparison__card">
+      <div
+        class="comparison__table-wrapper comparison__table-wrapper--scrollable"
+      >
+        <table class="comparison__table">
+          <thead>
+            <tr>
+              <th></th>
+              @for (manager of validManagers(); track $index) {
+                <th>
+                  <div class="comparison__title">
+                    {{ manager.getBaseName() }}
+                  </div>
+                </th>
+              }
+            </tr>
+          </thead>
 
-            @for (manager of validManagers(); track $index) {
-              <td>
-                {{ getPrincipalAmount(year, manager) | numberFormat: "0.00" }}
-              </td>
+          <tbody>
+            @for (year of years(); track $index) {
+              <tr class="comparison__row">
+                <td class="comparison__year">
+                  {{ getLabelDate(year) | date: "MMM yyyy" }}
+                </td>
+
+                @for (manager of validManagers(); track $index) {
+                  <td class="comparison__value comparison__value--green">
+                    {{
+                      getPrincipalAmount(year, manager) | numberFormat: "0.00"
+                    }}
+                  </td>
+                }
+              </tr>
             }
-          </tr>
-        }
-      </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
