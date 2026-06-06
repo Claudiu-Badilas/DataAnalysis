@@ -321,7 +321,7 @@ tbody td:first-child {
   .mobile-item-col {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     flex: 1;
     min-width: 70px;
   }
@@ -426,7 +426,7 @@ tbody td:first-child {
   }
 
   .mobile-item-col {
-    min-width: 67px;
+    min-width: 64px;
   }
 
   .item-index {
