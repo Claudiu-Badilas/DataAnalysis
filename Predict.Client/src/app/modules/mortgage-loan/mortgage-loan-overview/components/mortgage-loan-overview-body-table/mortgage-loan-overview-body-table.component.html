@@ -233,34 +233,31 @@
       <div class="mobile-group-card">
         <div class="mobile-group-header" (click)="toggleGroup(group)">
           <div class="mobile-group-info">
-            <div class="mobile-group-title">
-              {{ group.title | date: "MMM yyyy" }}
+            <div class="d-flex align-items-center" style="gap: 10px">
+              <div class="mobile-group-title">
+                {{ group.title | date: "MMM yyyy" }}
+              </div>
+              <span class="mobile-group-count bold"
+                >{{ subtotal.instalmentsCount }}
+                @if (subtotal.earlyCount > 0) {
+                  + {{ subtotal.earlyCount }}
+                }
+              </span>
             </div>
-            <span class="mobile-group-count bold"
-              >{{ subtotal.instalmentsCount }}
-              @if (subtotal.earlyCount > 0) {
-                + {{ subtotal.earlyCount }}
-              }
-            </span>
+            <div class="d-flex align-items-center" style="gap: 10px">
+              <div class="mobile-group-total mobile-group-total-red">
+                <span>TOTAL:</span>
+                <span>
+                  {{ subtotal.total | numberFormat: "0.00" }}
+                </span>
+              </div>
 
-            <div class="mobile-group-total mobile-group-total-green">
-              {{ subtotal.principal | numberFormat: "0.00" }}
-            </div>
-            <div class="mobile-group-total mobile-group-total-red">
-              {{
-                subtotal.interest + subtotal.insurance | numberFormat: "0.00"
-              }}
-            </div>
-
-            <div class="mobile-group-total mobile-group-total-red">
-              {{ subtotal.total | numberFormat: "0.00" }}
-            </div>
-            <div class="mobile-group-total mobile-group-total-red">
-              {{ subtotal.total / 2 | numberFormat: "0.00" }}
-            </div>
-
-            <div class="mobile-group-total mobile-group-total-black">
-              {{ subtotal.restant | numberFormat: "0.00" }}
+              <div class="mobile-group-total mobile-group-total-black">
+                <span>SOLD:</span>
+                <span>
+                  {{ subtotal.restant | numberFormat: "0.00" }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -310,6 +307,12 @@
                     </span>
                   </div>
                   <div class="mobile-item-col">
+                    <span class="item-label">Anticipat</span>
+                    <span class="item-value principal-value">
+                      {{ row.batchTotalEarlyPayment | numberFormat: "-" }}
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
                     <span class="item-label">Dobândă</span>
                     <span
                       class="item-value interest-value"
@@ -321,7 +324,6 @@
                       }}
                     </span>
                   </div>
-
                   <div class="mobile-item-col">
                     <span class="item-label">Total</span>
                     <span class="item-value total-value">
@@ -336,18 +338,6 @@
                     <span class="item-label">1/2</span>
                     <span class="item-value">
                       {{ row.batchTotalInstalment / 2 | numberFormat: "-" }}
-                    </span>
-                  </div>
-                  <div class="mobile-item-col">
-                    <span class="item-label">Anticipat</span>
-                    <span class="item-value early-value">
-                      {{ row.batchTotalEarlyPayment | numberFormat: "-" }}
-                    </span>
-                  </div>
-                  <div class="mobile-item-col">
-                    <span class="item-label">Sold</span>
-                    <span class="item-value remaining-value">
-                      {{ row.remainingBalance | numberFormat: "0.00" }}
                     </span>
                   </div>
                 </div>
