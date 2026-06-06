@@ -98,8 +98,9 @@ module CarrefourPdfReceipt =
 
 
     let readPdfs dataOwnerId (pdfs: PdfReader list) =
-        let parsedTransaction = pdfs |> List.choose (fun pdf -> getReceipt pdf dataOwnerId)
-        //|> List.filter (fun pdf -> pdf.Identifier.IsNone)
-        //|> List.distinctBy (fun t -> t.Identifier)
+        let parsedTransaction = 
+            pdfs 
+            |> List.choose (fun pdf -> getReceipt pdf dataOwnerId)
+            |> List.distinctBy (fun t -> t.Identifier)
 
         StoreReceipts.storeReceipts dataOwnerId parsedTransaction

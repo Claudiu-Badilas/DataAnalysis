@@ -59,7 +59,8 @@ module ParserConsole =
         //let carrReceipts = CarrefourPdfReceipt.readPdfs dataOwnerId carrPdfs
 
 
-        let lidlReceipts = LidlJsonReceipt.readJsons @$"{path}\Receipts\Lidl" dataOwnerId
+        //let lidlReceipts = LidlJsonReceipt.readJsons @$"{path}\Receipts\Lidl" dataOwnerId
+        let kauflandReceipts = KauflandJsonReceipt.readJsons @$"{path}\Receipts\Kaufland" dataOwnerId
 
         printfn "Run succesfully"
         0

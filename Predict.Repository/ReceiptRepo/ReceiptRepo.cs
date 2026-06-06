@@ -47,9 +47,6 @@ public class ReceiptRepo : IReceiptRepo {
                     FROM public.receipt r
                     JOIN public.currency c ON c.id = r.currency_id 
                     JOIN public.provider p ON p.id = r.provider_id
-                    WHERE 
-                        r.receipt_date>= @startDate
-                        AND r.receipt_date <= @endDate
                     ORDER BY r.receipt_date desc;";
 
             return (await connection.QueryAsync<ReceiptResponse>(sql, new { startDate, endDate })).ToList();

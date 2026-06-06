@@ -27,6 +27,7 @@
 		<Compile Include="DatabaseAccess\Utils\StorerUtils.fs" />
 		<Compile Include="DatabaseAccess\StoreTransactions.fs" />
 		<Compile Include="DatabaseAccess\StoreReceipts.fs" />
+		<Compile Include="Readers\Receipt\KauflandJsonReceipt.fs" />
 		<Compile Include="Readers\Receipt\LidlJsonReceipt.fs" />
 		<Compile Include="Readers\AccountStatement\OM\OrangeMoneyPdfAccountStatement.fs" />
 		<Compile Include="Readers\AccountStatement\OM\OrangeMoneyExcelAccountStatement.fs" />
