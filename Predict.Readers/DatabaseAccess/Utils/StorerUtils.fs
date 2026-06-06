@@ -25,7 +25,8 @@ module StorerUtils =
             | Provider.ORANGE_MONEY -> Nullable(3)
             | Provider.CARREFOUR -> Nullable(4)
             | Provider.KAUFLAND -> Nullable(5)
-            | Provider.ZEPP_LIFE -> Nullable(6)
+            //| Provider.ZEPP_LIFE -> Nullable(6)
+            | Provider.LIDL -> Nullable(7)
         | _ -> Nullable()
 
 

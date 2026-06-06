@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="IronXL.Excel" Version="2022.12.11262" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.3" />
+		<PackageReference Include="MetadataExtractor" Version="2.9.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -26,6 +27,7 @@
 		<Compile Include="DatabaseAccess\Utils\StorerUtils.fs" />
 		<Compile Include="DatabaseAccess\StoreTransactions.fs" />
 		<Compile Include="DatabaseAccess\StoreReceipts.fs" />
+		<Compile Include="Readers\Receipt\LidlJsonReceipt.fs" />
 		<Compile Include="Readers\AccountStatement\OM\OrangeMoneyPdfAccountStatement.fs" />
 		<Compile Include="Readers\AccountStatement\OM\OrangeMoneyExcelAccountStatement.fs" />
 		<Compile Include="Readers\AccountStatement\RevolutExcelAccountStatement.fs" />
@@ -33,8 +35,6 @@
 		<Compile Include="Readers\Receipt\CarrefourPdfReceipt.fs" />
 		<Compile Include="Program.fs" />
 	</ItemGroup>
-
-	<ItemGroup />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Predict.Repository\Predict.Repository.csproj" />

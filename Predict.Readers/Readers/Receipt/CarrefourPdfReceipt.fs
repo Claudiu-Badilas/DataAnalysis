@@ -91,15 +91,15 @@ module CarrefourPdfReceipt =
                 |> ParserUtils.tryGetDouble
               Currency = CurrencyType.RON |> Some
               ParsedProducts = products
-              Provider = provider } |> Some
-        with e -> None
+              Provider = provider }
+            |> Some
+        with e ->
+            None
 
 
     let readPdfs dataOwnerId (pdfs: PdfReader list) =
-        let parsedTransaction =
-            pdfs
-            |> List.choose (fun pdf -> getReceipt pdf dataOwnerId)
-            //|> List.filter (fun pdf -> pdf.Identifier.IsNone)
-            //|> List.distinctBy (fun t -> t.Identifier)
+        let parsedTransaction = pdfs |> List.choose (fun pdf -> getReceipt pdf dataOwnerId)
+        //|> List.filter (fun pdf -> pdf.Identifier.IsNone)
+        //|> List.distinctBy (fun t -> t.Identifier)
 
         StoreReceipts.storeReceipts dataOwnerId parsedTransaction

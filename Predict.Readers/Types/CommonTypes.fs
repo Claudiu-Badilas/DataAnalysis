@@ -14,3 +14,4 @@ module CommonTypes =
         | CARREFOUR
         | KAUFLAND
         | ZEPP_LIFE
+        | LIDL

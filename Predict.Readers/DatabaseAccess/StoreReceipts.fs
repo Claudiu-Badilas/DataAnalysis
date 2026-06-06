@@ -53,7 +53,7 @@ module StoreReceipts =
             parsedReceipts
             |> List.map (fun r ->
                 new Receipt(
-                    Identifier = Guid.NewGuid().ToString(), //r.Identifier.Value,
+                    Identifier = r.Identifier.Value,
                     Date = StorerUtils.getNullableDateTimeFromOption r.Date,
                     TotalPrice = StorerUtils.getNullableFloatFromOption r.TotalPrice,
                     TotalDiscount = StorerUtils.getNullableFloatFromOption r.TotalDiscount,

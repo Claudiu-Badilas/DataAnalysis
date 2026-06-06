@@ -3,6 +3,7 @@ open IronXL
 open iTextSharp.text.pdf
 open Predict.Readers.AccountStatement
 open Predict.Reader.ReceiptParser
+open System
 
 module ParserConsole =
 
@@ -40,7 +41,7 @@ module ParserConsole =
     let main _ =
         let dataOwnerId = 1
 
-        let path = @""
+        let path = @"D:\Projects\PredictFiles"
 
         //let raifExcels = getLocalExcels @$"{path}\AccountStatements\Raiffaisen"
         //let raitransactions = RaiffeisenExcelAccountStatement.readExcels dataOwnerId raifExcels
@@ -54,8 +55,11 @@ module ParserConsole =
         //let omPdfs = getLocalPdfs @$"{path}\"
         //let omtransactions = OrangeMoneyPdfAccountStatement.readPdfs dataOwnerId omPdfs
 
-        //let carrPdfs = getLocalPdfs @$"{path}\"
+        //let carrPdfs = getLocalPdfs @$"{path}\Receipts\Carrefour"
         //let carrReceipts = CarrefourPdfReceipt.readPdfs dataOwnerId carrPdfs
+
+
+        let lidlReceipts = LidlJsonReceipt.readJsons @$"{path}\Receipts\Lidl" dataOwnerId
 
         printfn "Run succesfully"
         0
