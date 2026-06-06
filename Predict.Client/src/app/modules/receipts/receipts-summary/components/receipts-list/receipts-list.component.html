@@ -1,132 +1,275 @@
 <div class="receipts-container">
-  <table class="receipts-table">
-    <thead>
-      <tr>
-        <th class="table-header">Provider</th>
-        <th class="table-header">Date</th>
-        <th class="table-header">Total Price</th>
-        <th class="table-header">Total Discount</th>
-        <th class="table-header">Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for(receipt of receipts; track receipt.id) {
-        <tr class="receipt-row" [ngClass]="{ exp: expandedId === receipt.id }">
-          <td class="receipt-cell">
-            <div class="provider-info">
-              <span class="provider-name">{{ receipt.provider }}</span>
+  <!-- Desktop View - Modern Card Design -->
+  <div class="desktop-view">
+    <div class="receipts-grid">
+      @for (receipt of receipts; track receipt.id) {
+        <div class="receipt-card" [class.expanded]="expandedId === receipt.id">
+          <!-- Card Header -->
+          <div class="card-header" (click)="toggle(receipt.id)">
+            <div class="header-left">
+              <div class="provider-icon">
+                <span class="provider-initial">{{
+                  receipt.provider.charAt(0)
+                }}</span>
+              </div>
+              <div class="provider-details">
+                <h3 class="provider-name">{{ receipt.provider }}</h3>
+                <span class="receipt-date">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  {{ receipt.date | date: "dd MMM yyyy" }}
+                </span>
+              </div>
             </div>
-          </td>
-          <td class="receipt-cell">
-            <div class="date-info">
-              {{ receipt.date | date : "dd-MM-yyyy" }}
-            </div>
-          </td>
-          <td class="receipt-cell">
-            <div class="price-info">
-              <span class="price-value">{{
-                receipt.totalPrice | currency : "RON"
-              }}</span>
-            </div>
-          </td>
-          <td class="receipt-cell">
-            <div
-              class="discount-info"
-              [class.has-discount]="receipt.totalDiscount"
+            <div class="header-right">
+              <div class="price-summary">
+                <div class="total-price">
+                  <span class="price-label">Total</span>
+                  <span class="price-value">{{
+                    receipt.totalPrice | currency: "RON"
+                  }}</span>
+                </div>
+                @if (receipt.totalDiscount) {
+                  <div class="discount-badge">
+                    <span>-{{ receipt.totalDiscount | currency: "RON" }}</span>
+                  </div>
+                }
+              </div>
+              <button
+                class="expand-btn"
+                [class.rotated]="expandedId === receipt.id"
               >
-              {{
-              receipt.totalDiscount
-              ? (receipt.totalDiscount | currency : "RON")
-              : "-"
-              }}
-            </div>
-          </td>
-          <td class="receipt-cell">
-            <button
-              class="toggle-btn"
-              (click)="toggle(receipt.id)"
-              [class.expanded]="expandedId === receipt.id"
-              [attr.aria-expanded]="expandedId === receipt.id"
-              >
-              <span class="toggle-text"
-                >{{ expandedId === receipt.id ? "Hide" : "Show" }} Details</span
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
                 >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
               </button>
-            </td>
-          </tr>
+            </div>
+          </div>
 
-          @if(expandedId === receipt.id) {
-            <tr class="products-expansion">
-              <td colspan="5" class="expansion-cell">
-                <div class="expansion-content-wrapper">
-                  <div class="products-container">
-                    <div class="products-header">
-                      <h4 class="products-title">
-                        <span class="products-count">{{
-                          receipt.products.length
-                        }}</span>
-                        Product{{ receipt.products.length !== 1 ? "s" : "" }}
-                      </h4>
-                      <div class="products-summary">
-                        <span class="summary-item">
-                          Total:
-                          <strong>{{ receipt.totalPrice | currency : "RON" }}</strong>
-                        </span>
-                        @if (receipt.totalDiscount) {
-                          <span class="summary-item">
-                            Discount:
-                            <strong class="discount-highlight"
-                              >-{{ receipt.totalDiscount | currency : "RON" }}</strong
-                              >
-                            </span>
-                          }
-                        </div>
+          <!-- Expanded Content -->
+          @if (expandedId === receipt.id) {
+            <div class="card-expanded">
+              <div class="products-section">
+                <div class="section-header">
+                  <div class="section-title">
+                    <span class="title-icon">📦</span>
+                    <h4>Products</h4>
+                    <span class="products-count">{{
+                      receipt.products.length
+                    }}</span>
+                  </div>
+                  <div class="section-summary">
+                    <div class="summary-item">
+                      <span>Subtotal:</span>
+                      <strong>{{
+                        receipt.totalPrice + (receipt.totalDiscount || 0)
+                          | currency: "RON"
+                      }}</strong>
+                    </div>
+                    @if (receipt.totalDiscount) {
+                      <div class="summary-item discount">
+                        <span>Discount:</span>
+                        <strong
+                          >-{{
+                            receipt.totalDiscount | currency: "RON"
+                          }}</strong
+                        >
                       </div>
-                      <div class="products-table-wrapper">
-                        <table class="products-table">
-                          <thead>
-                            <tr>
-                              <th class="product-header">Product Name</th>
-                              <th class="product-header">Price</th>
-                              <th class="product-header">Quantity</th>
-                              <th class="product-header">Type</th>
-                              <th class="product-header">VAT</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @for(product of receipt.products; track product.id) {
-                              <tr class="product-row">
-                                <td class="product-cell">
-                                  <div class="product-name">{{ product.name }}</div>
-                                </td>
-                                <td class="product-cell">
-                                  <div class="product-price">
-                                    {{ product.price | currency : "RON" }}
-                                  </div>
-                                </td>
-                                <td class="product-cell">
-                                  <div class="product-quantity">
-                                    {{ product.quantity }}
-                                  </div>
-                                </td>
-                                <td class="product-cell">
-                                  <div class="product-type">
-                                    {{ product.quantityType }}
-                                  </div>
-                                </td>
-                                <td class="product-cell">
-                                  <div class="product-vat">{{ product.vat }}%</div>
-                                </td>
-                              </tr>
-                            }
-                          </tbody>
-                        </table>
-                      </div>
+                    }
+                    <div class="summary-item total">
+                      <span>Total:</span>
+                      <strong>{{
+                        receipt.totalPrice | currency: "RON"
+                      }}</strong>
                     </div>
                   </div>
-                </td>
-              </tr>
-              } }
-            </tbody>
-          </table>
+                </div>
+
+                <div class="products-table-wrapper">
+                  <table class="products-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Type</th>
+                        <th>VAT</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (product of receipt.products; track product.id) {
+                        <tr class="product-row">
+                          <td class="product-name-cell">
+                            <div class="product-name">{{ product.name }}</div>
+                          </td>
+                          <td class="product-price">
+                            {{ product.price | currency: "RON" }}
+                          </td>
+                          <td class="product-quantity">
+                            <span class="quantity-badge">{{
+                              product.quantity
+                            }}</span>
+                          </td>
+                          <td class="product-type">
+                            <span class="type-badge">{{
+                              product.quantityType
+                            }}</span>
+                          </td>
+                          <td class="product-vat">
+                            <span class="vat-badge">{{ product.vat }}%</span>
+                          </td>
+                          <td class="product-total">
+                            <strong>{{
+                              product.price * product.quantity | currency: "RON"
+                            }}</strong>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          }
         </div>
+      }
+    </div>
+  </div>
+
+  <!-- Mobile View -->
+  <div class="mobile-view">
+    @for (receipt of receipts; track receipt.id) {
+      <div class="mobile-card">
+        <div class="mobile-card-header" (click)="toggle(receipt.id)">
+          <div class="mobile-header-left">
+            <div class="provider-initial">
+              {{ receipt.provider.charAt(0) }}
+            </div>
+            <div class="mobile-provider-info">
+              <div class="mobile-provider-name">{{ receipt.provider }}</div>
+              <div class="mobile-date">
+                {{ receipt.date | date: "dd MMM yyyy" }}
+              </div>
+            </div>
+          </div>
+          <div class="mobile-header-right">
+            <div class="mobile-total">
+              <span class="total-label">Total</span>
+              <span class="total-value">{{
+                receipt.totalPrice | currency: "RON"
+              }}</span>
+            </div>
+            @if (receipt.totalDiscount) {
+              <div class="mobile-discount">
+                -{{ receipt.totalDiscount | currency: "RON" }}
+              </div>
+            }
+            <button
+              class="mobile-expand-btn"
+              [class.rotated]="expandedId === receipt.id"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        @if (expandedId === receipt.id) {
+          <div class="mobile-card-body">
+            <div class="mobile-products-list">
+              @for (product of receipt.products; track product.id) {
+                <div class="mobile-product-item">
+                  <div class="mobile-product-header">
+                    <span class="product-name">{{ product.name }}</span>
+                    <span class="product-quantity-badge"
+                      >x{{ product.quantity }}</span
+                    >
+                  </div>
+                  <div class="mobile-product-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Price</span>
+                      <span class="detail-value">{{
+                        product.price | currency: "RON"
+                      }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Type</span>
+                      <span class="detail-value">{{
+                        product.quantityType
+                      }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">VAT</span>
+                      <span class="detail-value vat">{{ product.vat }}%</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Total</span>
+                      <span class="detail-value total">{{
+                        product.price * product.quantity | currency: "RON"
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="mobile-summary">
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <strong>{{
+                  receipt.totalPrice + (receipt.totalDiscount || 0)
+                    | currency: "RON"
+                }}</strong>
+              </div>
+              @if (receipt.totalDiscount) {
+                <div class="summary-row discount">
+                  <span>Discount:</span>
+                  <strong
+                    >-{{ receipt.totalDiscount | currency: "RON" }}</strong
+                  >
+                </div>
+              }
+              <div class="summary-row total">
+                <span>Total:</span>
+                <strong>{{ receipt.totalPrice | currency: "RON" }}</strong>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
