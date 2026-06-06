@@ -1,39 +1,33 @@
-<p-top-bar>
-  <ng-container module-navigation> </ng-container>
-</p-top-bar>
-<p-side-bar>
-  <ng-container filters-full-size
-    ><div class="space">
-      <p-toggle-button
-        [options]="[{ label: 'Summary' }, { label: 'Products' }]"
-        [selected]="'Products'"
-        (selectionChange)="onSelectionChange($event)"
-      />
-    </div>
-    <div class="space">
-      <p-date-range-picker
-        [startDate]="startDate$ | async"
-        [endDate]="endDate$ | async"
-        [minDate]="minDate"
-        [maxDate]="now"
-        (valueChanged)="handleRangeChange($event)"
-      />
-    </div>
-    <div class="space">
+<p-top-bar [hasFiltersContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Summary', 'Products']"
+      [selected]="'Products'"
+      (selectionChange)="onSelectionChange($event)"
+  /></ng-container>
+  <ng-container filter-content>
+    <p-date-range-picker
+      [startDate]="startDate$ | async"
+      [endDate]="endDate$ | async"
+      [minDate]="minDate"
+      [maxDate]="now"
+      (valueChanged)="handleRangeChange($event)"
+    />
+    <div class="mt-2">
       <p-search-input (search)="onSearch($event)" />
     </div>
   </ng-container>
+</p-top-bar>
 
-  <ng-container main-content>
-    <div>
-      <p-highcharts-wrapper
-        [chartOptions]="dailyPurchasedProductChart$ | async"
-      />
-    </div>
-    <div class="mt-3">
-      <p-highcharts-wrapper
-        [chartOptions]="productPriceTrendChartUtils$ | async"
-      />
-    </div>
-  </ng-container>
-</p-side-bar>
+<div class="m-2">
+  <div>
+    <p-highcharts-wrapper
+      [chartOptions]="dailyPurchasedProductChart$ | async"
+    />
+  </div>
+  <div class="mt-2">
+    <p-highcharts-wrapper
+      [chartOptions]="productPriceTrendChartUtils$ | async"
+    />
+  </div>
+</div>

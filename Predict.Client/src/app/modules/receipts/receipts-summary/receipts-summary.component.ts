@@ -5,8 +5,7 @@ import * as ReceiptsActions from 'src/app/modules/receipts/actions/receipts.acti
 import * as fromReceipts from 'src/app/modules/receipts/reducers/receipts.reducer';
 import { RangeSelectorComponent } from 'src/app/shared/components/date-range-picker/date-range-picker.component';
 import { DateRangePicker } from 'src/app/shared/components/date-range-picker/models/date-range-picker.model';
-import { SideBarComponent } from 'src/app/shared/components/side-bar/side-bar.component';
-import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
+import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 import { ReceiptListComponent } from './components/receipts-list/receipts-list.component';
@@ -15,10 +14,9 @@ import { ReceiptListComponent } from './components/receipts-list/receipts-list.c
   selector: 'p-receipts-summary',
   imports: [
     CommonModule,
-    SideBarComponent,
     ReceiptListComponent,
     RangeSelectorComponent,
-    ToggleButtonComponent,
+    ToggleButtonActionsComponent,
     TopBarComponent,
   ],
   templateUrl: './receipts-summary.component.html',

@@ -7,7 +7,7 @@ import { RangeSelectorComponent } from 'src/app/shared/components/date-range-pic
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { SearchInputComponent } from 'src/app/shared/components/search-input/search-input.component';
 import { SideBarComponent } from 'src/app/shared/components/side-bar/side-bar.component';
-import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
+import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 
@@ -15,9 +15,8 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
   selector: 'p-receipts-products',
   imports: [
     CommonModule,
-    SideBarComponent,
     RangeSelectorComponent,
-    ToggleButtonComponent,
+    ToggleButtonActionsComponent,
     SearchInputComponent,
     HighchartWrapperComponent,
     TopBarComponent,

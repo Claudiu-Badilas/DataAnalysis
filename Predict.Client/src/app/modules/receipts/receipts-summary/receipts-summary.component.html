@@ -1,2 +1,19 @@
-<p-top-bar> <ng-container module-navigation> </ng-container> </p-top-bar
-><p-receipts-list [receipts]="receipts$ | async" />
+<p-top-bar [hasFiltersContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Summary', 'Products']"
+      [selected]="'Summary'"
+      (selectionChange)="onSelectionChange($event)"
+  /></ng-container>
+  <ng-container filter-content>
+    <p-date-range-picker
+      [startDate]="startDate$ | async"
+      [endDate]="endDate$ | async"
+      [minDate]="minDate"
+      [maxDate]="now"
+      (valueChanged)="handleRangeChange($event)"
+    />
+  </ng-container>
+</p-top-bar>
+
+<p-receipts-list [receipts]="receipts$ | async" />
