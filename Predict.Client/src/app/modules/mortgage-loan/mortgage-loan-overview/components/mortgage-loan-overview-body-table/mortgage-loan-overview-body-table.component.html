@@ -104,21 +104,23 @@
                 }"
               >
                 <div class="d-flex align-items-center justify-content-center">
-                  <span>
-                    {{ row.instalmentId }}
-                  </span>
-                  <p-checkbox
-                    class="mx-1"
-                    [id]="row.instalmentId"
-                    [checked]="row.instalmentPayment"
-                    [disabled]="row.disabled || row.earlyPayment"
-                    (valueChange)="onSelectInstalmentPayment(row)"
-                  /><p-checkbox
-                    [id]="row.instalmentId"
-                    [checked]="row.earlyPayment"
-                    [disabled]="row.disabled || row.instalmentPayment"
-                    (valueChange)="onSelectEarlyPayment(row)"
-                  />
+                  <span> {{ row.instalmentId }} </span>
+                  @if (
+                    !row.disabled && (row.earlyPayment || row.instalmentPayment)
+                  ) {
+                    <p-checkbox
+                      class="mx-1"
+                      [id]="row.instalmentId"
+                      [checked]="row.instalmentPayment"
+                      [disabled]="row.disabled || row.earlyPayment"
+                      (valueChange)="onSelectInstalmentPayment(row)"
+                    /><p-checkbox
+                      [id]="row.instalmentId"
+                      [checked]="row.earlyPayment"
+                      [disabled]="row.disabled || row.instalmentPayment"
+                      (valueChange)="onSelectEarlyPayment(row)"
+                    />
+                  }
                 </div>
               </td>
 
@@ -230,7 +232,7 @@
     @if (group.completed) {
       @let subtotal = getSubtotal(group);
       <!-- Mobile Group with Completed Payments -->
-      <div class="mobile-group-card">
+      <div class="mobile-group-card" (holdTrigger)="onExpandOrCollapse()">
         <div class="mobile-group-header" (click)="toggleGroup(group)">
           <div class="mobile-group-info">
             <div class="d-flex align-items-center" style="gap: 10px">
@@ -355,19 +357,21 @@
               <div class="mobile-item-row">
                 <div class="mobile-item-col">
                   <div class="checkbox-group">
-                    <span class="item-index">#{{ row.instalmentId }}</span
-                    ><p-checkbox
-                      class="mx-1"
-                      [id]="row.instalmentId"
-                      [checked]="row.instalmentPayment"
-                      [disabled]="row.disabled || row.earlyPayment"
-                      (valueChange)="onSelectInstalmentPayment(row)"
-                    /><p-checkbox
-                      [id]="row.instalmentId"
-                      [checked]="row.earlyPayment"
-                      [disabled]="row.disabled || row.instalmentPayment"
-                      (valueChange)="onSelectEarlyPayment(row)"
-                    />
+                    <span class="item-index">#{{ row.instalmentId }}</span>
+                    @if (!row.disabled) {
+                      <p-checkbox
+                        class="mx-1"
+                        [id]="row.instalmentId"
+                        [checked]="row.instalmentPayment"
+                        [disabled]="row.disabled || row.earlyPayment"
+                        (valueChange)="onSelectInstalmentPayment(row)"
+                      /><p-checkbox
+                        [id]="row.instalmentId"
+                        [checked]="row.earlyPayment"
+                        [disabled]="row.disabled || row.instalmentPayment"
+                        (valueChange)="onSelectEarlyPayment(row)"
+                      />
+                    }
                   </div>
                   <div class="checkbox-group">
                     <span

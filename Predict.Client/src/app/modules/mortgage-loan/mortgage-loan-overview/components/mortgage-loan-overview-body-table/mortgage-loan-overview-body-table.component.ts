@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import * as MortgageLoanActions from 'src/app/modules/mortgage-loan/actions/mortgage-loan.actions';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { CheckboxComponent } from 'src/app/shared/components/checkbox/checkbox.component';
+import { HoldTriggerDirective } from 'src/app/shared/directives/hold-trigger.directive';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import {
@@ -14,7 +15,13 @@ import {
 
 @Component({
   selector: 'p-mortgage-loan-overview-body-table',
-  imports: [CommonModule, FormsModule, NumberFormatPipe, CheckboxComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NumberFormatPipe,
+    CheckboxComponent,
+    HoldTriggerDirective,
+  ],
   templateUrl: './mortgage-loan-overview-body-table.component.html',
   styleUrl: './mortgage-loan-overview-body-table.component.scss',
 })
@@ -75,5 +82,14 @@ export class MortgageLoanOverviewBodyTableComponent {
 
   onCollapseAll() {
     this.monthlyInstalmentGroups().forEach((group) => (group.expanded = false));
+  }
+
+  expandState = true;
+
+  onExpandOrCollapse() {
+    this.expandState = !this.expandState;
+    this.monthlyInstalmentGroups().forEach(
+      (group) => (group.expanded = this.expandState),
+    );
   }
 }
