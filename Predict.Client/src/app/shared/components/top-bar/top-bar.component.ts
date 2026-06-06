@@ -18,8 +18,8 @@ export class TopBarComponent implements OnInit {
   modules = [
     { label: 'Mortgage', icon: 'wallet', url: '/mortgage-loan' },
     { label: 'Transactions', icon: 'trending', url: '/transactions' },
-    { label: 'Invoices', icon: 'file', url: '/invoices' },
     { label: 'Receipts', icon: 'receipt', url: '/receipts' },
+    { label: 'Invoices', icon: 'file', url: '/invoices' },
     { label: 'Settings', icon: 'settings', url: '/settings' },
   ];
 
