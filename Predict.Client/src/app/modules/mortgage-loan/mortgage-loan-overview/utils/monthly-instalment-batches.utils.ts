@@ -73,7 +73,7 @@ function createOverviewBaseLoanInstalments(
         instalmentPayment: hasInstalmentPayment,
         earlyPayment: hasEarlyPayment,
         disabled: false,
-      };
+      } as OverviewLoanInstalment;
     })
     .map((instalment, i, arr) => {
       const prev = arr[i - 1];
@@ -81,7 +81,9 @@ function createOverviewBaseLoanInstalments(
 
       let enable = true;
 
-      if (prev && next) {
+      if (!prev && next) {
+        enable = i === 0 && !next.instalmentPayment && !next.earlyPayment;
+      } else if (prev && next) {
         enable =
           (!instalment.instalmentPayment &&
             !instalment.earlyPayment &&
@@ -90,7 +92,7 @@ function createOverviewBaseLoanInstalments(
             !next.earlyPayment &&
             (instalment.instalmentPayment || instalment.earlyPayment));
       }
-      return { ...instalment, disabled: !enable };
+      return { ...instalment, disabled: !enable } as OverviewLoanInstalment;
     });
 }
 
