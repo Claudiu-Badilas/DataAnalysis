@@ -29,7 +29,7 @@
               </td>
               <td class="text-center">
                 <span class="group-title">{{
-                  group.title | date: "dd MMM yyyy"
+                  group.title | date: "MMM yyyy"
                 }}</span>
               </td>
               <td class="text-center">
@@ -84,7 +84,7 @@
                     [class.strike]="row.earlyPayment || row.instalmentPayment"
                     [class.last-bottom-border]="last && row.earlyPayment"
                   >
-                    {{ row.paymentDate | date: "dd MMM yyyy" }}
+                    {{ row.paymentDate | date: "MMM yyyy" }}
                   </td>
                   <td
                     class="text-center bold total-column"
@@ -142,7 +142,7 @@
                   class="text-center"
                   [class.last-bottom-border]="last && row.earlyPayment"
                 >
-                  {{ row.paymentDate | date: "dd MMM yyyy" }}
+                  {{ row.paymentDate | date: "MMM yyyy" }}
                 </td>
                 <td
                   class="text-center bold total-column"
@@ -196,29 +196,34 @@
         <div class="mobile-group-card">
           <div class="mobile-group-header" (click)="toggleGroup(group)">
             @let subtotal = getSubtotal(group);
-            <div class="mobile-group-info">
-              <div class="mobile-group-title">
-                {{ group.title | date: "dd MMM yyyy" }}
+            <div clas="d-flex align-items-center" style="gap: 10px">
+              <div class="mobile-group-info">
+                <div class="mobile-group-title">
+                  {{ group.title | date: "MMM yyyy" }}
+                </div>
+                <span class="mobile-group-count bold"
+                  >{{ subtotal.instalmentsCount }} +
+                  {{ subtotal.earlyCount }}</span
+                >
               </div>
-              <span class="mobile-group-count bold"
-                >{{ subtotal.instalmentsCount }} +
-                {{ subtotal.earlyCount }}</span
-              >
             </div>
-            <div class="mobile-group-total mobile-group-total-green">
-              {{ subtotal.total | numberFormat: "0.00" }}
-            </div>
-            <div class="mobile-group-total mobile-group-total-blue">
-              {{ subtotal.principal | numberFormat: "0.00" }}
-            </div>
-            <div class="mobile-group-total mobile-group-total-red">
-              {{
-                subtotal.interest + subtotal.insuranceCost
-                  | numberFormat: "0.00"
-              }}
-            </div>
-            <div class="mobile-group-total mobile-group-total-black">
-              {{ subtotal.remainingBalance | numberFormat: "0.00" }}
+            <div clas="d-flex align-items-center" style="gap: 10px">
+              <div class="mobile-group-info">
+                <div class="mobile-group-total mobile-group-total-blue">
+                  <span>Principal:</span>
+                  <span> {{ subtotal.principal | numberFormat: "0.00" }}</span>
+                </div>
+                <div class="mobile-group-total mobile-group-total-green">
+                  <span>Total:</span>
+                  <span> {{ subtotal.total | numberFormat: "0.00" }} </span>
+                </div>
+                <div class="mobile-group-total mobile-group-total-black">
+                  <span>Sold:</span>
+                  <span>
+                    {{ subtotal.remainingBalance | numberFormat: "0.00" }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -234,10 +239,9 @@
                   "
                 >
                   <div class="mobile-item-row">
-                    <div class="mobile-item-col">
+                    <div class="mobile-item-col justify-content-center">
                       <span class="item-index">#{{ row.index }}</span>
-                    </div>
-                    <div class="mobile-item-col">
+
                       <span
                         class="item-date"
                         [class.strike]="
@@ -254,7 +258,7 @@
                       }}</span>
                     </div>
                     <div class="mobile-item-col">
-                      <span class="item-label">Interest</span>
+                      <span class="item-label">Dobanda</span>
                       <span
                         class="item-value interest-value"
                         [class.strike]="row.earlyPayment"
@@ -272,7 +276,7 @@
                       </span>
                     </div>
                     <div class="mobile-item-col">
-                      <span class="item-label">Remaining</span>
+                      <span class="item-label">Sold</span>
                       <span class="item-value remaining-value">{{
                         row.remainingBalance | numberFormat: "0.00"
                       }}</span>
@@ -308,7 +312,7 @@
                     }}</span>
                   </div>
                   <div class="mobile-item-col">
-                    <span class="item-label">Interest</span>
+                    <span class="item-label">Dobanda</span>
                     <span
                       class="item-value interest-value"
                       [class.strike]="row.earlyPayment"
@@ -323,7 +327,7 @@
                     </span>
                   </div>
                   <div class="mobile-item-col">
-                    <span class="item-label">Remaining</span>
+                    <span class="item-label">Sold</span>
                     <span class="item-value remaining-value">{{
                       row.remainingBalance | numberFormat: "0.00"
                     }}</span>
