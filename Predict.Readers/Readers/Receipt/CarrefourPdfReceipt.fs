@@ -66,7 +66,7 @@ module CarrefourPdfReceipt =
         |> Array.toList
 
 
-    let getReceipt (pdf: PdfReader) userId : ParsedReceipt =
+    let getReceipt (pdf: PdfReader) userId : ParsedReceipt option =
         try
             let text = PdfUtils.getTextFromPdf pdf
             let products = getParsedProducts text
@@ -91,22 +91,15 @@ module CarrefourPdfReceipt =
                 |> ParserUtils.tryGetDouble
               Currency = CurrencyType.RON |> Some
               ParsedProducts = products
-              Provider = provider }
-        with e ->
-            { Identifier = None
-              Date = None
-              TotalPrice = None
-              TotalDiscount = None
-              Currency = None
-              ParsedProducts = []
-              Provider = None }
+              Provider = provider } |> Some
+        with e -> None
 
 
     let readPdfs dataOwnerId (pdfs: PdfReader list) =
         let parsedTransaction =
             pdfs
-            |> List.map (fun pdf -> getReceipt pdf dataOwnerId)
-            |> List.filter (fun pdf -> pdf.Identifier.IsNone)
-            |> List.distinctBy (fun t -> t.Identifier)
+            |> List.choose (fun pdf -> getReceipt pdf dataOwnerId)
+            //|> List.filter (fun pdf -> pdf.Identifier.IsNone)
+            //|> List.distinctBy (fun t -> t.Identifier)
 
         StoreReceipts.storeReceipts dataOwnerId parsedTransaction
