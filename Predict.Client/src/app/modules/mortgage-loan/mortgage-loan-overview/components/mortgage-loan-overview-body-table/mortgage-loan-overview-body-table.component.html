@@ -232,8 +232,12 @@
     @if (group.completed) {
       @let subtotal = getSubtotal(group);
       <!-- Mobile Group with Completed Payments -->
-      <div class="mobile-group-card" (holdTrigger)="onExpandOrCollapse()">
-        <div class="mobile-group-header" (click)="toggleGroup(group)">
+      <div class="mobile-group-card">
+        <div
+          class="mobile-group-header"
+          (holdTrigger)="onExpandOrCollapse()"
+          (click)="toggleGroup(group)"
+        >
           <div class="mobile-group-info">
             <div class="d-flex align-items-center" style="gap: 10px">
               <div class="mobile-group-title">
