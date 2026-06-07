@@ -1,9 +1,5 @@
 .transaction-analytics {
-  background: white;
   border-radius: 16px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -35,7 +31,6 @@
 }
 
 .stat-card:hover {
-  background: #f9fafb;
 }
 
 .stat-icon {
@@ -93,12 +88,7 @@
 
 .table-container {
   overflow-y: auto;
-  background: #f9fafb;
   height: calc(100vh - 150px);
-}
-
-.period-view {
-  padding: 5px;
 }
 
 /* Period Cards */
@@ -126,7 +116,6 @@
 }
 
 .period-header:hover {
-  background: #f9fafb;
 }
 
 .period-info {
@@ -228,7 +217,6 @@
 .data-table thead th {
   text-align: left;
   padding: 12px 8px;
-  background: #f9fafb;
   font-weight: 600;
   color: #374151;
   border-bottom: 2px solid #e5e7eb;
@@ -238,10 +226,6 @@
   padding: 12px 8px;
   border-bottom: 1px solid #f3f4f6;
   color: #4b5563;
-}
-
-.data-table tbody tr:hover {
-  background: #f9fafb;
 }
 
 .data-table tbody tr.highlight-row {
@@ -350,7 +334,6 @@
 }
 
 .mobile-card {
-  background: #f9fafb;
   border-radius: 6px;
   padding: 12px;
   transition: all 0.2s ease;
@@ -496,10 +479,6 @@
 }
 
 @media (max-width: 640px) {
-  .period-view {
-    padding: 5px;
-  }
-
   .period-title {
     font-size: 0.875rem;
   }
@@ -605,8 +584,7 @@
 
   .table-container {
     overflow-y: auto;
-    background: #f9fafb;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 200px);
   }
 }
 
