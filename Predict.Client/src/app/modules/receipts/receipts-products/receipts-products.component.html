@@ -19,15 +19,4 @@
   </ng-container>
 </p-top-bar>
 
-<div class="m-2">
-  <div>
-    <p-highcharts-wrapper
-      [chartOptions]="dailyPurchasedProductChart$ | async"
-    />
-  </div>
-  <div class="mt-2">
-    <p-highcharts-wrapper
-      [chartOptions]="productPriceTrendChartUtils$ | async"
-    />
-  </div>
-</div>
+<p-most-common-products [receipts]="receipts$ | async"></p-most-common-products>

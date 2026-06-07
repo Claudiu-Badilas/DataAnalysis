@@ -4,12 +4,11 @@ import { Store } from '@ngrx/store';
 import * as ReceiptsActions from 'src/app/modules/receipts/actions/receipts.actions';
 import * as fromReceipts from 'src/app/modules/receipts/reducers/receipts.reducer';
 import { RangeSelectorComponent } from 'src/app/shared/components/date-range-picker/date-range-picker.component';
-import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { SearchInputComponent } from 'src/app/shared/components/search-input/search-input.component';
-import { SideBarComponent } from 'src/app/shared/components/side-bar/side-bar.component';
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
+import { MostCommonProductsComponent } from './components/most-common-products/most-common-products.component';
 
 @Component({
   selector: 'p-receipts-products',
@@ -18,8 +17,8 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
     RangeSelectorComponent,
     ToggleButtonActionsComponent,
     SearchInputComponent,
-    HighchartWrapperComponent,
     TopBarComponent,
+    MostCommonProductsComponent,
   ],
   templateUrl: './receipts-products.component.html',
   styleUrl: './receipts-products.component.scss',
@@ -27,11 +26,8 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 export class ReceiptsProductsComponent {
   startDate$ = this.store.select(fromReceipts.getStartDate);
   endDate$ = this.store.select(fromReceipts.getEndDate);
-  dailyPurchasedProductChart$ = this.store.select(
-    fromReceipts.getDailyPurchasedProductChart,
-  );
-  productPriceTrendChartUtils$ = this.store.select(
-    fromReceipts.getProductPriceTrendChartUtils,
+  receipts$ = this.store.select(
+    fromReceipts.getAvailableReceiptsProductBySearchTerm,
   );
 
   minDate = new Date('2016-01-01');
