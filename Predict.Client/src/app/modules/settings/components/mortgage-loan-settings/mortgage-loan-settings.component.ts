@@ -3,6 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MortgageLoanService_STORAGE_KEY } from 'src/app/modules/mortgage-loan/services/overview-mortgage.service';
 import { SettingsService } from 'src/app/modules/mortgage-loan/services/settings.service';
+import { ReceiptsService_STORAGE_KEY } from 'src/app/modules/receipts/services/receipts.service';
+import { TransactionService_STORAGE_KEY } from 'src/app/modules/transaction/services/transaction.service';
 import { SuccessModalComponent } from 'src/app/shared/components/modals/success-modal/success-modal.component';
 
 @Component({
@@ -52,17 +54,21 @@ export class MortgageLoanSettingsComponent implements OnInit {
 
   loadKeys(): void {
     this.storageKeys = [];
+    const ignoredKey = [
+      TransactionService_STORAGE_KEY,
+      ReceiptsService_STORAGE_KEY,
+    ];
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key) {
+      if (key && !ignoredKey.some((k) => key === k)) {
         this.storageKeys.push({ key, storageType: 'local' });
       }
     }
 
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i);
-      if (key) {
+      if (key && !ignoredKey.some((k) => key === k)) {
         this.storageKeys.push({ key, storageType: 'session' });
       }
     }
