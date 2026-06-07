@@ -33,14 +33,15 @@ interface PeriodGroup {
   month?: string;
 }
 
-interface ReceiptGroup {
+interface Receipt {
   id: string;
   receiptId: string;
-  receiptDate: Date;
-  totalRevenue: number;
+  date: Date;
+  totalPrice: number;
   totalQuantity: number;
+  totalDiscount?: number;
   products: ReceiptsProductDomain[];
-  isExpanded: boolean;
+  provider: string;
 }
 
 @Component({
@@ -148,415 +149,618 @@ interface ReceiptGroup {
       <div class="table-container">
         <div class="period-view">
           @if (viewMode() === 'all') {
-            <div class="period-card expanded">
-              <div class="period-content">
-                <div class="data-table-wrapper">
-                  <!-- Desktop Table -->
-                  <table class="data-table desktop-table">
-                    <thead>
-                      <tr>
-                        <th>Last Purchase</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total Revenue</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (item of getAllGroupedProducts(); track item.id) {
-                        <tr class="highlight-row">
-                          <td data-label="Last Purchase" class="date-cell">
-                            {{ formatDay(item.latestDate) }}
-                          </td>
-                          <td data-label="Product" class="product-cell">
-                            <span
-                              class="product-badge multiple"
-                              [ngbTooltip]="item.name"
-                              placement="top"
-                              container="body"
-                            >
-                              {{ item.count }}x {{ item.name }}
-                            </span>
-                          </td>
-                          <td data-label="Quantity" class="quantity-cell">
-                            {{ item.totalQuantity }}
-                          </td>
-                          <td
-                            data-label="Total Revenue"
-                            class="amount-cell positive"
-                          >
-                            {{ item.totalRevenue | numberFormat: '0.00' }}
-                          </td>
-                          <td class="percentage-cell">
-                            <div class="percentage-bar">
-                              <div
-                                class="percentage-fill revenue-fill"
-                                [style.width.%]="item.percentageOfTotalRevenue"
-                              ></div>
-                              <span class="percentage-text"
-                                >{{
-                                  item.percentageOfTotalRevenue
-                                    | numberFormat: '0.0'
-                                }}%</span
-                              >
-                            </div>
-                          </td>
-                        </tr>
-                      }
-
-                      @if (!getAllGroupedProducts().length) {
-                        <tr>
-                          <td colspan="5" class="empty-cell">
-                            No products available
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-
-                  <!-- Mobile Cards -->
-                  <div class="mobile-cards pt-2">
-                    @for (item of getAllGroupedProducts(); track item.id) {
-                      <div class="mobile-card highlight-card">
-                        <div class="mobile-card-header">
-                          <span
-                            class="product-badge multiple"
-                            [ngbTooltip]="item.name"
-                            placement="top"
-                            container="body"
-                          >
-                            {{ item.count }}x {{ item.name }}
-                          </span>
+            <!-- All View - Modern Card Design -->
+            <div class="receipts-container">
+              <div class="desktop-view m-2">
+                <div class="receipts-grid">
+                  <div class="receipt-card expanded">
+                    <div class="card-header">
+                      <div class="header-left">
+                        <div class="provider-icon">
+                          <span class="provider-initial">AL</span>
                         </div>
-                        <div class="mobile-card-details">
-                          <div class="detail-row">
-                            <span class="detail-label">Last Purchase:</span>
-                            <span class="detail-value">{{
-                              formatDay(item.latestDate)
-                            }}</span>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Quantity:</span>
-                            <span class="detail-value">{{
-                              item.totalQuantity
-                            }}</span>
-                          </div>
-                          <div class="detail-row">
-                            <span class="detail-label">Revenue:</span>
-                            <span class="detail-value positive">{{
-                              item.totalRevenue | numberFormat: '0.00'
-                            }}</span>
-                          </div>
-                          <div class="mobile-percentages">
-                            <div class="percentage-bar-mobile">
-                              <div
-                                class="percentage-fill-mobile revenue-fill"
-                                [style.width.%]="item.percentageOfTotalRevenue"
-                              ></div>
-                              <span class="percentage-text-mobile">
-                                {{
-                                  item.percentageOfTotalRevenue
-                                    | numberFormat: '0.0'
-                                }}% of revenue
-                              </span>
-                            </div>
+                        <div class="provider-details">
+                          All Products Overview
+                        </div>
+                        <span class="products-count">{{
+                          getAllGroupedProducts().length
+                        }}</span>
+                      </div>
+                      <div class="header-right">
+                        <div class="price-summary">
+                          <div class="total-price">
+                            <span class="price-value"
+                              >{{
+                                totalRevenue() | numberFormat: '0.00'
+                              }}
+                              RON</span
+                            >
                           </div>
                         </div>
                       </div>
-                    }
+                    </div>
 
-                    @if (!getAllGroupedProducts().length) {
-                      <div class="empty-mobile">No products available</div>
-                    }
+                    <div class="card-expanded">
+                      <div class="products-section">
+                        <div class="products-table-wrapper">
+                          <table class="products-table">
+                            <thead>
+                              <tr>
+                                <th>Last Purchase</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total Revenue</th>
+                                <th>% of Revenue</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (
+                                item of getAllGroupedProducts();
+                                track item.id
+                              ) {
+                                <tr class="product-row">
+                                  <td class="date-cell">
+                                    {{ formatDay(item.latestDate) }}
+                                  </td>
+                                  <td class="product-name-cell">
+                                    <div class="product-name">
+                                      {{ item.count }}x {{ item.name }}
+                                    </div>
+                                  </td>
+                                  <td class="product-quantity">
+                                    <span class="quantity-badge">{{
+                                      item.totalQuantity
+                                    }}</span>
+                                  </td>
+                                  <td class="product-total">
+                                    <strong
+                                      >{{
+                                        item.totalRevenue | numberFormat: '0.00'
+                                      }}
+                                      RON</strong
+                                    >
+                                  </td>
+                                  <td class="percentage-cell">
+                                    <div class="percentage-bar-wrapper">
+                                      <div class="percentage-bar">
+                                        <div
+                                          class="percentage-fill revenue-fill"
+                                          [style.width.%]="
+                                            item.percentageOfTotalRevenue
+                                          "
+                                        ></div>
+                                        <span class="percentage-text"
+                                          >{{
+                                            item.percentageOfTotalRevenue
+                                              | numberFormat: '0.0'
+                                          }}%</span
+                                        >
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              }
+
+                              @if (!getAllGroupedProducts().length) {
+                                <tr>
+                                  <td colspan="5" class="empty-cell">
+                                    No products available
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile View for All -->
+              <div class="mobile-view">
+                <div class="mobile-card expanded">
+                  <div class="mobile-card-header">
+                    <div class="mobile-header-left">
+                      <div class="provider-initial">AL</div>
+                      <div class="mobile-provider-info">
+                        <div class="mobile-date">All Products</div>
+                      </div>
+                      <span class="products-count">{{
+                        getAllGroupedProducts().length
+                      }}</span>
+                    </div>
+                    <div class="mobile-header-right">
+                      <div class="mobile-total">
+                        <span class="total-value"
+                          >{{ totalRevenue() | numberFormat: '0.00' }} RON</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mobile-card-body">
+                    <div class="mobile-products-list">
+                      @for (item of getAllGroupedProducts(); track item.id) {
+                        <div class="mobile-product-item">
+                          <div class="mobile-product-header">
+                            <span class="product-name"
+                              >{{ item.count }}x {{ item.name }}</span
+                            >
+                            <span class="product-quantity-badge"
+                              >Qty: {{ item.totalQuantity }}</span
+                            >
+                          </div>
+                          <div class="mobile-product-details">
+                            <div class="detail-item">
+                              <span class="detail-label">Last Purchase</span>
+                              <span class="detail-value">{{
+                                formatDay(item.latestDate)
+                              }}</span>
+                            </div>
+                            <div class="detail-item">
+                              <span class="detail-label">Revenue</span>
+                              <span class="detail-value total"
+                                >{{
+                                  item.totalRevenue | numberFormat: '0.00'
+                                }}
+                                RON</span
+                              >
+                            </div>
+                            <div class="detail-item full-width">
+                              <div class="percentage-bar-mobile">
+                                <div
+                                  class="percentage-fill-mobile revenue-fill"
+                                  [style.width.%]="
+                                    item.percentageOfTotalRevenue
+                                  "
+                                ></div>
+                                <span class="percentage-text-mobile">
+                                  {{
+                                    item.percentageOfTotalRevenue
+                                      | numberFormat: '0.0'
+                                  }}% of revenue
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      }
+
+                      @if (!getAllGroupedProducts().length) {
+                        <div class="empty-mobile">No products available</div>
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           } @else if (viewMode() === 'receipts') {
-            <!-- Receipts View - Grouped by Receipt ID -->
-            <div class="receipts-view">
-              @for (receipt of receiptGroups(); track receipt.id) {
-                <div class="receipt-card" [class.expanded]="receipt.isExpanded">
-                  <div class="receipt-header" (click)="toggleReceipt(receipt)">
-                    <div class="receipt-info">
-                      <div class="receipt-title">
-                        Receipt #{{ receipt.receiptId }}
-                      </div>
-                      <div class="receipt-date">
-                        {{ formatFullDate(receipt.receiptDate) }}
-                      </div>
-                      <div class="receipt-summary">
-                        {{ receipt.products.length }} product{{
-                          receipt.products.length !== 1 ? 's' : ''
-                        }}
-                      </div>
-                    </div>
-                    <div class="receipt-totals">
-                      <span class="buble"
-                        >{{ receipt.totalQuantity }} items</span
+            <!-- Receipts View with Modern Styling -->
+            <div class="receipts-container">
+              <!-- Desktop View -->
+              <div class="desktop-view m-2">
+                <div class="receipts-grid">
+                  @for (receipt of receiptGroups(); track receipt.id) {
+                    <div
+                      class="receipt-card"
+                      [class.expanded]="expandedReceiptId() === receipt.id"
+                    >
+                      <div
+                        class="card-header"
+                        (click)="toggleReceipt(receipt.id)"
                       >
-                      @if (receipt.totalRevenue > 0) {
-                        <span class="revenue-badge">{{
-                          receipt.totalRevenue | numberFormat: '0.00'
-                        }}</span>
+                        <div class="header-left">
+                          <div class="provider-icon">
+                            <span class="provider-initial">{{
+                              receipt.provider.charAt(0)
+                            }}</span>
+                          </div>
+                          <div class="provider-details">
+                            {{ receipt.date | date: 'dd MMM yyyy' }}
+                          </div>
+                          <span class="products-count">{{
+                            receipt.products.length
+                          }}</span>
+                        </div>
+                        <div class="header-right">
+                          <div class="price-summary">
+                            <div class="total-price">
+                              <span class="price-value"
+                                >{{
+                                  receipt.totalPrice | numberFormat: '0.00'
+                                }}
+                                RON</span
+                              >
+                            </div>
+                            @if (receipt.totalDiscount) {
+                              <div class="discount-badge">
+                                <span
+                                  >-{{
+                                    receipt.totalDiscount | numberFormat: '0.00'
+                                  }}
+                                  RON</span
+                                >
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+
+                      @if (expandedReceiptId() === receipt.id) {
+                        <div class="card-expanded">
+                          <div class="products-section">
+                            <div class="products-table-wrapper">
+                              <table class="products-table">
+                                <thead>
+                                  <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  @for (
+                                    product of receipt.products;
+                                    track product.id
+                                  ) {
+                                    <tr class="product-row">
+                                      <td class="product-name-cell">
+                                        <div class="product-name">
+                                          {{ product.name }}
+                                        </div>
+                                      </td>
+                                      <td class="product-price">
+                                        {{
+                                          product.price ?? 0
+                                            | numberFormat: '0.00'
+                                        }}
+                                        RON
+                                      </td>
+                                      <td class="product-quantity">
+                                        <span class="quantity-badge"
+                                          >x{{ product.quantity }}</span
+                                        >
+                                      </td>
+                                      <td class="product-total">
+                                        <strong
+                                          >{{
+                                            (product.price ?? 0) *
+                                              (product.quantity ?? 0)
+                                              | numberFormat: '0.00'
+                                          }}
+                                          RON</strong
+                                        >
+                                      </td>
+                                    </tr>
+                                  }
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
                       }
                     </div>
-                  </div>
+                  }
+                </div>
+              </div>
 
-                  @if (receipt.isExpanded) {
-                    <div class="receipt-content">
-                      <div class="data-table-wrapper">
-                        <!-- Desktop Table -->
-                        <table class="data-table desktop-table">
-                          <thead>
-                            <tr>
-                              <th>Product Name</th>
-                              <th>Quantity</th>
-                              <th>Unit Price</th>
-                              <th>Total Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @for (
-                              product of receipt.products;
-                              track product.id
-                            ) {
-                              <tr>
-                                <td
-                                  data-label="Product Name"
-                                  class="product-cell"
-                                >
-                                  <span class="product-badge multiple">
-                                    {{ product.name }}
-                                  </span>
-                                </td>
-                                <td data-label="Quantity" class="quantity-cell">
-                                  {{ product.quantity }}
-                                </td>
-                                <td data-label="Unit Price" class="amount-cell">
-                                  {{
-                                    product.price ?? 0 | numberFormat: '0.00'
-                                  }}
-                                </td>
-                                <td
-                                  data-label="Total Price"
-                                  class="amount-cell positive"
-                                >
-                                  {{
-                                    (product.price ?? 0) *
-                                      (product.quantity ?? 0)
-                                      | numberFormat: '0.00'
-                                  }}
-                                </td>
-                              </tr>
-                            }
-                          </tbody>
-                        </table>
+              <!-- Mobile View -->
+              <div class="mobile-view">
+                @for (receipt of receiptGroups(); track receipt.id) {
+                  <div class="mobile-card">
+                    <div
+                      class="mobile-card-header"
+                      (click)="toggleReceipt(receipt.id)"
+                    >
+                      <div class="mobile-header-left">
+                        <div class="provider-initial">
+                          {{ receipt.provider.charAt(0) }}
+                        </div>
+                        <div class="mobile-provider-info">
+                          <div class="mobile-date">
+                            {{ receipt.date | date: 'dd MMM yyyy' }}
+                          </div>
+                        </div>
+                        <span class="products-count">{{
+                          receipt.products.length
+                        }}</span>
+                      </div>
+                      <div class="mobile-header-right">
+                        <div class="mobile-total">
+                          <span class="total-value"
+                            >{{
+                              receipt.totalPrice | numberFormat: '0.00'
+                            }}
+                            RON</span
+                          >
+                        </div>
+                        @if (receipt.totalDiscount) {
+                          <div class="mobile-discount">
+                            -{{ receipt.totalDiscount | numberFormat: '0.00' }}
+                            RON
+                          </div>
+                        }
+                      </div>
+                    </div>
 
-                        <!-- Mobile Cards -->
-                        <div class="mobile-cards pt-2">
+                    @if (expandedReceiptId() === receipt.id) {
+                      <div class="mobile-card-body">
+                        <div class="mobile-products-list">
                           @for (product of receipt.products; track product.id) {
-                            <div class="mobile-card">
-                              <div class="mobile-card-header">
-                                <span class="product-badge multiple">
-                                  {{ product.name }}
-                                </span>
+                            <div class="mobile-product-item">
+                              <div class="mobile-product-header">
+                                <span class="product-name">{{
+                                  product.name
+                                }}</span>
+                                <span class="product-quantity-badge"
+                                  >x{{ product.quantity }}</span
+                                >
                               </div>
-                              <div class="mobile-card-details">
-                                <div class="detail-row">
-                                  <span class="detail-label">Quantity:</span>
-                                  <span class="detail-value">{{
-                                    product.quantity
-                                  }}</span>
+                              <div class="mobile-product-details">
+                                <div class="detail-item">
+                                  <span class="detail-label">Price</span>
+                                  <span class="detail-value"
+                                    >{{
+                                      product.price ?? 0 | numberFormat: '0.00'
+                                    }}
+                                    RON</span
+                                  >
                                 </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Unit Price:</span>
-                                  <span class="detail-value">{{
-                                    product.price ?? 0 | numberFormat: '0.00'
-                                  }}</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Total Price:</span>
-                                  <span class="detail-value positive">{{
-                                    (product.price ?? 0) *
-                                      (product.quantity ?? 0)
-                                      | numberFormat: '0.00'
-                                  }}</span>
+                                <div class="detail-item">
+                                  <span class="detail-label">Total</span>
+                                  <span class="detail-value total"
+                                    >{{
+                                      (product.price ?? 0) *
+                                        (product.quantity ?? 0)
+                                        | numberFormat: '0.00'
+                                    }}
+                                    RON</span
+                                  >
                                 </div>
                               </div>
                             </div>
                           }
                         </div>
                       </div>
-                    </div>
-                  }
-                </div>
-              }
-
-              @if (!receiptGroups().length) {
-                <div class="empty-state">No receipts available</div>
-              }
-            </div>
-          } @else {
-            @for (period of currentPeriods(); track period.id) {
-              <div class="period-card" [class.expanded]="period.isExpanded">
-                <div class="period-header" (click)="togglePeriod(period)">
-                  <div class="period-info">
-                    <div>
-                      <div class="period-title">{{ period.title }}</div>
-                    </div>
-                  </div>
-                  <div class="period-totals">
-                    <span class="buble"
-                      >{{ period.transactionCount }} items</span
-                    >
-                    @if (period.totalRevenue > 0) {
-                      <span class="revenue-badge">{{
-                        period.totalRevenue | numberFormat: '0.00'
-                      }}</span>
                     }
-                  </div>
-                </div>
-
-                @if (period.isExpanded) {
-                  <div class="period-content">
-                    <div class="data-table-wrapper">
-                      <!-- Desktop Table -->
-                      <table class="data-table desktop-table">
-                        <thead>
-                          <tr>
-                            <th>Last Purchase</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total Revenue</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @for (item of period.multiple; track item.id) {
-                            <tr class="highlight-row">
-                              <td data-label="Last Purchase" class="date-cell">
-                                {{ formatDay(item.latestDate) }}
-                              </td>
-                              <td data-label="Product" class="product-cell">
-                                <span
-                                  class="product-badge multiple"
-                                  [ngbTooltip]="item.name"
-                                  placement="top"
-                                  container="body"
-                                >
-                                  {{ item.count }}x {{ item.name }}
-                                </span>
-                              </td>
-                              <td data-label="Quantity" class="quantity-cell">
-                                {{ item.totalQuantity }}
-                              </td>
-                              <td
-                                data-label="Total Revenue"
-                                class="amount-cell positive"
-                              >
-                                {{ item.totalRevenue | numberFormat: '0.00' }}
-                              </td>
-                              <td class="percentage-cell">
-                                <div class="percentage-bar">
-                                  <div
-                                    class="percentage-fill revenue-fill"
-                                    [style.width.%]="
-                                      item.percentageOfTotalRevenue
-                                    "
-                                  ></div>
-                                  <span class="percentage-text"
-                                    >{{
-                                      item.percentageOfTotalRevenue
-                                        | numberFormat: '0.0'
-                                    }}%</span
-                                  >
-                                </div>
-                              </td>
-                            </tr>
-                          }
-
-                          @if (!period.multiple.length) {
-                            <tr>
-                              <td colspan="5" class="empty-cell">
-                                No products this period
-                              </td>
-                            </tr>
-                          }
-                        </tbody>
-                      </table>
-
-                      <!-- Mobile Cards -->
-                      <div class="mobile-cards pt-2">
-                        @for (item of period.multiple; track item.id) {
-                          <div class="mobile-card highlight-card">
-                            <div class="mobile-card-header">
-                              <span
-                                class="product-badge multiple"
-                                [ngbTooltip]="item.name"
-                                placement="top"
-                                container="body"
-                              >
-                                {{ item.count }}x {{ item.name }}
-                              </span>
-                            </div>
-                            <div class="mobile-card-details">
-                              <div class="detail-row">
-                                <span class="detail-label">Last Purchase:</span>
-                                <span class="detail-value">{{
-                                  formatDay(item.latestDate)
-                                }}</span>
-                              </div>
-                              <div class="detail-row">
-                                <span class="detail-label">Quantity:</span>
-                                <span class="detail-value">{{
-                                  item.totalQuantity
-                                }}</span>
-                              </div>
-                              <div class="detail-row">
-                                <span class="detail-label">Revenue:</span>
-                                <span class="detail-value positive">{{
-                                  item.totalRevenue | numberFormat: '0.00'
-                                }}</span>
-                              </div>
-                              <div class="mobile-percentages">
-                                <div class="percentage-bar-mobile">
-                                  <div
-                                    class="percentage-fill-mobile revenue-fill"
-                                    [style.width.%]="
-                                      item.percentageOfTotalRevenue
-                                    "
-                                  ></div>
-                                  <span class="percentage-text-mobile">
-                                    {{
-                                      item.percentageOfTotalRevenue
-                                        | numberFormat: '0.0'
-                                    }}% of revenue
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        }
-
-                        @if (!period.multiple.length) {
-                          <div class="empty-mobile">
-                            No products this period
-                          </div>
-                        }
-                      </div>
-                    </div>
                   </div>
                 }
               </div>
+            </div>
+
+            @if (!receiptGroups().length) {
+              <div class="empty-state">No receipts available</div>
             }
-          }
-          @if (
-            viewMode() !== 'all' &&
-            viewMode() !== 'receipts' &&
-            !currentPeriods().length
-          ) {
-            <div class="empty-state">No product data available</div>
+          } @else {
+            <!-- Monthly/Yearly View - Modern Card Design -->
+            <div class="receipts-container">
+              <div class="desktop-view m-2">
+                <div class="receipts-grid">
+                  @for (period of currentPeriods(); track period.id) {
+                    <div
+                      class="receipt-card"
+                      [class.expanded]="expandedPeriodId() === period.id"
+                    >
+                      <div
+                        class="card-header"
+                        (click)="togglePeriod(period.id)"
+                      >
+                        <div class="header-left">
+                          <div class="provider-icon">
+                            <span class="provider-initial">
+                              {{
+                                viewMode() === 'monthly'
+                                  ? period.month?.charAt(0) || 'M'
+                                  : period.year.toString().slice(-2)
+                              }}
+                            </span>
+                          </div>
+                          <div class="provider-details">
+                            {{ period.title }}
+                          </div>
+                          <span class="products-count">{{
+                            period.multiple.length
+                          }}</span>
+                        </div>
+                        <div class="header-right">
+                          <div class="price-summary">
+                            <div class="total-price">
+                              <span class="price-value"
+                                >{{
+                                  period.totalRevenue | numberFormat: '0.00'
+                                }}
+                                RON</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      @if (expandedPeriodId() === period.id) {
+                        <div class="card-expanded">
+                          <div class="products-section">
+                            <div class="products-table-wrapper">
+                              <table class="products-table">
+                                <thead>
+                                  <tr>
+                                    <th>Last Purchase</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total Revenue</th>
+                                    <th>% of Period</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  @for (
+                                    item of period.multiple;
+                                    track item.id
+                                  ) {
+                                    <tr class="product-row">
+                                      <td class="date-cell">
+                                        {{ formatDay(item.latestDate) }}
+                                      </td>
+                                      <td class="product-name-cell">
+                                        <div class="product-name">
+                                          {{ item.count }}x {{ item.name }}
+                                        </div>
+                                      </td>
+                                      <td class="product-quantity">
+                                        <span class="quantity-badge">{{
+                                          item.totalQuantity
+                                        }}</span>
+                                      </td>
+                                      <td class="product-total">
+                                        <strong
+                                          >{{
+                                            item.totalRevenue
+                                              | numberFormat: '0.00'
+                                          }}
+                                          RON</strong
+                                        >
+                                      </td>
+                                      <td class="percentage-cell">
+                                        <div class="percentage-bar-wrapper">
+                                          <div class="percentage-bar">
+                                            <div
+                                              class="percentage-fill revenue-fill"
+                                              [style.width.%]="
+                                                item.percentageOfTotalRevenue
+                                              "
+                                            ></div>
+                                            <span class="percentage-text"
+                                              >{{
+                                                item.percentageOfTotalRevenue
+                                                  | numberFormat: '0.0'
+                                              }}%</span
+                                            >
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  }
+
+                                  @if (!period.multiple.length) {
+                                    <tr>
+                                      <td colspan="5" class="empty-cell">
+                                        No products this period
+                                      </td>
+                                    </tr>
+                                  }
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Mobile View for Monthly/Yearly -->
+              <div class="mobile-view">
+                @for (period of currentPeriods(); track period.id) {
+                  <div class="mobile-card">
+                    <div
+                      class="mobile-card-header"
+                      (click)="togglePeriod(period.id)"
+                    >
+                      <div class="mobile-header-left">
+                        <div class="provider-initial">
+                          {{
+                            viewMode() === 'monthly'
+                              ? period.month?.charAt(0) || 'M'
+                              : period.year.toString().slice(-2)
+                          }}
+                        </div>
+                        <div class="mobile-provider-info">
+                          <div class="mobile-date">{{ period.title }}</div>
+                        </div>
+                        <span class="products-count">{{
+                          period.multiple.length
+                        }}</span>
+                      </div>
+                      <div class="mobile-header-right">
+                        <div class="mobile-total">
+                          <span class="total-value"
+                            >{{
+                              period.totalRevenue | numberFormat: '0.00'
+                            }}
+                            RON</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+
+                    @if (expandedPeriodId() === period.id) {
+                      <div class="mobile-card-body">
+                        <div class="mobile-products-list">
+                          @for (item of period.multiple; track item.id) {
+                            <div class="mobile-product-item">
+                              <div class="mobile-product-header">
+                                <span class="product-name"
+                                  >{{ item.count }}x {{ item.name }}</span
+                                >
+                                <span class="product-quantity-badge"
+                                  >Qty: {{ item.totalQuantity }}</span
+                                >
+                              </div>
+                              <div class="mobile-product-details">
+                                <div class="detail-item">
+                                  <span class="detail-label"
+                                    >Last Purchase</span
+                                  >
+                                  <span class="detail-value">{{
+                                    formatDay(item.latestDate)
+                                  }}</span>
+                                </div>
+                                <div class="detail-item">
+                                  <span class="detail-label">Revenue</span>
+                                  <span class="detail-value total"
+                                    >{{
+                                      item.totalRevenue | numberFormat: '0.00'
+                                    }}
+                                    RON</span
+                                  >
+                                </div>
+                                <div class="detail-item full-width">
+                                  <div class="percentage-bar-mobile">
+                                    <div
+                                      class="percentage-fill-mobile revenue-fill"
+                                      [style.width.%]="
+                                        item.percentageOfTotalRevenue
+                                      "
+                                    ></div>
+                                    <span class="percentage-text-mobile">
+                                      {{
+                                        item.percentageOfTotalRevenue
+                                          | numberFormat: '0.0'
+                                      }}% of period
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          }
+
+                          @if (!period.multiple.length) {
+                            <div class="empty-mobile">
+                              No products this period
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            @if (!currentPeriods().length) {
+              <div class="empty-state">No product data available</div>
+            }
           }
         </div>
       </div>
@@ -668,147 +872,140 @@ interface ReceiptGroup {
       padding: 5px;
     }
 
-    .period-card {
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 5px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
+    /* Receipts Container Styles */
+    .receipts-container {
+      overflow-y: auto;
     }
 
-    .period-card:hover {
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .desktop-view {
+      display: block;
     }
 
-    .period-header {
+    .receipts-grid {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      cursor: pointer;
-      background: white;
-      transition: background 0.2s ease;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    .period-header:hover {
+    /* Receipt Card */
+    .receipt-card {
+      background: #fff;
+      border-radius: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .receipt-card.expanded {
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Card Header */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .receipt-card.expanded .card-header {
+      background: linear-gradient(135deg, #fff 0%, #f0f9ff 100%);
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .card-header:hover {
       background: #f9fafb;
     }
 
-    .period-info {
+    /* Header Sections */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .provider-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    .provider-initial {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .provider-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    /* Header Right */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .price-summary {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .period-title {
-      font-weight: 600;
-      font-size: 1rem;
-      color: #1f2937;
-    }
-
-    .period-totals {
-      display: flex;
-      gap: 8px;
-    }
-
-    .receipt-card {
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 5px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
-    }
-
-    .receipt-card:hover {
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .receipt-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      cursor: pointer;
-      background: white;
-      transition: background 0.2s ease;
-    }
-
-    .receipt-header:hover {
-      background: #f9fafb;
-    }
-
-    .receipt-info {
+    .total-price {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: flex-end;
+      gap: 2px;
     }
 
-    .receipt-title {
-      font-weight: 600;
-      font-size: 0.875rem;
-      color: #1f2937;
+    .price-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #059669;
+      letter-spacing: -0.5px;
     }
 
-    .receipt-date {
-      font-size: 0.7rem;
-      color: #6b7280;
+    .discount-badge {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #dc2626;
     }
 
-    .receipt-summary {
-      font-size: 0.7rem;
-      color: #3b82f6;
-      font-weight: 500;
-    }
-
-    .receipt-totals {
-      display: flex;
-      gap: 8px;
-    }
-
-    .receipt-content {
-      padding: 0 20px 20px 20px;
-      background: white;
-      border-top: 1px solid #f3f4f6;
-      animation: slideDown 0.3s ease;
-    }
-
-    .revenue-badge,
-    .quantity-badge {
-      width: 100px;
-      text-align: center;
+    .products-count {
+      background: #3b82f6;
+      color: #fff;
       padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.75rem;
+      border-radius: 20px;
+      font-size: 13px;
       font-weight: 600;
     }
 
-    .buble {
-      text-align: center;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: #e5e7eb;
-      color: #4b5563;
-    }
-
-    .revenue-badge {
-      background: #d1fae5;
-      color: #10b981;
-    }
-
-    .quantity-badge {
-      background: #dbeafe;
-      color: #3b82f6;
-    }
-
-    .period-content {
-      padding: 0 20px 20px 20px;
-      background: white;
-      border-top: 1px solid #f3f4f6;
-      animation: slideDown 0.3s ease;
+    /* Expanded Content */
+    .card-expanded {
+      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
     }
 
     @keyframes slideDown {
@@ -822,75 +1019,104 @@ interface ReceiptGroup {
       }
     }
 
-    .data-table-wrapper {
-      overflow-x: auto;
+    /* Products Section */
+    .products-section {
+      padding: 10px;
     }
 
-    .data-table {
+    /* Products Table */
+    .products-table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+    }
+
+    .products-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.8125rem;
+      min-width: 600px;
     }
 
-    .data-table thead th {
+    .products-table th {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      color: #475569;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       text-align: left;
-      padding: 12px 8px;
-      background: #f9fafb;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .products-table td {
+      padding: 14px 16px;
+      color: #334155;
+      font-size: 13px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .product-row {
+      transition: all 0.2s;
+    }
+
+    .product-row:hover {
+      background: #f8fafc;
+    }
+
+    .product-row:last-child td {
+      border-bottom: none;
+    }
+
+    .product-name-cell {
       font-weight: 600;
-      color: #374151;
-      border-bottom: 2px solid #e5e7eb;
+      color: #1e293b;
     }
 
-    .data-table tbody td {
-      padding: 12px 8px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #4b5563;
+    .product-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .data-table tbody tr:hover {
-      background: #f9fafb;
+    .product-price {
+      color: #059669;
+      font-weight: 600;
     }
 
-    .data-table tbody tr.highlight-row {
-      background: #fef3c7;
+    .product-quantity {
+      text-align: center;
     }
 
-    .data-table tbody tr.highlight-row:hover {
-      background: #fde68a;
-    }
-
-    .product-badge {
+    .quantity-badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      background: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 12px;
+      color: #475569;
     }
 
-    .product-badge.multiple {
-      background: #dbeafe;
-      color: #1e40af;
+    .product-total {
+      font-weight: 700;
+      color: #0f766e;
+      text-align: right;
+    }
+
+    .date-cell {
+      font-size: 12px;
+      color: #64748b;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-right: 4px;
-      font-size: 11px;
-    }
-
-    .quantity-cell {
-      font-weight: 600;
-      color: #3b82f6;
-    }
-
-    .amount-cell {
-      font-weight: 600;
-    }
-
-    .amount-cell.positive {
-      color: #10b981;
     }
 
     .percentage-cell {
       width: 140px;
+    }
+
+    .percentage-bar-wrapper {
+      width: 100%;
     }
 
     .percentage-bar {
@@ -925,110 +1151,9 @@ interface ReceiptGroup {
       color: #1f2937;
     }
 
-    .date-cell {
-      font-size: 0.75rem;
-      color: #6b7280;
-      white-space: nowrap;
-      font-weight: 700;
-    }
-
-    .mobile-cards {
+    /* Mobile View */
+    .mobile-view {
       display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .mobile-card {
-      background: #f9fafb;
-      border-radius: 6px;
-      padding: 12px;
-      transition: all 0.2s ease;
-      box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.05),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    .mobile-card.highlight-card {
-      background: #fef3c7;
-    }
-
-    .mobile-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .mobile-card-details {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .mobile-percentages {
-      margin-top: 8px;
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-    }
-
-    .detail-label {
-      color: #6b7280;
-      font-weight: 500;
-    }
-
-    .detail-value {
-      font-weight: 600;
-      color: #1f2937;
-    }
-
-    .detail-value.positive {
-      color: #10b981;
-    }
-
-    .percentage-bar-mobile {
-      position: relative;
-      background: #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .percentage-fill-mobile {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      border-radius: 10px;
-      transition: width 0.3s ease;
-    }
-
-    .percentage-text-mobile {
-      position: relative;
-      z-index: 1;
-      font-size: 0.625rem;
-      font-weight: 600;
-      padding: 0 6px;
-      color: #1f2937;
-    }
-
-    .mt-1 {
-      margin-top: 4px;
-    }
-
-    .empty-mobile {
-      text-align: center;
-      padding: 24px;
-      color: #9ca3af;
-      font-size: 0.75rem;
     }
 
     .empty-cell {
@@ -1043,166 +1168,249 @@ interface ReceiptGroup {
       color: #9ca3af;
     }
 
-    @media (max-width: 1024px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .empty-mobile {
+      text-align: center;
+      padding: 24px;
+      color: #9ca3af;
+      font-size: 0.75rem;
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
-      .analytics-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
-        text-align: center;
-        padding: 16px 20px;
-      }
-
-      .period-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 10px;
-      }
-
-      .period-content {
-        padding: 0 16px 16px 16px;
-      }
-
-      .receipt-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-
-      .receipt-content {
-        padding: 0 16px 16px 16px;
-      }
-
-      .desktop-table {
+      .desktop-view {
         display: none;
       }
 
-      .mobile-cards {
+      .mobile-view {
+        display: block;
+        padding: 12px;
+        overflow-y: auto;
+      }
+
+      .mobile-card {
+        background: #fff;
+        border: 1px solid #e2e6ee;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .mobile-card-header {
         display: flex;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .stat-card {
-        padding: 12px 16px;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: #eff6ff;
+        cursor: pointer;
       }
 
-      .period-view {
-        padding: 5px;
+      .mobile-card-header:active {
+        background: #e0f2fe;
       }
 
-      .period-title {
-        font-size: 0.875rem;
+      .mobile-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
       }
 
-      .revenue-badge,
-      .quantity-badge {
-        width: 75px;
-        text-align: center;
+      .mobile-header-left .provider-initial {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        text-transform: uppercase;
+      }
+
+      .mobile-provider-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .mobile-date {
+        font-size: 11px;
+        color: #6b7280;
+      }
+
+      .mobile-header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mobile-total {
+        text-align: right;
+      }
+
+      .total-value {
+        font-weight: 700;
+        font-size: 14px;
+        color: #059669;
+      }
+
+      .mobile-discount {
+        background: #fee2e2;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #dc2626;
+      }
+
+      .mobile-card-body {
+        border-top: 1px solid #e2e6ee;
+        animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .mobile-products-list {
+        padding: 12px;
+      }
+
+      .mobile-product-item {
+        background: #f8fafc;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 12px;
+        border-left: 3px solid #3b82f6;
+      }
+
+      .mobile-product-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .mobile-product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .mobile-product-header .product-name {
+        font-weight: 600;
+        font-size: 13px;
+        color: #1e293b;
+      }
+
+      .product-quantity-badge {
+        background: #e2e8f0;
         padding: 2px 8px;
-        font-size: 0.6875rem;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #475569;
       }
 
-      .buble {
-        padding: 2px 8px;
-        font-size: 0.6875rem;
+      .mobile-product-details {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+      }
+
+      .detail-item.full-width {
+        flex: 1 1 100%;
+        margin-top: 8px;
+      }
+
+      .detail-label {
+        font-size: 9px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .detail-value {
+        font-weight: 600;
+        font-size: 12px;
+        color: #1e293b;
+      }
+
+      .detail-value.total {
+        color: #0f766e;
+      }
+
+      .percentage-bar-mobile {
+        position: relative;
+        background: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .percentage-fill-mobile {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+      }
+
+      .percentage-text-mobile {
+        position: relative;
+        z-index: 1;
+        font-size: 0.625rem;
+        font-weight: 600;
+        padding: 0 6px;
+        color: #1f2937;
       }
     }
 
     @media (max-width: 480px) {
-      .products-analytics {
-        border-radius: 12px;
-      }
-
-      .analytics-header {
-        padding: 12px 16px;
-      }
-
-      .subtitle {
-        font-size: 0.6875rem;
-      }
-
-      .stat-icon {
-        width: 32px;
-        height: 32px;
-      }
-
-      .stat-icon svg {
-        width: 16px;
-        height: 16px;
-      }
-
-      .stat-value {
-        font-size: 0.875rem;
-      }
-
-      .period-header {
-        padding: 10px;
-      }
-
-      .period-info {
-        gap: 8px;
-      }
-
-      .period-title {
-        font-size: 0.8125rem;
-      }
-
-      .revenue-badge,
-      .quantity-badge {
-        width: 75px;
-        text-align: center;
-        padding: 2px 6px;
-        font-size: 0.625rem;
-      }
-
-      .buble {
-        text-align: center;
-        padding: 2px 6px;
-        font-size: 0.625rem;
-      }
-
-      .period-content {
-        padding: 0 10px 10px 10px;
-      }
-
-      .receipt-content {
-        padding: 0 10px 10px 10px;
-      }
-
-      .mobile-card {
+      .mobile-view {
         padding: 8px;
       }
 
-      .detail-label,
+      .mobile-card-header {
+        padding: 10px;
+      }
+
+      .mobile-header-left .provider-initial {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+      }
+
+      .total-value {
+        font-size: 13px;
+      }
+
+      .mobile-discount {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+
+      .mobile-product-item {
+        padding: 10px;
+      }
+
+      .mobile-product-header .product-name {
+        font-size: 12px;
+      }
+
       .detail-value {
-        font-size: 0.625rem;
-      }
-
-      .percentage-bar-mobile {
-        height: 16px;
-      }
-
-      .percentage-text-mobile {
-        font-size: 0.5625rem;
-        padding: 20px;
-      }
-
-      .table-container {
-        overflow-y: auto;
-        background: #f9fafb;
-        height: calc(100vh - 300px);
+        font-size: 11px;
       }
     }
   `,
@@ -1211,8 +1419,8 @@ export class MostCommonProductsComponent {
   receipts = input<ReceiptsProductDomain[]>([]);
 
   viewMode = signal<'all' | 'monthly' | 'yearly' | 'receipts'>('monthly');
-  private expandedPeriodId = signal<string | null>(null);
-  private expandedReceiptId = signal<string | null>(null);
+  expandedPeriodId = signal<string | null>(null);
+  expandedReceiptId = signal<string | null>(null);
 
   onToggle(value: string) {
     if (value === 'All') {
@@ -1235,23 +1443,21 @@ export class MostCommonProductsComponent {
     return 'Receipts';
   }
 
-  togglePeriod(period: PeriodGroup) {
+  togglePeriod(periodId: string) {
     const currentExpanded = this.expandedPeriodId();
-    if (currentExpanded === period.id) {
+    if (currentExpanded === periodId) {
       this.expandedPeriodId.set(null);
     } else {
-      this.expandedPeriodId.set(period.id);
+      this.expandedPeriodId.set(periodId);
     }
   }
 
-  toggleReceipt(receipt: ReceiptGroup) {
+  toggleReceipt(receiptId: string) {
     const currentExpanded = this.expandedReceiptId();
-    if (currentExpanded === receipt.id) {
+    if (currentExpanded === receiptId) {
       this.expandedReceiptId.set(null);
-      receipt.isExpanded = false;
     } else {
-      this.expandedReceiptId.set(receipt.id);
-      receipt.isExpanded = true;
+      this.expandedReceiptId.set(receiptId);
     }
   }
 
@@ -1260,16 +1466,6 @@ export class MostCommonProductsComponent {
     const month = date.toLocaleString('default', { month: 'short' });
     const day = date.getDate();
     return `${day} ${month} ${date.getFullYear()}`;
-  }
-
-  formatFullDate(date: Date): string {
-    return date.toLocaleString('default', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   }
 
   currentPeriods = computed((): PeriodGroup[] => {
@@ -1281,17 +1477,15 @@ export class MostCommonProductsComponent {
     return [];
   });
 
-  receiptGroups = computed((): ReceiptGroup[] => {
+  receiptGroups = computed((): Receipt[] => {
     if (this.viewMode() !== 'receipts') return [];
 
     const products = this.receipts();
     if (!products?.length) return [];
 
-    // Group products by receipt ID (using receiptId field)
     const receiptMap = new Map<string, ReceiptsProductDomain[]>();
 
     for (const product of products) {
-      // Use receiptId if available, otherwise use purchased date as fallback
       const receiptKey =
         (product as any).receiptId ||
         product.purchasedDate?.getTime()?.toString() ||
@@ -1303,12 +1497,11 @@ export class MostCommonProductsComponent {
       receiptMap.get(receiptKey)!.push(product);
     }
 
-    const receipts: ReceiptGroup[] = [];
+    const receipts: Receipt[] = [];
 
     for (const [key, receiptProducts] of receiptMap.entries()) {
-      // Use the first product's date as receipt date, or current date as fallback
       const receiptDate = receiptProducts[0]?.purchasedDate || new Date();
-      const totalRevenue = receiptProducts.reduce(
+      const totalPrice = receiptProducts.reduce(
         (sum, p) => sum + (p.price ?? 0) * (p.quantity ?? 0),
         0,
       );
@@ -1317,7 +1510,6 @@ export class MostCommonProductsComponent {
         0,
       );
 
-      // Format receipt ID for display
       let displayId = key;
       if (key === 'unknown') {
         displayId = receiptDate.getTime().toString().slice(-6);
@@ -1328,18 +1520,15 @@ export class MostCommonProductsComponent {
       receipts.push({
         id: `receipt-${key}`,
         receiptId: displayId,
-        receiptDate,
-        totalRevenue,
+        date: receiptDate,
+        totalPrice,
         totalQuantity,
         products: receiptProducts,
-        isExpanded: this.expandedReceiptId() === `receipt-${key}`,
+        provider: receiptProducts[0]?.name?.substring(0, 2) || 'ST',
       });
     }
 
-    // Sort receipts by date (newest first)
-    return receipts.sort(
-      (a, b) => b.receiptDate.getTime() - a.receiptDate.getTime(),
-    );
+    return receipts.sort((a, b) => b.date.getTime() - a.date.getTime());
   });
 
   getAllGroupedProducts = computed((): GroupedProduct[] => {
