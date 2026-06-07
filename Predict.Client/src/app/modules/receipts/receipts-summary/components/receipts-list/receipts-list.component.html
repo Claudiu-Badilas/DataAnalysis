@@ -1,6 +1,6 @@
 <div class="receipts-container">
   <!-- Desktop View - Modern Card Design -->
-  <div class="desktop-view">
+  <div class="desktop-view m-2">
     <div class="receipts-grid">
       @for (receipt of receipts; track receipt.id) {
         <div class="receipt-card" [class.expanded]="expandedId === receipt.id">

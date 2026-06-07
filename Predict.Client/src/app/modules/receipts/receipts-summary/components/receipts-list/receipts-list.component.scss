@@ -1,9 +1,6 @@
 /* Container */
 .receipts-container {
-  height: calc(100vh - 100px);
   overflow-y: auto;
-  padding: 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .desktop-view {
@@ -12,7 +9,7 @@
 .receipts-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -49,7 +46,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 15px;
   flex: 1;
 }
 .provider-icon {
@@ -171,7 +168,7 @@
 
 /* Products Section */
 .products-section {
-  padding: 24px;
+  padding: 10px;
 }
 .section-header {
   display: flex;
@@ -535,9 +532,6 @@
 }
 
 @media (max-width: 480px) {
-  .receipts-container {
-    padding: 12px;
-  }
   .mobile-view {
     padding: 8px;
   }
@@ -571,17 +565,4 @@
   .summary-row.total strong {
     font-size: 14px;
   }
-}
-
-/* Scrollbar */
-.receipts-container::-webkit-scrollbar {
-  width: 8px;
-}
-.receipts-container::-webkit-scrollbar-track {
-  background: #e2e8f0;
-  border-radius: 10px;
-}
-.receipts-container::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 10px;
 }
