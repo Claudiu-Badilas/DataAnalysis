@@ -34,7 +34,7 @@ export class ReceiptsProductsComponent {
     fromReceipts.getProductPriceTrendChartUtils,
   );
 
-  minDate = new Date('2021-01-01');
+  minDate = new Date('2016-01-01');
   now = new Date();
 
   constructor(private readonly store: Store<fromReceipts.State>) {}

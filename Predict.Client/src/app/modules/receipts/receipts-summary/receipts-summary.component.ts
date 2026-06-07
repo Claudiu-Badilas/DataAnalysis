@@ -29,7 +29,7 @@ export class ReceiptsSummaryComponent {
 
   constructor(private readonly store: Store<fromReceipts.State>) {}
 
-  minDate = new Date('2021-01-01');
+  minDate = new Date('2016-01-01');
   now = new Date();
 
   onSelectionChange(module: string) {

@@ -26,7 +26,7 @@ export interface State {
 
 const initialState: State = {
   receipts: [],
-  startDate: DateUtils.getStartOfTheYear({ subtractYears: 2 }),
+  startDate: DateUtils.getStartOfTheYear({ subtractYears: 10 }),
   endDate: new Date(),
 
   receiptsProducts: {
@@ -53,7 +53,7 @@ const receiptsReducer = createReducer(
       ...state.receiptsProducts,
       searchTerm,
     },
-  }))
+  })),
 );
 
 export function reducer(state: State, action: Action) {
@@ -64,23 +64,23 @@ const getReceiptsState = createFeatureSelector<State>('ReceiptsState');
 
 export const getStartDate = createSelector(
   getReceiptsState,
-  (state) => state.startDate
+  (state) => state.startDate,
 );
 
 export const getEndDate = createSelector(
   getReceiptsState,
-  (state) => state.endDate
+  (state) => state.endDate,
 );
 
 export const getReceipts = createSelector(
   getReceiptsState,
-  (state) => state.receipts
+  (state) => state.receipts,
 );
 
 // Receipts Products selectors
 export const getReceiptsProducts = createSelector(
   getReceiptsState,
-  (state) => state.receiptsProducts
+  (state) => state.receiptsProducts,
 );
 
 export const getReceiptsProductDomain = createSelector(
@@ -88,14 +88,14 @@ export const getReceiptsProductDomain = createSelector(
   (state) =>
     state.receipts.flatMap((receipt) =>
       receipt.products.map(
-        (product) => new ReceiptsProductDomain(receipt, product)
-      )
-    )
+        (product) => new ReceiptsProductDomain(receipt, product),
+      ),
+    ),
 );
 
 export const getProductsSearchTerm = createSelector(
   getReceiptsProducts,
-  (state) => state.searchTerm
+  (state) => state.searchTerm,
 );
 
 export const getAvailableReceiptsProductBySearchTerm = createSelector(
@@ -110,20 +110,20 @@ export const getAvailableReceiptsProductBySearchTerm = createSelector(
             .map((t) => t.trim())
             .filter((t) => !!t && t !== '')
             .some((term) => p.name.toLowerCase().includes(term))
-        : receiptsProduct
-    )
+        : receiptsProduct,
+    ),
 );
 
 export const getDailyPurchasedProductChart = createSelector(
   getStartDate,
   getEndDate,
   getAvailableReceiptsProductBySearchTerm,
-  DailyPurchasedProductChartUtils.getChart
+  DailyPurchasedProductChartUtils.getChart,
 );
 
 export const getProductPriceTrendChartUtils = createSelector(
   getStartDate,
   getEndDate,
   getAvailableReceiptsProductBySearchTerm,
-  ProductPriceTrendChartUtils.getChart
+  ProductPriceTrendChartUtils.getChart,
 );
