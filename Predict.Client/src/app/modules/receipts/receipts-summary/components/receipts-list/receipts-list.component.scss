@@ -25,10 +25,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
-.receipt-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
+
 .receipt-card.expanded {
   box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
 }
@@ -148,10 +145,7 @@
   transition: all 0.3s;
   color: #64748b;
 }
-.expand-btn:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
-}
+
 .expand-btn.rotated svg {
   transform: rotate(180deg);
 }
@@ -273,9 +267,7 @@
 .product-row {
   transition: all 0.2s;
 }
-.product-row:hover {
-  background: #f8fafc;
-}
+
 .product-row:last-child td {
   border-bottom: none;
 }
@@ -480,9 +472,10 @@
     color: #475569;
   }
   .mobile-product-details {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
   }
   .detail-item {
     display: flex;
@@ -591,7 +584,4 @@
 .receipts-container::-webkit-scrollbar-thumb {
   background: #94a3b8;
   border-radius: 10px;
-}
-.receipts-container::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
 }

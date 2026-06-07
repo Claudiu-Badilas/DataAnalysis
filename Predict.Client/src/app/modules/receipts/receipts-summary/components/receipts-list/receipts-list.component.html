@@ -13,8 +13,9 @@
                 }}</span>
               </div>
               <div class="provider-details">
-                <h3 class="provider-name">{{ receipt.provider }}</h3>
+                {{ receipt.date | date: "dd MMM yyyy" }}
               </div>
+              <span class="products-count">{{ receipt.products.length }}</span>
             </div>
             <div class="header-right">
               <div class="price-summary">
@@ -36,48 +37,12 @@
           @if (expandedId === receipt.id) {
             <div class="card-expanded">
               <div class="products-section">
-                <div class="section-header">
-                  <div class="section-title">
-                    <span class="title-icon">📦</span>
-                    <h4>Products</h4>
-                    <span class="products-count">{{
-                      receipt.products.length
-                    }}</span>
-                  </div>
-                  <div class="section-summary">
-                    <div class="summary-item">
-                      <span>Subtotal:</span>
-                      <strong>{{
-                        receipt.totalPrice + (receipt.totalDiscount || 0)
-                          | currency: "RON"
-                      }}</strong>
-                    </div>
-                    @if (receipt.totalDiscount) {
-                      <div class="summary-item discount">
-                        <span>Discount:</span>
-                        <strong
-                          >-{{
-                            receipt.totalDiscount | currency: "RON"
-                          }}</strong
-                        >
-                      </div>
-                    }
-                    <div class="summary-item total">
-                      <span>Total:</span>
-                      <strong>{{
-                        receipt.totalPrice | currency: "RON"
-                      }}</strong>
-                    </div>
-                  </div>
-                </div>
-
                 <div class="products-table-wrapper">
                   <table class="products-table">
                     <thead>
                       <tr>
                         <th>Product</th>
                         <th>Price</th>
-                        <th>Qty</th>
                         <th>Type</th>
                         <th>VAT</th>
                         <th>Total</th>
@@ -92,15 +57,12 @@
                           <td class="product-price">
                             {{ product.price | currency: "RON" }}
                           </td>
-                          <td class="product-quantity">
-                            <span class="quantity-badge">{{
-                              product.quantity
-                            }}</span>
-                          </td>
+
                           <td class="product-type">
-                            <span class="type-badge">{{
-                              product.quantityType
-                            }}</span>
+                            <span class="type-badge"
+                              >{{ product.quantity }}x
+                              {{ product.quantityType }}</span
+                            >
                           </td>
                           <td class="product-vat">
                             <span class="vat-badge">{{ product.vat }}%</span>
@@ -133,15 +95,14 @@
               {{ receipt.provider.charAt(0) }}
             </div>
             <div class="mobile-provider-info">
-              <div class="mobile-provider-name">{{ receipt.provider }}</div>
               <div class="mobile-date">
                 {{ receipt.date | date: "dd MMM yyyy" }}
               </div>
             </div>
+            <span class="products-count">{{ receipt.products.length }}</span>
           </div>
           <div class="mobile-header-right">
             <div class="mobile-total">
-              <span class="total-label">Total</span>
               <span class="total-value">{{
                 receipt.totalPrice | currency: "RON"
               }}</span>
@@ -162,22 +123,15 @@
                   <div class="mobile-product-header">
                     <span class="product-name">{{ product.name }}</span>
                     <span class="product-quantity-badge"
-                      >x{{ product.quantity }}</span
+                      >x{{ product.quantity }} {{ product.quantityType }}</span
                     >
                   </div>
                   <div class="mobile-product-details">
                     <div class="detail-item">
                       <span class="detail-label">Price</span>
-                      <span class="detail-value">{{
-                        product.price | currency: "RON"
-                      }}</span>
+                      <span class="detail-value">{{ product.price }}</span>
                     </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Type</span>
-                      <span class="detail-value">{{
-                        product.quantityType
-                      }}</span>
-                    </div>
+
                     <div class="detail-item">
                       <span class="detail-label">VAT</span>
                       <span class="detail-value vat">{{ product.vat }}%</span>
@@ -185,33 +139,12 @@
                     <div class="detail-item">
                       <span class="detail-label">Total</span>
                       <span class="detail-value total">{{
-                        product.price * product.quantity | currency: "RON"
+                        product.price * product.quantity
                       }}</span>
                     </div>
                   </div>
                 </div>
               }
-            </div>
-            <div class="mobile-summary">
-              <div class="summary-row">
-                <span>Subtotal:</span>
-                <strong>{{
-                  receipt.totalPrice + (receipt.totalDiscount || 0)
-                    | currency: "RON"
-                }}</strong>
-              </div>
-              @if (receipt.totalDiscount) {
-                <div class="summary-row discount">
-                  <span>Discount:</span>
-                  <strong
-                    >-{{ receipt.totalDiscount | currency: "RON" }}</strong
-                  >
-                </div>
-              }
-              <div class="summary-row total">
-                <span>Total:</span>
-                <strong>{{ receipt.totalPrice | currency: "RON" }}</strong>
-              </div>
             </div>
           </div>
         }
