@@ -85,9 +85,9 @@ module LidlJsonReceipt =
                       Quantity = Some p.Quantity
                       QuantityType =
                         match p.QuantityType with
-                        | "BUC" -> Some BUC
-                        | "KG" -> Some KG
-                        | _ -> None
+                        | "BUC" -> BUC
+                        | "KG" -> KG
+                        | _ -> BUC
                       VAT = Some p.VAT })
           Provider = Provider.LIDL |> Some }
 

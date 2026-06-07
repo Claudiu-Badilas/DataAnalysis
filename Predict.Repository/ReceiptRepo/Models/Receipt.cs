@@ -7,8 +7,8 @@ public class Receipt {
     public double? TotalPrice { get; set; }
     public double? TotalDiscount { get; set; }
     public IEnumerable<PurchasedProduct> Products { get; set; }
-    public int? CurrencyId { get; set; }
-    public int? ProviderId { get; set; }
+    public string Currency { get; set; }
+    public string Provider { get; set; }
     public int DataOwnerId { get; set; }
 }
 
@@ -17,6 +17,6 @@ public class PurchasedProduct {
     public double? Price { get; set; }
     public double? Quantity { get; set; }
     public double? VAT { get; set; }
-    public int? QuantityTypeId { get; set; }
+    public string QuantityType { get; set; }
     public int? ReceiptId { get; set; }
 }

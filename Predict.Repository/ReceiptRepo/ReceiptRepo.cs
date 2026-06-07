@@ -42,11 +42,9 @@ public class ReceiptRepo : IReceiptRepo {
 	                    r.total_price as TotalPrice,
 	                    r.total_discount as TotalDiscout,
 	                    r.description as Description,
-	                    p.""name"" as Provider,
-	                    c.""code"" as currency
+	                    r.provider as Provider,
+	                    r.currency as currency
                     FROM public.receipt r
-                    JOIN public.currency c ON c.id = r.currency_id 
-                    JOIN public.provider p ON p.id = r.provider_id
                     ORDER BY r.receipt_date desc;";
 
             return (await connection.QueryAsync<ReceiptResponse>(sql, new { startDate, endDate })).ToList();
@@ -63,10 +61,9 @@ public class ReceiptRepo : IReceiptRepo {
                         pp.price as Price, 
                         pp.vat as VAT, 
                         pp.quantity as Quantity, 
-                        qt.type as QuantityType, 
+                        pp.quantity_type as QuantityType, 
                         pp.receipt_id as ReceiptId
                     FROM public.purchased_product pp
-                    JOIN public.quantity_type qt on qt.id = quantity_type_id
                     WHERE pp.receipt_id = ANY(@receiptIds);";
 
             return await connection.QueryAsync<PurchasedProductResponse>(sql, new { receiptIds });
@@ -77,14 +74,14 @@ public class ReceiptRepo : IReceiptRepo {
         await using (var connection = new NpgsqlConnection(_npsqlConnectionString)) {
             var sql = @"
                     INSERT INTO public.receipt
-                        (identifier, ""receipt_date"", total_price, total_discount, provider_id, currency_id, data_owner_id)
+                        (identifier, ""receipt_date"", total_price, total_discount, provider, currency, data_owner_id)
                     VALUES (
                         unnest(@identifiers),
                         unnest(@dates),
                         unnest(@total_prices),
                         unnest(@total_discounts),
-                        unnest(@provider_ids),
-                        unnest(@currency_ids),
+                        unnest(@provider),
+                        unnest(@currency),
                         unnest(@data_owner_ids)
                     )";
 
@@ -93,8 +90,8 @@ public class ReceiptRepo : IReceiptRepo {
                 dates = receipts.Select(x => x.Date).ToList(),
                 total_prices = receipts.Select(x => x.TotalPrice).ToList(),
                 total_discounts = receipts.Select(x => x.TotalDiscount).ToList(),
-                provider_ids = receipts.Select(x => x.ProviderId).ToList(),
-                currency_ids = receipts.Select(x => x.CurrencyId).ToList(),
+                provider = receipts.Select(x => x.Provider).ToList(),
+                currency = receipts.Select(x => x.Currency).ToList(),
                 data_owner_ids = receipts.Select(x => x.DataOwnerId).ToList()
             });
         }
@@ -104,13 +101,13 @@ public class ReceiptRepo : IReceiptRepo {
         await using (var connection = new NpgsqlConnection(_npsqlConnectionString)) {
             var sql = @"
                 INSERT INTO public.purchased_product
-                (""name"", price, quantity, vat, quantity_type_id, receipt_id)
+                (""name"", price, quantity, vat, quantity_type, receipt_id)
                 VALUES (
                     unnest(@names),
                     unnest(@prices),
                     unnest(@quantitys),
                     unnest(@vats),
-                    unnest(@quantity_type_ids),
+                    unnest(@quantity_type),
                     unnest(@receipt_ids)
                 )";
 
@@ -119,7 +116,7 @@ public class ReceiptRepo : IReceiptRepo {
                 prices = purchasedProducts.Select(x => x.Price).ToList(),
                 quantitys = purchasedProducts.Select(x => x.Quantity).ToList(),
                 vats = purchasedProducts.Select(x => x.VAT).ToList(),
-                quantity_type_ids = purchasedProducts.Select(x => x.QuantityTypeId).ToList(),
+                quantity_type = purchasedProducts.Select(x => x.QuantityType).ToList(),
                 receipt_ids = purchasedProducts.Select(x => x.ReceiptId).ToList()
             });
         }

@@ -8,12 +8,13 @@ module ReceiptTypes =
     type QuantityType =
         | BUC
         | KG
+        | L
 
     type ParsedPurchasedProduct =
         { Name: string option
           Price: double option
           Quantity: double option
-          QuantityType: QuantityType option
+          QuantityType: QuantityType
           VAT: double option }
 
     type ParsedReceipt =

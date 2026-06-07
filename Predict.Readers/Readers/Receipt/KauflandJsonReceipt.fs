@@ -78,9 +78,9 @@ module KauflandJsonReceipt =
                       Quantity = Some p.Quantity
                       QuantityType =
                         match p.QuantityType with
-                        | "buc" -> Some BUC
-                        | "kg" -> Some KG
-                        | _ -> None
+                        | "buc" -> BUC
+                        | "kg" -> KG
+                        | _ -> BUC
                       VAT = Some p.VAT })
           Provider = Provider.KAUFLAND |> Some }
 

@@ -13,9 +13,9 @@ module CarrefourPdfReceipt =
 
     let getQuantyType quantityType =
         match quantityType with
-        | "buc" -> QuantityType.BUC |> Some
-        | "kg" -> QuantityType.KG |> Some
-        | _ -> None
+        | "buc" -> QuantityType.BUC
+        | "kg" -> QuantityType.KG
+        | _ -> QuantityType.BUC
 
 
     let popLastElementOfList list =

@@ -31,7 +31,7 @@ module StoreReceipts =
                 Price = StorerUtils.getNullableFloatFromOption p.Value.Price,
                 Quantity = StorerUtils.getNullableFloatFromOption p.Value.Quantity,
                 VAT = StorerUtils.getNullableFloatFromOption p.Value.VAT,
-                QuantityTypeId = getQuantityTypeId p.Value.QuantityType
+                QuantityType = p.Value.QuantityType.ToString()
             ))
 
     let mapPurchasedProduct (product: PurchasedProduct) receiptId =
@@ -40,14 +40,14 @@ module StoreReceipts =
             Price = product.Price,
             Quantity = product.Quantity,
             VAT = product.VAT,
-            QuantityTypeId = product.QuantityTypeId,
+            QuantityType = product.QuantityType,
             ReceiptId = receiptId
         )
 
 
     let storeReceipts dataOwnerId (parsedReceipts: ParsedReceipt list) =
         let envConfig = EnvironmentConfiguration()
-        let receiptRepo = new ReceiptRepo(EnvironmentConfiguration())
+        let receiptRepo = new ReceiptRepo(envConfig)
 
         let receipts =
             parsedReceipts
@@ -58,8 +58,8 @@ module StoreReceipts =
                     TotalPrice = StorerUtils.getNullableFloatFromOption r.TotalPrice,
                     TotalDiscount = StorerUtils.getNullableFloatFromOption r.TotalDiscount,
                     Products = mapPurchasedProducts r.ParsedProducts,
-                    CurrencyId = StorerUtils.getCurrencyTypeId r.Currency,
-                    ProviderId = StorerUtils.getProviderId r.Provider,
+                    Currency = r.Currency.Value.ToString(),
+                    Provider = r.Provider.Value.ToString(),
                     DataOwnerId = dataOwnerId
                 ))
 
