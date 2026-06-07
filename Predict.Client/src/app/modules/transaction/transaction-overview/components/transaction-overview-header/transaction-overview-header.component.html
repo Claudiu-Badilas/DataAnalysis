@@ -1,0 +1,87 @@
+<!-- Desktop View -->
+<div class="desktop-view">
+  <div class="summary-grid">
+    <div class="summary-row">
+      <div class="summary-section stat-item stat-item--green">
+        <div class="stat-row">
+          <span class="stat-item__label">Income</span>
+          <span class="stat-item__label">Expense</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-item__value positive">
+            {{ totalIncome() | numberFormat: "0.00" }}
+          </span>
+          <span class="stat-item__value negative">
+            -{{ totalExpense() | numberFormat: "0.00" }}
+          </span>
+        </div>
+      </div>
+
+      <div class="summary-section stat-item stat-item--blue">
+        <div class="stat-row">
+          <span class="stat-item__label">Net Balance</span>
+          <span class="stat-item__label">Transactions</span>
+        </div>
+        <div class="stat-row">
+          <span
+            class="stat-item__value"
+            [class.positive]="(totalIncome() || 0) - (totalExpense() || 0) > 0"
+            [class.negative]="(totalIncome() || 0) - (totalExpense() || 0) < 0"
+          >
+            {{
+              (totalIncome() || 0) - (totalExpense() || 0)
+                | numberFormat: "0.00"
+            }}
+          </span>
+          <span class="stat-item__value">
+            {{ totalTransactions() || 0 }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile View -->
+<div class="mobile-view">
+  <div class="summary-grid">
+    <div class="summary-row">
+      <div class="summary-section stat-item stat-item--green">
+        <div class="stat-row">
+          <span class="stat-item__label">Income</span>
+          <span class="stat-item__label">Expense</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-item__value positive">
+            {{ totalIncome() | numberFormat: "0.00" }}
+          </span>
+          <span class="stat-item__value negative">
+            -{{ totalExpense() | numberFormat: "0.00" }}
+          </span>
+        </div>
+      </div>
+
+      <div class="summary-section stat-item stat-item--blue">
+        <div class="stat-row">
+          <span class="stat-item__label">Net Balance</span>
+          <span class="stat-item__label">Transactions</span>
+        </div>
+        <div class="stat-row">
+          <span
+            class="stat-item__value"
+            [class.positive]="(totalIncome() || 0) - (totalExpense() || 0) > 0"
+            [class.negative]="(totalIncome() || 0) - (totalExpense() || 0) < 0"
+          >
+            {{
+              (totalIncome() || 0) - (totalExpense() || 0)
+                | numberFormat: "0.00"
+            }}
+          </span>
+          <span class="stat-item__value">
+            {{ totalTransactions() || 0 }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
