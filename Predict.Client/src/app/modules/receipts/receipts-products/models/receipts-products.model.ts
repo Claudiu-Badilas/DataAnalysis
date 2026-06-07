@@ -10,10 +10,12 @@ export class ReceiptsProductDomain {
   quantityType: string;
   receiptId: number;
   purchasedDate: Date;
+  provider: string;
 
   constructor(receipt: ReceiptDomain, product: PurchasedProductDomain) {
     Object.assign(this, product);
 
     this.purchasedDate = receipt.date;
+    this.provider = receipt.provider;
   }
 }

@@ -8,6 +8,7 @@ import { ReceiptsProductDomain } from '../../models/receipts-products.model';
 interface GroupedProduct {
   id: number;
   name: string;
+  provider: string;
   count: number;
   totalQuantity: number;
   totalRevenue: number;
@@ -42,6 +43,8 @@ interface Receipt {
   totalDiscount?: number;
   products: ReceiptsProductDomain[];
   provider: string;
+  providerIcon: string;
+  providerColor: string;
 }
 
 @Component({
@@ -156,7 +159,10 @@ interface Receipt {
                   <div class="receipt-card expanded">
                     <div class="card-header">
                       <div class="header-left">
-                        <div class="provider-icon">
+                        <div
+                          class="provider-icon"
+                          style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"
+                        >
                           <span class="provider-initial">AL</span>
                         </div>
                         <div class="provider-details">
@@ -186,6 +192,7 @@ interface Receipt {
                           <table class="products-table">
                             <thead>
                               <tr>
+                                <th>Provider</th>
                                 <th>Last Purchase</th>
                                 <th>Product</th>
                                 <th>Quantity</th>
@@ -199,6 +206,18 @@ interface Receipt {
                                 track item.id
                               ) {
                                 <tr class="product-row">
+                                  <td class="provider-cell">
+                                    <div
+                                      class="provider-icon-small"
+                                      [style.background]="
+                                        getProviderGradient(item.provider)
+                                      "
+                                    >
+                                      <span>{{
+                                        getProviderInitial(item.provider)
+                                      }}</span>
+                                    </div>
+                                  </td>
                                   <td class="date-cell">
                                     {{ formatDay(item.latestDate) }}
                                   </td>
@@ -243,7 +262,7 @@ interface Receipt {
 
                               @if (!getAllGroupedProducts().length) {
                                 <tr>
-                                  <td colspan="5" class="empty-cell">
+                                  <td colspan="6" class="empty-cell">
                                     No products available
                                   </td>
                                 </tr>
@@ -262,7 +281,12 @@ interface Receipt {
                 <div class="mobile-card expanded">
                   <div class="mobile-card-header">
                     <div class="mobile-header-left">
-                      <div class="provider-initial">AL</div>
+                      <div
+                        class="provider-initial"
+                        style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"
+                      >
+                        AL
+                      </div>
                       <div class="mobile-provider-info">
                         <div class="mobile-date">All Products</div>
                       </div>
@@ -284,9 +308,21 @@ interface Receipt {
                       @for (item of getAllGroupedProducts(); track item.id) {
                         <div class="mobile-product-item">
                           <div class="mobile-product-header">
-                            <span class="product-name"
-                              >{{ item.count }}x {{ item.name }}</span
-                            >
+                            <div class="product-header-left">
+                              <div
+                                class="provider-icon-small-mobile"
+                                [style.background]="
+                                  getProviderGradient(item.provider)
+                                "
+                              >
+                                <span>{{
+                                  getProviderInitial(item.provider)
+                                }}</span>
+                              </div>
+                              <span class="product-name"
+                                >{{ item.count }}x {{ item.name }}</span
+                              >
+                            </div>
                             <span class="product-quantity-badge"
                               >Qty: {{ item.totalQuantity }}</span
                             >
@@ -351,12 +387,18 @@ interface Receipt {
                         (click)="toggleReceipt(receipt.id)"
                       >
                         <div class="header-left">
-                          <div class="provider-icon">
+                          <div
+                            class="provider-icon"
+                            [style.background]="receipt.providerColor"
+                          >
                             <span class="provider-initial">{{
-                              receipt.provider.charAt(0)
+                              receipt.providerIcon
                             }}</span>
                           </div>
                           <div class="provider-details">
+                            {{ receipt.provider }}
+                          </div>
+                          <div class="receipt-date-small">
                             {{ receipt.date | date: 'dd MMM yyyy' }}
                           </div>
                           <span class="products-count">{{
@@ -394,6 +436,7 @@ interface Receipt {
                               <table class="products-table">
                                 <thead>
                                   <tr>
+                                    <th>Provider</th>
                                     <th>Product</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
@@ -406,6 +449,18 @@ interface Receipt {
                                     track product.id
                                   ) {
                                     <tr class="product-row">
+                                      <td class="provider-cell">
+                                        <div
+                                          class="provider-icon-small"
+                                          [style.background]="
+                                            receipt.providerColor
+                                          "
+                                        >
+                                          <span>{{
+                                            receipt.providerIcon
+                                          }}</span>
+                                        </div>
+                                      </td>
                                       <td class="product-name-cell">
                                         <div class="product-name">
                                           {{ product.name }}
@@ -455,10 +510,16 @@ interface Receipt {
                       (click)="toggleReceipt(receipt.id)"
                     >
                       <div class="mobile-header-left">
-                        <div class="provider-initial">
-                          {{ receipt.provider.charAt(0) }}
+                        <div
+                          class="provider-initial"
+                          [style.background]="receipt.providerColor"
+                        >
+                          {{ receipt.providerIcon }}
                         </div>
                         <div class="mobile-provider-info">
+                          <div class="mobile-provider-name">
+                            {{ receipt.provider }}
+                          </div>
                           <div class="mobile-date">
                             {{ receipt.date | date: 'dd MMM yyyy' }}
                           </div>
@@ -491,9 +552,17 @@ interface Receipt {
                           @for (product of receipt.products; track product.id) {
                             <div class="mobile-product-item">
                               <div class="mobile-product-header">
-                                <span class="product-name">{{
-                                  product.name
-                                }}</span>
+                                <div class="product-header-left">
+                                  <div
+                                    class="provider-icon-small-mobile"
+                                    [style.background]="receipt.providerColor"
+                                  >
+                                    <span>{{ receipt.providerIcon }}</span>
+                                  </div>
+                                  <span class="product-name">{{
+                                    product.name
+                                  }}</span>
+                                </div>
                                 <span class="product-quantity-badge"
                                   >x{{ product.quantity }}</span
                                 >
@@ -548,7 +617,10 @@ interface Receipt {
                         (click)="togglePeriod(period.id)"
                       >
                         <div class="header-left">
-                          <div class="provider-icon">
+                          <div
+                            class="provider-icon"
+                            style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);"
+                          >
                             <span class="provider-initial">
                               {{
                                 viewMode() === 'monthly'
@@ -585,6 +657,7 @@ interface Receipt {
                               <table class="products-table">
                                 <thead>
                                   <tr>
+                                    <th>Provider</th>
                                     <th>Last Purchase</th>
                                     <th>Product</th>
                                     <th>Quantity</th>
@@ -598,6 +671,18 @@ interface Receipt {
                                     track item.id
                                   ) {
                                     <tr class="product-row">
+                                      <td class="provider-cell">
+                                        <div
+                                          class="provider-icon-small"
+                                          [style.background]="
+                                            getProviderGradient(item.provider)
+                                          "
+                                        >
+                                          <span>{{
+                                            getProviderInitial(item.provider)
+                                          }}</span>
+                                        </div>
+                                      </td>
                                       <td class="date-cell">
                                         {{ formatDay(item.latestDate) }}
                                       </td>
@@ -643,7 +728,7 @@ interface Receipt {
 
                                   @if (!period.multiple.length) {
                                     <tr>
-                                      <td colspan="5" class="empty-cell">
+                                      <td colspan="6" class="empty-cell">
                                         No products this period
                                       </td>
                                     </tr>
@@ -668,7 +753,10 @@ interface Receipt {
                       (click)="togglePeriod(period.id)"
                     >
                       <div class="mobile-header-left">
-                        <div class="provider-initial">
+                        <div
+                          class="provider-initial"
+                          style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);"
+                        >
                           {{
                             viewMode() === 'monthly'
                               ? period.month?.charAt(0) || 'M'
@@ -700,9 +788,21 @@ interface Receipt {
                           @for (item of period.multiple; track item.id) {
                             <div class="mobile-product-item">
                               <div class="mobile-product-header">
-                                <span class="product-name"
-                                  >{{ item.count }}x {{ item.name }}</span
-                                >
+                                <div class="product-header-left">
+                                  <div
+                                    class="provider-icon-small-mobile"
+                                    [style.background]="
+                                      getProviderGradient(item.provider)
+                                    "
+                                  >
+                                    <span>{{
+                                      getProviderInitial(item.provider)
+                                    }}</span>
+                                  </div>
+                                  <span class="product-name"
+                                    >{{ item.count }}x {{ item.name }}</span
+                                  >
+                                </div>
                                 <span class="product-quantity-badge"
                                   >Qty: {{ item.totalQuantity }}</span
                                 >
@@ -933,17 +1033,43 @@ interface Receipt {
     .provider-icon {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .provider-icon-small {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .provider-icon-small-mobile {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .provider-initial {
       color: #fff;
       font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .provider-icon-small .provider-initial,
+    .provider-icon-small-mobile span {
+      color: #fff;
+      font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
     }
@@ -955,6 +1081,12 @@ interface Receipt {
       font-size: 16px;
       font-weight: 600;
       color: #1e293b;
+    }
+
+    .receipt-date-small {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
     }
 
     /* Header Right */
@@ -1035,7 +1167,7 @@ interface Receipt {
     .products-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
+      min-width: 700px;
     }
 
     .products-table th {
@@ -1067,6 +1199,10 @@ interface Receipt {
 
     .product-row:last-child td {
       border-bottom: none;
+    }
+
+    .provider-cell {
+      width: 60px;
     }
 
     .product-name-cell {
@@ -1219,7 +1355,6 @@ interface Receipt {
       .mobile-header-left .provider-initial {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -1234,6 +1369,12 @@ interface Receipt {
         display: flex;
         flex-direction: column;
         gap: 4px;
+      }
+
+      .mobile-provider-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1e293b;
       }
 
       .mobile-date {
@@ -1294,6 +1435,13 @@ interface Receipt {
         margin-bottom: 10px;
         padding-bottom: 8px;
         border-bottom: 1px solid #e2e8f0;
+      }
+
+      .product-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
       }
 
       .mobile-product-header .product-name {
@@ -1422,6 +1570,47 @@ export class MostCommonProductsComponent {
   expandedPeriodId = signal<string | null>(null);
   expandedReceiptId = signal<string | null>(null);
 
+  // Provider mapping based on product name patterns
+  private readonly providerMap = new Map<
+    string,
+    { name: string; icon: string; color: string }
+  >([
+    [
+      'LIDL',
+      {
+        name: 'LIDL',
+        icon: 'L',
+        color: `linear-gradient(
+          135deg,
+          #003580 0%,
+          #003580 50%,
+          #ffc107 100%
+        )`,
+      },
+    ],
+    [
+      'CARREFOUR',
+      {
+        name: 'CARREFOUR',
+        icon: 'C',
+        color: `linear-gradient(
+          135deg,
+          #1e3a8a 0%,
+          #3b82f6 50%,
+          #dc2626 100%
+        )`,
+      },
+    ],
+    [
+      'KAUFLAND',
+      {
+        name: 'KAUFLAND',
+        icon: 'K',
+        color: `linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #ef4444 100%)`,
+      },
+    ],
+  ]);
+
   onToggle(value: string) {
     if (value === 'All') {
       this.viewMode.set('all');
@@ -1468,6 +1657,33 @@ export class MostCommonProductsComponent {
     return `${day} ${month} ${date.getFullYear()}`;
   }
 
+  getProviderFromProduct(provider: string): {
+    name: string;
+    icon: string;
+    color: string;
+  } {
+    const upperName = provider.toUpperCase();
+    for (const [key, value] of this.providerMap.entries()) {
+      if (upperName.includes(key)) {
+        return value;
+      }
+    }
+    // Default for unknown providers
+    return {
+      name: 'STORE',
+      icon: upperName.charAt(0) || 'S',
+      color: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+    };
+  }
+
+  getProviderInitial(provider: string): string {
+    return this.getProviderFromProduct(provider).icon;
+  }
+
+  getProviderGradient(provider: string): string {
+    return this.getProviderFromProduct(provider).color;
+  }
+
   currentPeriods = computed((): PeriodGroup[] => {
     if (this.viewMode() === 'monthly') {
       return this.groupedByMonth();
@@ -1510,21 +1726,22 @@ export class MostCommonProductsComponent {
         0,
       );
 
-      let displayId = key;
-      if (key === 'unknown') {
-        displayId = receiptDate.getTime().toString().slice(-6);
-      } else if (key.length > 8) {
-        displayId = key.slice(-8);
-      }
+      // Determine provider from first product
+      const firstProduct = receiptProducts[0];
+      const provider = this.getProviderFromProduct(
+        firstProduct?.provider || '',
+      );
 
       receipts.push({
         id: `receipt-${key}`,
-        receiptId: displayId,
+        receiptId: key,
         date: receiptDate,
         totalPrice,
         totalQuantity,
         products: receiptProducts,
-        provider: receiptProducts[0]?.name?.substring(0, 2) || 'ST',
+        provider: provider.name,
+        providerIcon: provider.icon,
+        providerColor: provider.color,
       });
     }
 
@@ -1688,6 +1905,7 @@ export class MostCommonProductsComponent {
         map.set(id, {
           id: product.id,
           name: product.name,
+          provider: product.provider,
           count: 0,
           totalQuantity: 0,
           totalRevenue: 0,
