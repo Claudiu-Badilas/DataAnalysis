@@ -19,6 +19,8 @@ export class TransactionOverviewComponent {
   startDate = toSignal(this.store.select(fromTransactions.getStartDate));
   endDate = toSignal(this.store.select(fromTransactions.getEndDate));
 
+  viewMode = toSignal(this.store.select(fromTransactions.getViewMode));
+
   transactions = toSignal(
     this.store.select(fromTransactions.getAvailableTransactions),
     { initialValue: [] },

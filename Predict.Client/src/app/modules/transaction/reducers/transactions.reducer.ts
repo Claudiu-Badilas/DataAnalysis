@@ -17,6 +17,7 @@ export interface State {
   selectedProvider: string;
   selectedServiceProvider: string;
   searchTerm: string;
+  viewMode: 'all' | 'monthly' | 'yearly';
 }
 
 const initialState: State = {
@@ -26,6 +27,7 @@ const initialState: State = {
   selectedProvider: 'RAIFFEISEN',
   selectedServiceProvider: 'No Selection',
   searchTerm: null,
+  viewMode: 'monthly',
 };
 
 const transactionsReducer = createReducer(
@@ -53,6 +55,10 @@ const transactionsReducer = createReducer(
   on(TransactionsActions.searchTermChanged, (state, { searchTerm }) => ({
     ...state,
     searchTerm,
+  })),
+  on(TransactionsActions.viewModeChanged, (state, { viewMode }) => ({
+    ...state,
+    viewMode,
   })),
 );
 
@@ -153,4 +159,9 @@ export const getMonthlyTransactionsChart = createSelector(
   getEndDate,
   getAvailableTransactionsBySearchTerm,
   MonthlyTransactionChartUtils.getChart,
+);
+
+export const getViewMode = createSelector(
+  getTransactionsState,
+  (state) => state.viewMode,
 );

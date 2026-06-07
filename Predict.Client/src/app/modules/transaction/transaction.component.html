@@ -1,5 +1,10 @@
-<p-top-bar [hasFiltersContent]="true">
-  <ng-container module-navigation> </ng-container>
+<p-top-bar [hasFiltersContent]="true" [hasModuleNavContent]="true">
+  <ng-container module-navigation>
+    <p-toggle-button-actions
+      [options]="['Monthly', 'Yearly', 'All']"
+      [selected]="getSelectedViewLabel()"
+      (selectionChange)="onToggle($event)"
+  /></ng-container>
   <ng-container filter-content>
     <div class="mb-2">
       <p-date-range-picker

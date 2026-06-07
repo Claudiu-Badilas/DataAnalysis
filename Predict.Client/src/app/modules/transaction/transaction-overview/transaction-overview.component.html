@@ -1,3 +1,6 @@
 <div class="p-2">
-  <p-most-common-transaction [transactions]="validTransactions()" />
+  <p-most-common-transaction
+    [viewMode]="viewMode()"
+    [transactions]="validTransactions()"
+  />
 </div>

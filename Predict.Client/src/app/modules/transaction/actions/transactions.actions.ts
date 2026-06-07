@@ -29,3 +29,8 @@ export const searchTermChanged = createAction(
   '[Transactions] Search Term Changed',
   props<{ searchTerm: string }>(),
 );
+
+export const viewModeChanged = createAction(
+  '[Transactions] View Mode Changed',
+  props<{ viewMode: 'all' | 'monthly' | 'yearly' }>(),
+);

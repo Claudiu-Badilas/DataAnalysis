@@ -13,6 +13,7 @@ import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.compo
 import * as TransactionsActions from 'src/app/modules/transaction/actions/transactions.actions';
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import { Colors } from 'src/app/shared/styles/colors';
+import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 
 @Component({
   selector: 'p-transaction',
@@ -27,6 +28,7 @@ import { Colors } from 'src/app/shared/styles/colors';
     DropdownSelectComponent,
     SearchInputComponent,
     TopBarComponent,
+    ToggleButtonActionsComponent,
   ],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss'],
@@ -34,6 +36,7 @@ import { Colors } from 'src/app/shared/styles/colors';
 export class TransactionComponent {
   startDate = toSignal(this.store.select(fromTransactions.getStartDate));
   endDate = toSignal(this.store.select(fromTransactions.getEndDate));
+  viewMode = toSignal(this.store.select(fromTransactions.getViewMode));
 
   transactions = toSignal(
     this.store.select(fromTransactions.getAvailableTransactions),
@@ -105,5 +108,19 @@ export class TransactionComponent {
 
   onTransactionTypeChange($event: string) {
     this.transactionType.set($event as 'Expense' | 'Income');
+  }
+
+  onToggle(value: string) {
+    this.store.dispatch(
+      TransactionsActions.viewModeChanged({
+        viewMode: value.toLocaleLowerCase() as 'all' | 'monthly' | 'yearly',
+      }),
+    );
+  }
+
+  getSelectedViewLabel(): string {
+    if (this.viewMode() === 'all') return 'All';
+    if (this.viewMode() === 'monthly') return 'Monthly';
+    return 'Yearly';
   }
 }

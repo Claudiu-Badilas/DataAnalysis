@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
-import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import {
   TransactionCategorizer,
@@ -46,7 +45,6 @@ interface PeriodGroup {
   imports: [
     CommonModule,
     NumberFormatPipe,
-    ToggleButtonComponent,
     HighchartWrapperComponent,
     NgbTooltip,
     TransactionOverviewHeaderComponent,
@@ -56,6 +54,7 @@ interface PeriodGroup {
 })
 export class MostCommonTransactionComponent {
   transactions = input<TransactionDomain[]>([]);
+  viewMode = input<'all' | 'monthly' | 'yearly'>('monthly');
 
   selectedCategory = signal<TransactionCategory | null>(null);
 
@@ -67,25 +66,7 @@ export class MostCommonTransactionComponent {
     ),
   );
 
-  viewMode = signal<'all' | 'monthly' | 'yearly'>('monthly');
   private expandedPeriodId = signal<string | null>(null);
-
-  onToggle(value: string) {
-    if (value === 'All') {
-      this.viewMode.set('all');
-    } else if (value === 'Monthly') {
-      this.viewMode.set('monthly');
-    } else if (value === 'Yearly') {
-      this.viewMode.set('yearly');
-    }
-    this.expandedPeriodId.set(null);
-  }
-
-  getSelectedViewLabel(): string {
-    if (this.viewMode() === 'all') return 'All';
-    if (this.viewMode() === 'monthly') return 'Monthly';
-    return 'Yearly';
-  }
 
   togglePeriod(period: PeriodGroup) {
     const currentExpanded = this.expandedPeriodId();

@@ -6,27 +6,6 @@
 ></p-transaction-overview-header>
 
 <div class="transaction-analytics mt-2">
-  <div class="analytics-header">
-    <div class="text-center">
-      <p class="subtitle">Most Common Transactions Overview</p>
-    </div>
-    <div class="header-right">
-      <p-toggle-button
-        [options]="[
-          { label: 'Monthly' },
-          { label: 'Yearly' },
-          { label: 'All' },
-        ]"
-        [selected]="getSelectedViewLabel()"
-        [gradient]="{
-          primaryColor: '#3b82f6',
-          secondaryColor: '#10b981',
-        }"
-        (selectionChange)="onToggle($event)"
-      />
-    </div>
-  </div>
-
   <div class="table-container">
     <div class="period-view">
       @if (viewMode() === "all") {
