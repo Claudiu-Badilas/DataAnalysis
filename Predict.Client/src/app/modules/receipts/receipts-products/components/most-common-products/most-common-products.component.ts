@@ -33,6 +33,16 @@ interface PeriodGroup {
   month?: string;
 }
 
+interface ReceiptGroup {
+  id: string;
+  receiptId: string;
+  receiptDate: Date;
+  totalRevenue: number;
+  totalQuantity: number;
+  products: ReceiptsProductDomain[];
+  isExpanded: boolean;
+}
+
 @Component({
   selector: 'p-most-common-products',
   standalone: true,
@@ -49,6 +59,7 @@ interface PeriodGroup {
               { label: 'Monthly' },
               { label: 'Yearly' },
               { label: 'All' },
+              { label: 'Receipts' },
             ]"
             [selected]="getSelectedViewLabel()"
             [gradient]="{
@@ -261,6 +272,131 @@ interface PeriodGroup {
                 </div>
               </div>
             </div>
+          } @else if (viewMode() === 'receipts') {
+            <!-- Receipts View - Grouped by Receipt ID -->
+            <div class="receipts-view">
+              @for (receipt of receiptGroups(); track receipt.id) {
+                <div class="receipt-card" [class.expanded]="receipt.isExpanded">
+                  <div class="receipt-header" (click)="toggleReceipt(receipt)">
+                    <div class="receipt-info">
+                      <div class="receipt-title">
+                        Receipt #{{ receipt.receiptId }}
+                      </div>
+                      <div class="receipt-date">
+                        {{ formatFullDate(receipt.receiptDate) }}
+                      </div>
+                      <div class="receipt-summary">
+                        {{ receipt.products.length }} product{{
+                          receipt.products.length !== 1 ? 's' : ''
+                        }}
+                      </div>
+                    </div>
+                    <div class="receipt-totals">
+                      <span class="buble"
+                        >{{ receipt.totalQuantity }} items</span
+                      >
+                      @if (receipt.totalRevenue > 0) {
+                        <span class="revenue-badge">{{
+                          receipt.totalRevenue | numberFormat: '0.00'
+                        }}</span>
+                      }
+                    </div>
+                  </div>
+
+                  @if (receipt.isExpanded) {
+                    <div class="receipt-content">
+                      <div class="data-table-wrapper">
+                        <!-- Desktop Table -->
+                        <table class="data-table desktop-table">
+                          <thead>
+                            <tr>
+                              <th>Product Name</th>
+                              <th>Quantity</th>
+                              <th>Unit Price</th>
+                              <th>Total Price</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (
+                              product of receipt.products;
+                              track product.id
+                            ) {
+                              <tr>
+                                <td
+                                  data-label="Product Name"
+                                  class="product-cell"
+                                >
+                                  <span class="product-badge multiple">
+                                    {{ product.name }}
+                                  </span>
+                                </td>
+                                <td data-label="Quantity" class="quantity-cell">
+                                  {{ product.quantity }}
+                                </td>
+                                <td data-label="Unit Price" class="amount-cell">
+                                  {{
+                                    product.price ?? 0 | numberFormat: '0.00'
+                                  }}
+                                </td>
+                                <td
+                                  data-label="Total Price"
+                                  class="amount-cell positive"
+                                >
+                                  {{
+                                    (product.price ?? 0) *
+                                      (product.quantity ?? 0)
+                                      | numberFormat: '0.00'
+                                  }}
+                                </td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+
+                        <!-- Mobile Cards -->
+                        <div class="mobile-cards pt-2">
+                          @for (product of receipt.products; track product.id) {
+                            <div class="mobile-card">
+                              <div class="mobile-card-header">
+                                <span class="product-badge multiple">
+                                  {{ product.name }}
+                                </span>
+                              </div>
+                              <div class="mobile-card-details">
+                                <div class="detail-row">
+                                  <span class="detail-label">Quantity:</span>
+                                  <span class="detail-value">{{
+                                    product.quantity
+                                  }}</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Unit Price:</span>
+                                  <span class="detail-value">{{
+                                    product.price ?? 0 | numberFormat: '0.00'
+                                  }}</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Total Price:</span>
+                                  <span class="detail-value positive">{{
+                                    (product.price ?? 0) *
+                                      (product.quantity ?? 0)
+                                      | numberFormat: '0.00'
+                                  }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (!receiptGroups().length) {
+                <div class="empty-state">No receipts available</div>
+              }
+            </div>
           } @else {
             @for (period of currentPeriods(); track period.id) {
               <div class="period-card" [class.expanded]="period.isExpanded">
@@ -415,7 +551,11 @@ interface PeriodGroup {
               </div>
             }
           }
-          @if (viewMode() !== 'all' && !currentPeriods().length) {
+          @if (
+            viewMode() !== 'all' &&
+            viewMode() !== 'receipts' &&
+            !currentPeriods().length
+          ) {
             <div class="empty-state">No product data available</div>
           }
         </div>
@@ -570,6 +710,68 @@ interface PeriodGroup {
     .period-totals {
       display: flex;
       gap: 8px;
+    }
+
+    .receipt-card {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 5px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    .receipt-card:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      background: white;
+      transition: background 0.2s ease;
+    }
+
+    .receipt-header:hover {
+      background: #f9fafb;
+    }
+
+    .receipt-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .receipt-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #1f2937;
+    }
+
+    .receipt-date {
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+
+    .receipt-summary {
+      font-size: 0.7rem;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+
+    .receipt-totals {
+      display: flex;
+      gap: 8px;
+    }
+
+    .receipt-content {
+      padding: 0 20px 20px 20px;
+      background: white;
+      border-top: 1px solid #f3f4f6;
+      animation: slideDown 0.3s ease;
     }
 
     .revenue-badge,
@@ -868,6 +1070,16 @@ interface PeriodGroup {
         padding: 0 16px 16px 16px;
       }
 
+      .receipt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .receipt-content {
+        padding: 0 16px 16px 16px;
+      }
+
       .desktop-table {
         display: none;
       }
@@ -965,6 +1177,10 @@ interface PeriodGroup {
         padding: 0 10px 10px 10px;
       }
 
+      .receipt-content {
+        padding: 0 10px 10px 10px;
+      }
+
       .mobile-card {
         padding: 8px;
       }
@@ -994,8 +1210,9 @@ interface PeriodGroup {
 export class MostCommonProductsComponent {
   receipts = input<ReceiptsProductDomain[]>([]);
 
-  viewMode = signal<'all' | 'monthly' | 'yearly'>('monthly');
+  viewMode = signal<'all' | 'monthly' | 'yearly' | 'receipts'>('monthly');
   private expandedPeriodId = signal<string | null>(null);
+  private expandedReceiptId = signal<string | null>(null);
 
   onToggle(value: string) {
     if (value === 'All') {
@@ -1004,14 +1221,18 @@ export class MostCommonProductsComponent {
       this.viewMode.set('monthly');
     } else if (value === 'Yearly') {
       this.viewMode.set('yearly');
+    } else if (value === 'Receipts') {
+      this.viewMode.set('receipts');
     }
     this.expandedPeriodId.set(null);
+    this.expandedReceiptId.set(null);
   }
 
   getSelectedViewLabel(): string {
     if (this.viewMode() === 'all') return 'All';
     if (this.viewMode() === 'monthly') return 'Monthly';
-    return 'Yearly';
+    if (this.viewMode() === 'yearly') return 'Yearly';
+    return 'Receipts';
   }
 
   togglePeriod(period: PeriodGroup) {
@@ -1023,11 +1244,32 @@ export class MostCommonProductsComponent {
     }
   }
 
+  toggleReceipt(receipt: ReceiptGroup) {
+    const currentExpanded = this.expandedReceiptId();
+    if (currentExpanded === receipt.id) {
+      this.expandedReceiptId.set(null);
+      receipt.isExpanded = false;
+    } else {
+      this.expandedReceiptId.set(receipt.id);
+      receipt.isExpanded = true;
+    }
+  }
+
   formatDay(date: Date | null): string {
     if (!date) return '';
     const month = date.toLocaleString('default', { month: 'short' });
     const day = date.getDate();
     return `${day} ${month} ${date.getFullYear()}`;
+  }
+
+  formatFullDate(date: Date): string {
+    return date.toLocaleString('default', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
   currentPeriods = computed((): PeriodGroup[] => {
@@ -1037,6 +1279,67 @@ export class MostCommonProductsComponent {
       return this.groupedByYear();
     }
     return [];
+  });
+
+  receiptGroups = computed((): ReceiptGroup[] => {
+    if (this.viewMode() !== 'receipts') return [];
+
+    const products = this.receipts();
+    if (!products?.length) return [];
+
+    // Group products by receipt ID (using receiptId field)
+    const receiptMap = new Map<string, ReceiptsProductDomain[]>();
+
+    for (const product of products) {
+      // Use receiptId if available, otherwise use purchased date as fallback
+      const receiptKey =
+        (product as any).receiptId ||
+        product.purchasedDate?.getTime()?.toString() ||
+        'unknown';
+
+      if (!receiptMap.has(receiptKey)) {
+        receiptMap.set(receiptKey, []);
+      }
+      receiptMap.get(receiptKey)!.push(product);
+    }
+
+    const receipts: ReceiptGroup[] = [];
+
+    for (const [key, receiptProducts] of receiptMap.entries()) {
+      // Use the first product's date as receipt date, or current date as fallback
+      const receiptDate = receiptProducts[0]?.purchasedDate || new Date();
+      const totalRevenue = receiptProducts.reduce(
+        (sum, p) => sum + (p.price ?? 0) * (p.quantity ?? 0),
+        0,
+      );
+      const totalQuantity = receiptProducts.reduce(
+        (sum, p) => sum + (p.quantity ?? 0),
+        0,
+      );
+
+      // Format receipt ID for display
+      let displayId = key;
+      if (key === 'unknown') {
+        displayId = receiptDate.getTime().toString().slice(-6);
+      } else if (key.length > 8) {
+        displayId = key.slice(-8);
+      }
+
+      receipts.push({
+        id: `receipt-${key}`,
+        receiptId: displayId,
+        receiptDate,
+        totalRevenue,
+        totalQuantity,
+        products: receiptProducts,
+        isExpanded: this.expandedReceiptId() === `receipt-${key}`,
+      });
+    }
+
+    // Sort receipts by date (newest first)
+    return receipts.sort(
+      (a, b) => b.receiptDate.getTime() - a.receiptDate.getTime(),
+    );
   });
 
   getAllGroupedProducts = computed((): GroupedProduct[] => {
