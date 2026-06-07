@@ -64,11 +64,7 @@ module KauflandJsonReceipt =
           Date = Some lidReceipt.Date
           TotalPrice = Some lidReceipt.TotalPrice
           TotalDiscount = Some lidReceipt.TotalDiscount
-          Currency =
-            match lidReceipt.Currency with
-            | "EUR" -> Some EUR
-            | "USD" -> Some USD
-            | _ -> Some RON
+          Currency = Some RON
           ParsedProducts =
             lidReceipt.ParsedProducts
             |> List.map (fun p ->
