@@ -46,6 +46,7 @@ module RaiffeisenExcelAccountStatement =
 
     let getTransactions (excel: WorkBook) userId : ParsedTransaction list =
         let values = ExcelUtils.getExcelValues excel
+
         values
         |> Seq.toList
         |> List.indexed
@@ -84,7 +85,7 @@ module RaiffeisenExcelAccountStatement =
         |> List.groupBy (fun t -> t.RegistrationDate, t.Amount)
         |> List.map (fun (_, t) -> ParserUtils.mapTransactions t userId)
         |> List.concat
-        //|> List.distinctBy (fun t -> t.Identifier)
+    //|> List.distinctBy (fun t -> t.Identifier)
 
 
     let readExcels dataOwnerId (excels: WorkBook list) =
@@ -103,14 +104,15 @@ module RaiffeisenExcelAccountStatement =
         |> Seq.toList
         |> List.map (fun f -> Path.Combine(path, f) |> WorkBook.Load)
 
-    
+
     let getTransactionsFromExcels dataOwnerId path =
         let excels = getLocalExcels path
+
         let parsedTransactions =
             excels
             |> List.map (fun excel -> getTransactions excel dataOwnerId)
             |> List.concat
-            //|> List.distinctBy (fun t -> t.Identifier)
+        //|> List.distinctBy (fun t -> t.Identifier)
 
         let transactions =
             parsedTransactions
@@ -125,10 +127,14 @@ module RaiffeisenExcelAccountStatement =
                     Description = t.Description.Value,
                     DataOwnerId = dataOwnerId
                 ))
+
         transactions
 
     let basePath = @$""
     let transactionsPath = @$"{basePath}\AccountStatements\Raiffaisen2\Economii"
 
-    let transactions () = getTransactionsFromExcels 1 transactionsPath
-    let economii () = getTransactionsFromExcels 1 @$"{transactionsPath}\Economii"
+    let transactions () =
+        getTransactionsFromExcels 1 transactionsPath
+
+    let economii () =
+        getTransactionsFromExcels 1 @$"{transactionsPath}\Economii"

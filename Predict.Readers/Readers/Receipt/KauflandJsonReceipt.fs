@@ -21,7 +21,7 @@ type KauflandParsedReceipt =
       TotalPrice: double
       TotalDiscount: double
       Currency: string
-      ParsedProducts: KauflandParsedPurchasedProduct list}
+      ParsedProducts: KauflandParsedPurchasedProduct list }
 
 
 module KauflandJsonReceipt =
