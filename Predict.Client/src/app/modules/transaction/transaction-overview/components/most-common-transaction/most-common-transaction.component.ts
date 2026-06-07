@@ -10,6 +10,7 @@ import {
   TransactionDomain,
 } from '../../../models/transactions.model';
 import { TransactionStatusBarChartUtils } from '../../utils/transaction-status-bar.chart.utils';
+import { TransactionOverviewHeaderComponent } from '../transaction-overview-header/transaction-overview-header.component';
 
 interface GroupedTransaction {
   provider: string;
@@ -48,6 +49,7 @@ interface PeriodGroup {
     ToggleButtonComponent,
     HighchartWrapperComponent,
     NgbTooltip,
+    TransactionOverviewHeaderComponent,
   ],
   templateUrl: './most-common-transaction.component.html',
   styleUrls: ['./most-common-transaction.component.scss'],

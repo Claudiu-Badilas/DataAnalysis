@@ -1,3 +1,10 @@
+<p-transaction-overview-header
+  class="mb-2"
+  [totalIncome]="totalIncome()"
+  [totalExpense]="totalExpense()"
+  [totalTransactions]="totalTransactions()"
+></p-transaction-overview-header>
+
 <div class="transaction-analytics mt-2">
   <div class="analytics-header">
     <div class="text-center">
@@ -17,86 +24,6 @@
         }"
         (selectionChange)="onToggle($event)"
       />
-    </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon income-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M12 2v20M17 7l-5-5-5 5M7 17l5 5 5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Total Income</span>
-        <span class="stat-value positive">{{
-          totalIncome() | numberFormat: "0.00"
-        }}</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon expense-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M12 2v20M17 7l-5-5-5 5M7 17l5 5 5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Total Expense</span>
-        <span class="stat-value negative"
-          >-{{ totalExpense() | numberFormat: "0.00" }}</span
-        >
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon balance-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M3 6h18M9 12h6M7 18h10"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Net Balance</span>
-        <span
-          class="stat-value"
-          [class.positive]="totalIncome() - totalExpense() > 0"
-          [class.negative]="totalIncome() - totalExpense() < 0"
-        >
-          {{ totalIncome() - totalExpense() | numberFormat: "0.00" }}
-        </span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon count-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M4 6h16M4 12h16M4 18h16"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-label">Total Transactions</span>
-        <span class="stat-value">{{ totalTransactions() }}</span>
-      </div>
     </div>
   </div>
 
