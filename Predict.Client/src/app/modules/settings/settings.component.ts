@@ -18,6 +18,7 @@ export class SettingsComponent {
   tabs = [
     { id: 'tab1', label: 'Mortgage', url: 'mortgage-loan' },
     { id: 'tab2', label: 'Transactions', url: 'transactions' },
+    { id: 'tab3', label: 'Receipts', url: 'receipts' },
   ];
 
   store = inject(Store<fromAppStore.AppState>);
