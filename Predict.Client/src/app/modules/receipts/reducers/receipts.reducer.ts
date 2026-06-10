@@ -26,7 +26,7 @@ export interface State {
 
 const initialState: State = {
   receipts: [],
-  startDate: DateUtils.getStartOfTheYear({ subtractYears: 2 }),
+  startDate: DateUtils.getStartOfTheYear({ subtractYears: 1 }),
   endDate: new Date(),
 
   receiptsProducts: {
