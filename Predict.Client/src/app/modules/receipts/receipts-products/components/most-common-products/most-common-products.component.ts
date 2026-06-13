@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, signal } from '@angular/core';
-import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
+import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ReceiptsProductDomain } from '../../models/receipts-products.model';
 
 interface GroupedProduct {
@@ -49,8 +48,7 @@ interface Receipt {
 
 @Component({
   selector: 'p-most-common-products',
-  standalone: true,
-  imports: [CommonModule, NumberFormatPipe, ToggleButtonComponent, NgbTooltip],
+  imports: [CommonModule, NumberFormatPipe, ToggleButtonComponent],
   template: `
     <div class="products-analytics mt-2">
       <div class="analytics-header">
