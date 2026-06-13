@@ -56,7 +56,7 @@
       <!-- Sold -->
       <div class="summary-section stat-item stat-item--violet">
         <div class="stat-row">
-          <span class="stat-item__label">Sold</span>
+          <span class="stat-item__label"> {{ nextPayment }}</span>
           <span class="stat-item__value">
             {{ paidMonthlyInstalments() | numberFormat: "0" : 0 }}
             /
@@ -139,7 +139,7 @@
       <!-- Sold -->
       <div class="summary-section stat-item stat-item--violet">
         <div class="stat-row">
-          <span class="stat-item__label">Sold</span>
+          <span class="stat-item__label">{{ nextPayment }}</span>
           <span class="stat-item__value">
             {{ paidMonthlyInstalments() | numberFormat: "0" : 0 }}
             /

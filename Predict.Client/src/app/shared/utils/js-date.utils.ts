@@ -55,6 +55,18 @@ export namespace JsDateUtils {
     let years: number = end.getFullYear() - start.getFullYear();
     let months: number = end.getMonth() - start.getMonth();
     let days: number = end.getDate() - start.getDate();
+    let hours: number = end.getHours() - start.getHours();
+    let minutes: number = end.getMinutes() - start.getMinutes();
+
+    if (minutes < 0) {
+      minutes += 60;
+      hours--;
+    }
+
+    if (hours < 0) {
+      hours += 24;
+      days--;
+    }
 
     if (days < 0) {
       const prevMonth: Date = new Date(end.getFullYear(), end.getMonth(), 0);
@@ -67,10 +79,16 @@ export namespace JsDateUtils {
       years--;
     }
 
-    if (months == 0) return `${years}y`;
+    const parts: string[] = [];
 
-    if (days == 0) return `${years}y ${months}m`;
+    if (years > 0) parts.push(`${years}y`);
+    if (months > 0) parts.push(`${months}m`);
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}min`);
 
-    return `${years}y ${months}m ${days}d`;
+    if (parts.length === 0) return '0min';
+
+    return parts.join(' ');
   }
 }

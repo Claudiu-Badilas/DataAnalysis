@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
+import { DateUtils } from 'src/app/shared/utils/date.utils';
+import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
 import { MonthlyInstalmentManager } from '../../models/overview-mortgage-loan.model';
 
 @Component({
@@ -78,4 +80,19 @@ export class MortgageLoanOverviewHeaderComponent {
       firstInstalment?.principalAmount,
     ]);
   });
+
+  get nextPayment() {
+    const now = new Date();
+    const target = DateUtils.newDate(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      17,
+      20,
+      0,
+    );
+    if (JsDateUtils.isBefore(now, target))
+      return JsDateUtils.dateDiffYMD(now, target);
+
+    return JsDateUtils.dateDiffYMD(now, JsDateUtils.addMonths(target, 1));
+  }
 }

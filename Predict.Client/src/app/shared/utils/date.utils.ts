@@ -1,4 +1,15 @@
 export namespace DateUtils {
+  export function newDate(
+    year: number,
+    month: number,
+    day: number,
+    hour?: number,
+    minute?: number,
+    second?: number,
+  ): Date {
+    return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+  }
+
   export function fromJsDateToString(date: Date): string | null {
     if (!date || isNaN(date.getTime())) return null;
 
