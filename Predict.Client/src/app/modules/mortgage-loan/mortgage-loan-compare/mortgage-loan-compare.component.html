@@ -27,8 +27,10 @@
 </p-top-bar>
 
 <div class="mt-2 mx-2">
+  <p-mortgage-loan-compare-body />
+
   <div>
-    <div class="mb-2">
+    <div class="mt-2">
       <p-highcharts-wrapper [chartOptions]="compareRatesTrendChart()">
         <ng-container p-highcharts-wrapper-content>
           <div class="m-2 d-flex align-items-center justify-content-between">
@@ -50,9 +52,6 @@
             </div>
           </div> </ng-container
       ></p-highcharts-wrapper>
-    </div>
-    <div class="mb-2">
-      <p-mortgage-loan-compare-body />
     </div>
   </div>
 </div>

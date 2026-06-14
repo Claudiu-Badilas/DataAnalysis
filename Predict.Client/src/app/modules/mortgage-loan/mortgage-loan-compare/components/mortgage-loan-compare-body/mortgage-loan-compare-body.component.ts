@@ -5,9 +5,6 @@ import { Store } from '@ngrx/store';
 import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/mortgage-loan-compare/selectors/mortgage-loan-compare.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
-import { HistoricalInstalmentPaymentBatchesManager } from '../../../mortgage-loan-detailed/models/base-loan-rate.model';
-import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
-import { Calculator } from 'src/app/shared/utils/calculator.utils';
 
 @Component({
   selector: 'p-mortgage-loan-compare-body',
@@ -18,11 +15,6 @@ import { Calculator } from 'src/app/shared/utils/calculator.utils';
 export class MortgageLoanCompareBodyComponent {
   private readonly store = inject(Store<fromMortgageLoan.MortgageLoanState>);
 
-  baseHistoricalInstalmentPaymentBatchesManager = toSignal(
-    this.store.select(
-      fromMortgageLoanCompare.getBaseHistoricalInstalmentPaymentBatchesManager,
-    ),
-  );
   leftHistoricalInstalmentPaymentBatchesManager = toSignal(
     this.store.select(
       fromMortgageLoanCompare.getLeftHistoricalInstalmentPaymentBatchesManager,
@@ -34,31 +26,10 @@ export class MortgageLoanCompareBodyComponent {
     ),
   );
 
-  years = computed(() => {
-    const leftManager =
-      this.leftHistoricalInstalmentPaymentBatchesManager()?.selected
-        ?.monthlyInstalments;
-    const leftFirstDate = leftManager?.at(0)?.paymentDate;
-    const leftLastDate = leftManager?.at(-1)?.paymentDate;
-    const rightManager =
-      this.rightHistoricalInstalmentPaymentBatchesManager()?.selected
-        ?.monthlyInstalments;
-    const rightFirstDate = rightManager?.at(0)?.paymentDate;
-    const rightLastDate = rightManager?.at(-1)?.paymentDate;
-
-    return this.getEvenlySpacedYears(
-      [leftFirstDate, leftLastDate, rightFirstDate, rightLastDate].filter(
-        Boolean,
-      ),
-      30,
-    );
-  });
-
   validManagers = computed(() => {
     const managers = [
       this.leftHistoricalInstalmentPaymentBatchesManager(),
       this.rightHistoricalInstalmentPaymentBatchesManager(),
-      this.baseHistoricalInstalmentPaymentBatchesManager(),
     ].filter(Boolean);
 
     const uniqueManagers = [];
@@ -73,50 +44,32 @@ export class MortgageLoanCompareBodyComponent {
     return uniqueManagers;
   });
 
-  getLabelDate(year: number): Date {
-    const now = new Date();
-    return new Date(`${year}-${now.getMonth() + 1}-01`);
-  }
+  getDifference(
+    type: 'principal' | 'interest' | 'insurance' | 'total',
+  ): number {
+    const managers = this.validManagers();
+    if (managers.length !== 2) return 0;
 
-  getPrincipalAmount(
-    year: number,
-    manager: HistoricalInstalmentPaymentBatchesManager,
-  ) {
-    const date = this.getLabelDate(year);
-    const inst = manager.selected.monthlyInstalments.filter((i) =>
-      JsDateUtils.isSameOrAfter(i.paymentDate, date),
-    );
-    return Calculator.sum(inst.map((i) => i.principalAmount));
-  }
+    const left = managers[0];
+    const right = managers[1];
 
-  getEvenlySpacedYears(dates: Date[], limit: number): number[] {
-    if (!dates.length || limit <= 0) return [];
-
-    const parsed = dates.map((d) => (d instanceof Date ? d : new Date(d)));
-
-    const minDate = new Date(Math.min(...parsed.map((d) => d.getTime())));
-    const maxDate = new Date(Math.max(...parsed.map((d) => d.getTime())));
-
-    const startYear = minDate.getFullYear();
-    const endYear = maxDate.getFullYear();
-
-    if (limit === 1 || startYear === endYear) {
-      return [startYear];
+    switch (type) {
+      case 'principal':
+        return (
+          left.getUnpaidPrincipalAmmount() - right.getUnpaidPrincipalAmmount()
+        );
+      case 'interest':
+        return (
+          left.getUnpaidAmmountInterest() - right.getUnpaidAmmountInterest()
+        );
+      case 'insurance':
+        return (
+          left.getUnpaidInsuranceAmmount() - right.getUnpaidInsuranceAmmount()
+        );
+      case 'total':
+        return left.getPaidAmmount() - right.getPaidAmmount();
+      default:
+        return 0;
     }
-
-    const span = endYear - startYear;
-    const step = span / (limit - 1);
-
-    const years: number[] = [];
-
-    for (let i = 0; i < limit; i++) {
-      const year = Math.round(startYear + step * i);
-      years.push(year);
-    }
-
-    years[0] = startYear;
-    years[years.length - 1] = endYear;
-
-    return [...new Set(years)];
   }
 }

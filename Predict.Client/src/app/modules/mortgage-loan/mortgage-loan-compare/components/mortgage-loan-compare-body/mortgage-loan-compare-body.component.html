@@ -1,135 +1,144 @@
-<!-- Desktop View -->
-<div class="desktop-view">
-  <div class="comparison">
-    <!-- Totals -->
-    <div class="comparison__card">
-      <div class="comparison__table-wrapper">
-        <table class="comparison__table">
-          <thead>
-            <tr>
-              <th></th>
-              @for (manager of validManagers(); track $index) {
-                <th>
-                  <div class="comparison__title">
-                    {{ manager.getBaseName() }}
-                  </div>
-                </th>
-              }
-            </tr>
-          </thead>
+<div class="comparison-wrapper">
+  @if (validManagers().length === 2) {
+    <div class="comparison-card">
+      <!-- Compact Header -->
+      <div class="card-header">
+        <div class="header-left">
+          <span class="card-title">Loan Comparison</span>
+          <span class="comparison-badge">1:1</span>
+        </div>
+        <div class="header-right">
+          <span class="loan-badge loan-badge--left">{{
+            validManagers()[0].getBaseName()
+          }}</span>
+          <span class="vs-divider">VS</span>
+          <span class="loan-badge loan-badge--right">{{
+            validManagers()[1].getBaseName()
+          }}</span>
+        </div>
+      </div>
 
-          <tbody>
-            <!-- Principal -->
-            <tr class="comparison__row">
-              <td class="comparison__label">Principal</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__value comparison__value--green">
-                  {{
-                    manager.getUnpaidPrincipalAmmount() | numberFormat: "0.00"
-                  }}
-                </td>
-              }
-            </tr>
+      <!-- Compact Grid - 2 Rows -->
+      <div class="compact-grid">
+        <!-- Row 1: Principal & Interest -->
+        <div class="compact-row">
+          <div class="metric-group">
+            <div class="metric-label">💰 Principal</div>
+            <div class="metric-values">
+              <span class="value-left">{{
+                validManagers()[0].getUnpaidPrincipalAmmount()
+                  | numberFormat: "0.00"
+              }}</span>
+              <span class="vs-mini">vs</span>
+              <span class="value-right">{{
+                validManagers()[1].getUnpaidPrincipalAmmount()
+                  | numberFormat: "0.00"
+              }}</span>
+            </div>
+            <div
+              class="metric-diff"
+              [class.positive]="getDifference('principal') > 0"
+              [class.negative]="getDifference('principal') < 0"
+            >
+              {{ getDifference("principal") | numberFormat: "0.00" }}
+            </div>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-group">
+            <div class="metric-label">📈 Interest</div>
+            <div class="metric-values">
+              <span class="value-left">{{
+                validManagers()[0].getUnpaidAmmountInterest()
+                  | numberFormat: "0.00"
+              }}</span>
+              <span class="vs-mini">vs</span>
+              <span class="value-right">{{
+                validManagers()[1].getUnpaidAmmountInterest()
+                  | numberFormat: "0.00"
+              }}</span>
+            </div>
+            <div
+              class="metric-diff"
+              [class.positive]="getDifference('interest') > 0"
+              [class.negative]="getDifference('interest') < 0"
+            >
+              {{ getDifference("interest") | numberFormat: "0.00" }}
+            </div>
+          </div>
+        </div>
 
-            <!-- Dobanda -->
-            <tr class="comparison__row">
-              <td class="comparison__label">Dobanda</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__value comparison__value--red">
-                  {{
-                    manager.getUnpaidAmmountInterest() | numberFormat: "0.00"
-                  }}
-                </td>
-              }
-            </tr>
+        <!-- Row 2: Insurance & Total -->
+        <div class="compact-row">
+          <div class="metric-group">
+            <div class="metric-label">🛡️ Insurance</div>
+            <div class="metric-values">
+              <span class="value-left">{{
+                validManagers()[0].getUnpaidInsuranceAmmount()
+                  | numberFormat: "0.00"
+              }}</span>
+              <span class="vs-mini">vs</span>
+              <span class="value-right">{{
+                validManagers()[1].getUnpaidInsuranceAmmount()
+                  | numberFormat: "0.00"
+              }}</span>
+            </div>
+            <div
+              class="metric-diff"
+              [class.positive]="getDifference('insurance') > 0"
+              [class.negative]="getDifference('insurance') < 0"
+            >
+              {{ getDifference("insurance") | numberFormat: "0.00" }}
+            </div>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-group metric-group--highlight">
+            <div class="metric-label">🏆 Total Paid</div>
+            <div class="metric-values">
+              <span class="value-left value-bold">{{
+                validManagers()[0].getPaidAmmount() | numberFormat: "0.00"
+              }}</span>
+              <span class="vs-mini">vs</span>
+              <span class="value-right value-bold">{{
+                validManagers()[1].getPaidAmmount() | numberFormat: "0.00"
+              }}</span>
+            </div>
+            <div
+              class="metric-diff metric-diff--large"
+              [class.positive]="getDifference('total') > 0"
+              [class.negative]="getDifference('total') < 0"
+            >
+              {{ getDifference("total") | numberFormat: "0.00" }}
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <!-- PAD -->
-            <tr class="comparison__row">
-              <td class="comparison__label">PAD</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__value comparison__value--orange">
-                  {{
-                    manager.getUnpaidInsuranceAmmount() | numberFormat: "0.00"
-                  }}
-                </td>
-              }
-            </tr>
-
-            <!-- Paid -->
-            <tr class="comparison__row comparison__row--bold">
-              <td class="comparison__label">Paid</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__value comparison__value--primary">
-                  {{ manager.getPaidAmmount() | numberFormat: "0.00" }}
-                </td>
-              }
-            </tr>
-
-            <!-- Last Payment -->
-            <tr class="comparison__row">
-              <td class="comparison__label">Last</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__text comparison__text--primary">
-                  {{
-                    manager.selected.monthlyInstalments.at(-1)?.paymentDate
-                      | date: "MMM yyyy"
-                  }}
-                </td>
-              }
-            </tr>
-
-            <!-- Duration -->
-            <tr class="comparison__row">
-              <td class="comparison__label">Duration</td>
-              @for (manager of validManagers(); track $index) {
-                <td class="comparison__text comparison__text--primary">
-                  {{ manager.getDuration() ?? "-" }}
-                </td>
-              }
-            </tr>
-          </tbody>
-        </table>
+      <!-- Compact Footer -->
+      <div class="compact-footer">
+        <div class="footer-info">
+          <span>⏱️ {{ validManagers()[0].getDuration() ?? "N/A" }}y</span>
+          <span class="footer-vs">↔</span>
+          <span>{{ validManagers()[1].getDuration() ?? "N/A" }}y</span>
+        </div>
+        <div class="footer-info">
+          <span
+            >💳
+            {{
+              validManagers()[0].selected.monthlyInstalments[0]?.totalInstalment
+                | numberFormat: "0.00"
+            }}</span
+          >
+          <span class="footer-vs">↔</span>
+          <span>{{
+            validManagers()[1].selected.monthlyInstalments[0]?.totalInstalment
+              | numberFormat: "0.00"
+          }}</span>
+        </div>
       </div>
     </div>
-
-    <!-- Yearly -->
-    <div class="comparison__card">
-      <div
-        class="comparison__table-wrapper comparison__table-wrapper--scrollable"
-      >
-        <table class="comparison__table">
-          <thead>
-            <tr>
-              <th></th>
-              @for (manager of validManagers(); track $index) {
-                <th>
-                  <div class="comparison__title">
-                    {{ manager.getBaseName() }}
-                  </div>
-                </th>
-              }
-            </tr>
-          </thead>
-
-          <tbody>
-            @for (year of years(); track $index) {
-              <tr class="comparison__row">
-                <td class="comparison__year">
-                  {{ getLabelDate(year) | date: "MMM yyyy" }}
-                </td>
-
-                @for (manager of validManagers(); track $index) {
-                  <td class="comparison__value comparison__value--green">
-                    {{
-                      getPrincipalAmount(year, manager) | numberFormat: "0.00"
-                    }}
-                  </td>
-                }
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+  } @else {
+    <div class="no-comparison">
+      <span>🔍 Select two loans to compare</span>
     </div>
-  </div>
+  }
 </div>

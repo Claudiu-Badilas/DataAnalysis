@@ -19,19 +19,6 @@ export const getRightSelectedRepaymentScheduleName = createSelector(
   (state) => state.rightSelectedRepaymentScheduleName,
 );
 
-export const getBaseHistoricalInstalmentPaymentBatchesManager = createSelector(
-  fromMortgageLoan.getBaseRepaymentSchedule,
-  fromMortgageLoan.getRepaymentSchedules,
-  (base, repaymentSchedules) => {
-    const filtered =
-      repaymentSchedules.filter((r) =>
-        JsDateUtils.isSameOrBefore(r.date, base?.date ?? null),
-      ) ?? [];
-
-    return new HistoricalInstalmentPaymentBatchesManager(base, base, filtered);
-  },
-);
-
 export const getLeftHistoricalInstalmentPaymentBatchesManager = createSelector(
   getLeftSelectedRepaymentScheduleName,
   fromMortgageLoan.getBaseRepaymentSchedule,
