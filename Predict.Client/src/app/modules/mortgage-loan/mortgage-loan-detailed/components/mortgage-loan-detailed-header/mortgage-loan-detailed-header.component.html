@@ -83,7 +83,10 @@
       <div class="summary-section stat-item stat-item--orange">
         <div class="stat-row">
           <span class="stat-item__label">Credit</span>
-          <span class="stat-item__label">%</span>
+          <span class="stat-item__value">
+            {{ paidInstalments() | numberFormat: "0" : 0 }} /
+            {{ unpaidInstalments() | numberFormat: "0" : 0 }}
+          </span>
         </div>
 
         <div class="stat-row">
@@ -91,7 +94,7 @@
             {{ paidPrincipal() | numberFormat: "0.00" }}
           </span>
           <span class="stat-item__value">
-            {{ paidPrincipalPercent() | numberFormat: "0.00" }} %
+            {{ paidIntrest() + paidInsurance() | numberFormat: "0.00" }}
           </span>
         </div>
       </div>
@@ -99,51 +102,15 @@
       <!-- Dobanda -->
       <div class="summary-section stat-item stat-item--amber">
         <div class="stat-row">
-          <span class="stat-item__label">Dobanda</span>
-          <span class="stat-item__label">PAD</span>
-        </div>
-
-        <div class="stat-row">
-          <span class="stat-item__value">
-            {{ paidIntrest() | numberFormat: "0.00" }}
-          </span>
-          <span class="stat-item__value">
-            {{ paidInsurance() | numberFormat: "0.00" }}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 2 -->
-    <div class="summary-row">
-      <!-- Total -->
-      <div class="summary-section stat-item stat-item--rose">
-        <div class="stat-row">
           <span class="stat-item__label">Total</span>
-          <span class="stat-item__label">Rate</span>
+          <span class="stat-item__value">
+            {{ lastInstalmentPaymentDate() | date: "MMM-yyyy" }}
+          </span>
         </div>
 
         <div class="stat-row">
           <span class="stat-item__value">
             {{ totalPaid() | numberFormat: "0.00" }}
-          </span>
-          <span class="stat-item__value">
-            {{ paidInstalments() | numberFormat: "0" : 0 }} /
-            {{ unpaidInstalments() | numberFormat: "0" : 0 }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Ultima plata -->
-      <div class="summary-section stat-item stat-item--teal">
-        <div class="stat-row">
-          <span class="stat-item__label">Ultima plata</span>
-          <span class="stat-item__label">Durata</span>
-        </div>
-
-        <div class="stat-row">
-          <span class="stat-item__value">
-            {{ lastInstalmentPaymentDate() | date: "MMM-yyyy" }}
           </span>
           <span class="stat-item__value">
             {{ dateDiffYMD() ?? "-" }}
