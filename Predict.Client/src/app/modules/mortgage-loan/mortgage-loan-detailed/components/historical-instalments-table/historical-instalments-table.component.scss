@@ -3,11 +3,7 @@
 }
 
 .historical-instalments {
-  background: white;
   border-radius: 16px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -19,7 +15,6 @@
   display: block;
   border: 1px solid #e2e6ee;
   border-radius: 7.5px;
-  background: white;
   overflow: auto;
   flex: 1;
 }
@@ -175,13 +170,11 @@
 
   .mobile-view {
     display: block;
-    padding: 12px;
     overflow-y: auto;
     height: calc(100vh - 200px);
   }
 
   .mobile-group-card {
-    background: white;
     border: 1px solid #e2e6ee;
     border-radius: 12px;
     margin-bottom: 6px;
@@ -237,7 +230,7 @@
   .mobile-group-count {
     color: #3b82f6;
     font-size: 10px;
-    background: white;
+
     padding: 2px 8px;
     border-radius: 30px;
     border: 1px solid #3b82f6;
@@ -371,7 +364,6 @@
 /* Extra small screens */
 @media (max-width: 480px) {
   .mobile-view {
-    padding: 8px;
     height: calc(100vh - 180px);
   }
 
