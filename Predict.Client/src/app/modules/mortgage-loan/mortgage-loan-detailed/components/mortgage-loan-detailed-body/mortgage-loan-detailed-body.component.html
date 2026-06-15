@@ -6,28 +6,7 @@
       ><ng-container p-highcharts-wrapper-content>
         <div class="m-2 d-flex align-items-center justify-content-between">
           <div style="width: 40%">
-            <p-toggle-button
-              [options]="[
-                {
-                  label: 'pie-chart',
-                  iconPath: 'assets/icons/pie-chart.svg',
-                },
-                {
-                  label: 'bars-chart',
-                  iconPath: 'assets/icons/bar-chart.svg',
-                },
-                {
-                  label: 'columns-chart',
-                  iconPath: 'assets/icons/column-chart.svg',
-                },
-              ]"
-              [gradient]="{
-                primaryColor: '#1E3A8A',
-                secondaryColor: '#7C3AED ',
-              }"
-              [selected]="chartBasePaymentChange()"
-              (selectionChange)="onChartBasePaymentChange($event)"
-            />
+            <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
           <div class="w-50">
             <p-toggle-button
@@ -54,28 +33,7 @@
       <ng-container p-highcharts-wrapper-content>
         <div class="m-2 d-flex align-items-center justify-content-between">
           <div style="width: 40%">
-            <p-toggle-button
-              [options]="[
-                {
-                  label: 'pie-chart',
-                  iconPath: 'assets/icons/pie-chart.svg',
-                },
-                {
-                  label: 'bars-chart',
-                  iconPath: 'assets/icons/bar-chart.svg',
-                },
-                {
-                  label: 'columns-chart',
-                  iconPath: 'assets/icons/column-chart.svg',
-                },
-              ]"
-              [gradient]="{
-                primaryColor: '#1E3A8A',
-                secondaryColor: '#7C3AED ',
-              }"
-              [selected]="chartBasePaymentChange()"
-              (selectionChange)="onChartBasePaymentChange($event)"
-            />
+            <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
           <div class="w-50">
             <p-toggle-button
@@ -97,33 +55,33 @@
       ><ng-container p-highcharts-wrapper-content>
         <div class="m-2 d-flex align-items-center justify-content-between">
           <div style="width: 40%">
-            <p-toggle-button
-              [options]="[
-                {
-                  label: 'pie-chart',
-                  iconPath: 'assets/icons/pie-chart.svg',
-                },
-                {
-                  label: 'bars-chart',
-                  iconPath: 'assets/icons/bar-chart.svg',
-                },
-                {
-                  label: 'columns-chart',
-                  iconPath: 'assets/icons/column-chart.svg',
-                },
-              ]"
-              [gradient]="{
-                primaryColor: '#1E3A8A',
-                secondaryColor: '#7C3AED ',
-              }"
-              [selected]="chartBasePaymentChange()"
-              (selectionChange)="onChartBasePaymentChange($event)"
-            />
+            <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
         </div> </ng-container
     ></p-highcharts-wrapper>
   }
 </div>
+
+<ng-template #chartTypeSelector>
+  <p-toggle-button
+    [options]="[
+      {
+        label: 'pie-chart',
+        iconPath: 'assets/icons/pie-chart.svg',
+      },
+      {
+        label: 'bars-chart',
+        iconPath: 'assets/icons/bar-chart.svg',
+      },
+      {
+        label: 'columns-chart',
+        iconPath: 'assets/icons/column-chart.svg',
+      },
+    ]"
+    [selected]="chartBasePaymentChange()"
+    (selectionChange)="onChartBasePaymentChange($event)"
+  />
+</ng-template>
 
 <p-historical-instalments-table
   [showOnlyTotalRow]="true"
