@@ -64,9 +64,17 @@ export class MortgageLoanDetailedBodyComponent {
   constructor(private store: Store<fromMortgageLoan.MortgageLoanState>) {}
 
   colors = Colors;
+  chartBasePaymentChange = signal<'pie-chart' | 'bars-chart' | 'columns-chart'>(
+    'pie-chart',
+  );
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
   progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Credit');
-  progressPaymentChartTypeChange = signal<'Pie' | 'Bar'>('Pie');
+
+  onChartBasePaymentChange($event: string) {
+    this.chartBasePaymentChange.set(
+      $event as 'pie-chart' | 'bars-chart' | 'columns-chart',
+    );
+  }
 
   onMonthlyPaymentViewChange($event: string) {
     this.monthlyPaymentViewChange.set($event as 'Prd. Fixa' | 'Prd. Totala');
@@ -76,9 +84,5 @@ export class MortgageLoanDetailedBodyComponent {
     this.progressPaymentViewChange.set(
       $event as 'Credit' | 'Dobanda' | 'Total',
     );
-  }
-
-  onProgressPaymentChartTypeChange($event: string) {
-    this.progressPaymentChartTypeChange.set($event as 'Pie' | 'Bar');
   }
 }

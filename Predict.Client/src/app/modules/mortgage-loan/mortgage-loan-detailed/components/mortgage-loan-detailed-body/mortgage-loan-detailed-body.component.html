@@ -1,11 +1,34 @@
-<div class="charts-container mb-3">
-  @if (progressPaymentChartTypeChange() === "Pie") {
+<div class="charts-container mb-2">
+  @if (chartBasePaymentChange() === "pie-chart") {
     <p-highcharts-wrapper
       class="chart-wrapper"
       [chartOptions]="mortgageInterestProgressPieChart()"
       ><ng-container p-highcharts-wrapper-content>
         <div class="m-2 d-flex align-items-center justify-content-between">
-          <div class="title">Progress</div>
+          <div style="width: 40%">
+            <p-toggle-button
+              [options]="[
+                {
+                  label: 'pie-chart',
+                  iconPath: 'assets/icons/pie-chart.svg',
+                },
+                {
+                  label: 'bars-chart',
+                  iconPath: 'assets/icons/bar-chart.svg',
+                },
+                {
+                  label: 'columns-chart',
+                  iconPath: 'assets/icons/column-chart.svg',
+                },
+              ]"
+              [gradient]="{
+                primaryColor: '#1E3A8A',
+                secondaryColor: '#7C3AED ',
+              }"
+              [selected]="chartBasePaymentChange()"
+              (selectionChange)="onChartBasePaymentChange($event)"
+            />
+          </div>
           <div class="w-50">
             <p-toggle-button
               [options]="[
@@ -21,14 +44,48 @@
               (selectionChange)="onProgressPaymentViewChange($event)"
             />
           </div>
-          <div style="width: 20%">
+        </div> </ng-container
+    ></p-highcharts-wrapper>
+  } @else if (chartBasePaymentChange() === "columns-chart") {
+    <p-highcharts-wrapper
+      class="chart-wrapper"
+      [chartOptions]="mortgageLoanMonthlyPaymentsChart()"
+    >
+      <ng-container p-highcharts-wrapper-content>
+        <div class="m-2 d-flex align-items-center justify-content-between">
+          <div style="width: 40%">
             <p-toggle-button
               [options]="[
-                { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
-                { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
+                {
+                  label: 'pie-chart',
+                  iconPath: 'assets/icons/pie-chart.svg',
+                },
+                {
+                  label: 'bars-chart',
+                  iconPath: 'assets/icons/bar-chart.svg',
+                },
+                {
+                  label: 'columns-chart',
+                  iconPath: 'assets/icons/column-chart.svg',
+                },
               ]"
-              [selected]="progressPaymentChartTypeChange()"
-              (selectionChange)="onProgressPaymentChartTypeChange($event)"
+              [gradient]="{
+                primaryColor: '#1E3A8A',
+                secondaryColor: '#7C3AED ',
+              }"
+              [selected]="chartBasePaymentChange()"
+              (selectionChange)="onChartBasePaymentChange($event)"
+            />
+          </div>
+          <div class="w-50">
+            <p-toggle-button
+              [options]="[{ label: 'Prd. Fixa' }, { label: 'Prd. Totala' }]"
+              [selected]="monthlyPaymentViewChange()"
+              [gradient]="{
+                primaryColor: '#047f94',
+                secondaryColor: '#d5a326',
+              }"
+              (selectionChange)="onMonthlyPaymentViewChange($event)"
             />
           </div>
         </div> </ng-container
@@ -39,41 +96,33 @@
       [chartOptions]="mortgageInterestProgressBarChart()"
       ><ng-container p-highcharts-wrapper-content>
         <div class="m-2 d-flex align-items-center justify-content-between">
-          <div class="title">Progress</div>
-          <div style="width: 20%">
+          <div style="width: 40%">
             <p-toggle-button
               [options]="[
-                { label: 'Pie', iconPath: 'assets/icons/pie-chart.svg' },
-                { label: 'Bar', iconPath: 'assets/icons/bar-chart.svg' },
+                {
+                  label: 'pie-chart',
+                  iconPath: 'assets/icons/pie-chart.svg',
+                },
+                {
+                  label: 'bars-chart',
+                  iconPath: 'assets/icons/bar-chart.svg',
+                },
+                {
+                  label: 'columns-chart',
+                  iconPath: 'assets/icons/column-chart.svg',
+                },
               ]"
-              [selected]="progressPaymentChartTypeChange()"
-              (selectionChange)="onProgressPaymentChartTypeChange($event)"
+              [gradient]="{
+                primaryColor: '#1E3A8A',
+                secondaryColor: '#7C3AED ',
+              }"
+              [selected]="chartBasePaymentChange()"
+              (selectionChange)="onChartBasePaymentChange($event)"
             />
           </div>
         </div> </ng-container
     ></p-highcharts-wrapper>
   }
-
-  <p-highcharts-wrapper
-    class="chart-wrapper"
-    [chartOptions]="mortgageLoanMonthlyPaymentsChart()"
-  >
-    <ng-container p-highcharts-wrapper-content>
-      <div class="m-2 d-flex align-items-center justify-content-between">
-        <div class="title">Plati Lunare</div>
-        <div class="w-50">
-          <p-toggle-button
-            [options]="[{ label: 'Prd. Fixa' }, { label: 'Prd. Totala' }]"
-            [selected]="monthlyPaymentViewChange()"
-            [gradient]="{
-              primaryColor: '#047f94',
-              secondaryColor: '#d5a326',
-            }"
-            (selectionChange)="onMonthlyPaymentViewChange($event)"
-          />
-        </div>
-      </div> </ng-container
-  ></p-highcharts-wrapper>
 </div>
 
 <p-historical-instalments-table
