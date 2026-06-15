@@ -2,11 +2,6 @@
   display: block;
 }
 
-.comparison-wrapper {
-  // margin: 0 auto;
-}
-
-/* Compact Card - Max 200px height */
 .comparison-card {
   background: #ffffff;
   border-radius: 10px;
@@ -18,7 +13,6 @@
   flex-direction: column;
 }
 
-/* Compact Header */
 .card-header {
   padding: 0.75rem 1rem;
   background: linear-gradient(135deg, #ffffff 0%, #fafcff 100%);
@@ -212,7 +206,6 @@
   font-weight: 600;
 }
 
-/* No Comparison State */
 .no-comparison {
   text-align: center;
   padding: 2rem;
@@ -226,7 +219,6 @@
   font-size: 0.85rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .comparison-card {
     max-height: none;
@@ -247,6 +239,34 @@
 
   .metric-group {
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .metric-values {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .value-left {
+    text-align: right;
+    min-width: 80px;
+  }
+
+  .value-right {
+    text-align: left;
+    min-width: 80px;
+  }
+
+  .vs-mini {
+    text-align: center;
+    min-width: 30px;
   }
 
   .compact-footer {
@@ -254,17 +274,165 @@
     gap: 0.5rem;
     align-items: center;
   }
+
+  .card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .header-left {
+    justify-content: center;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .vs-divider {
+    font-size: 0.85rem;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .loan-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.8rem;
+  }
+
+  .footer-info {
+    justify-content: center;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .footer-info span:first-child,
+  .footer-info span:last-child {
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .footer-vs {
+    font-size: 0.75rem;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .compact-row {
+    width: 100%;
+  }
+
+  .metric-group {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .metric-values {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .value-left,
+  .value-right {
+    flex: 0 1 auto;
+    font-weight: 600;
+  }
+
+  .vs-mini {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .metric-diff {
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .metric-group--highlight .metric-values {
+    gap: 0.6rem;
+  }
 }
 
 @media (max-width: 480px) {
   .card-header {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.75rem;
   }
 
-  .metric-values {
-    flex-wrap: wrap;
-    justify-content: center;
+  .header-left {
+    gap: 0.5rem;
+  }
+
+  .loan-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .vs-divider {
+    font-size: 0.75rem;
+  }
+
+  .footer-info {
+    gap: 0.5rem;
+  }
+
+  .footer-info span:first-child,
+  .footer-info span:last-child {
+    min-width: 60px;
+    font-size: 0.65rem;
+  }
+
+  .footer-vs {
+    font-size: 0.7rem;
+  }
+
+  .metric-group {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .metric-label {
+    min-width: 60px;
+    font-size: 0.68rem;
+  }
+
+  .value-left,
+  .value-right {
+    min-width: 70px;
+    font-size: 0.7rem;
+  }
+
+  .vs-mini {
+    min-width: 24px;
+    font-size: 0.7rem;
+  }
+
+  .metric-diff {
+    min-width: 65px;
+    font-size: 0.65rem;
+  }
+
+  .compact-grid {
+    gap: 0.4rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .card-header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .header-left {
+    justify-content: flex-start;
+    width: auto;
+  }
+
+  .footer-info {
+    justify-content: flex-end;
+    width: auto;
   }
 }
