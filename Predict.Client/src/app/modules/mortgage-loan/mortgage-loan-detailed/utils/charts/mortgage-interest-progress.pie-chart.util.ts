@@ -113,33 +113,117 @@ export namespace MortgageInterestProgressChartPieUtils {
       color: d.color,
     }));
 
+    // Check if mobile (you might want to pass this as a parameter)
+    const isMobile = window.innerWidth < 768;
+
     return {
-      chart: { type: 'pie', spacing: [20, 20, 20, 20] },
+      chart: {
+        type: 'pie',
+        spacing: isMobile ? [10, 10, 10, 10] : [20, 20, 20, 20],
+        // Make chart responsive
+        height: isMobile ? '80%' : undefined,
+      },
       title: { text: null, align: 'left' },
       legend: { enabled: false },
       tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: isMobile ? 10 : 12,
+        shadow: true,
+        style: {
+          fontSize: isMobile ? '13px' : '14px',
+          fontWeight: 'normal',
+        },
         pointFormat:
           '<span style="color:{point.color}">●</span> <b>{point.name}</b><br/>' +
-          '<b>{point.y}%</b><br/>' +
+          '<b style="font-size:{point.y > 0 ? 20 : 16}px">{point.y}%</b><br/>' +
           'Amount: <b>{point.amountCompact} RON</b>',
       },
       plotOptions: {
         pie: {
-          innerSize: '70%',
+          innerSize: isMobile ? '65%' : '70%',
+          size: isMobile ? '95%' : '100%',
           dataLabels: {
             enabled: true,
-            format:
-              '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
+            format: isMobile
+              ? '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)'
+              : '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
             style: {
-              fontSize: '11px',
-              textOutline: 'none',
-              fontWeight: 'normal',
+              fontSize: isMobile ? '10px' : '11px',
+              textOutline: isMobile ? '1px contrast' : 'none',
+              fontWeight: 'bold',
+              color: '#333',
+              textShadow: isMobile ? '0 0 3px rgba(255,255,255,0.8)' : 'none',
             },
-            connectorWidth: 1,
-            connectorPadding: 5,
-            distance: 20,
+            connectorWidth: isMobile ? 1.5 : 1,
+            connectorPadding: isMobile ? 10 : 20,
+            distance: isMobile ? 15 : 20,
+            // Better positioning for mobile
+            // allowOverlap: false,
+            crop: false,
+            overflow: 'allow',
           },
         },
+      },
+      // Responsive rules
+      responsive: {
+        rules: [
+          {
+            condition: {
+              maxWidth: 480, // Mobile
+            },
+            chartOptions: {
+              chart: {
+                spacing: [5, 5, 5, 5],
+                height: 350,
+              },
+              plotOptions: {
+                pie: {
+                  innerSize: '60%',
+                  size: '90%',
+                  dataLabels: {
+                    style: {
+                      fontSize: '9px',
+                      fontWeight: 'bold',
+                    },
+                    distance: 10,
+                    connectorPadding: 5,
+                  },
+                },
+              },
+              tooltip: {
+                style: {
+                  fontSize: '12px',
+                },
+              },
+            },
+          },
+          {
+            condition: {
+              minWidth: 481,
+              maxWidth: 768, // Tablet
+            },
+            chartOptions: {
+              chart: {
+                spacing: [10, 10, 10, 10],
+                height: 400,
+              },
+              plotOptions: {
+                pie: {
+                  innerSize: '65%',
+                  dataLabels: {
+                    style: {
+                      fontSize: '10px',
+                    },
+                    distance: 15,
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
       series: [
         {
@@ -147,6 +231,10 @@ export namespace MortgageInterestProgressChartPieUtils {
           name: 'Mortgage Distribution (%)',
           data: pieChartData,
           showInLegend: false,
+          // Add animation for better UX
+          animation: {
+            duration: 1000,
+          },
         },
       ] as SeriesOptionsType[],
     };
