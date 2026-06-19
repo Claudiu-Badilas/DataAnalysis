@@ -1580,8 +1580,8 @@ export class MostCommonProductsComponent {
         icon: 'L',
         color: `linear-gradient(
           135deg,
-          #003580 0%,
-          #003580 50%,
+          #0050AA 0%,
+          #0050AA 50%,
           #ffc107 100%
         )`,
       },

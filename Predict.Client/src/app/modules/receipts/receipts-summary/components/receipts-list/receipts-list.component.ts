@@ -257,8 +257,8 @@ import { ReceiptDomain } from '../../../models/receipts-domain.model';
     .provider-icon-lidl {
       background: linear-gradient(
         135deg,
-        #003580 0%,
-        #003580 50%,
+        #0050AA 0%,
+        #0050AA 50%,
         #ffc107 100%
       );
       color: #ffffff;
@@ -612,8 +612,8 @@ import { ReceiptDomain } from '../../../models/receipts-domain.model';
       .provider-icon-lidl {
         background: linear-gradient(
           135deg,
-          #003580 0%,
-          #003580 50%,
+          #0050AA 0%,
+          #0050AA 50%,
           #ffc107 100%
         );
         color: #ffffff;
