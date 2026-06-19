@@ -35,23 +35,9 @@
         <ng-container p-highcharts-wrapper-content>
           <div class="m-2 d-flex align-items-center justify-content-between">
             <div class="title">Trendul ratelor</div>
-            <div class="w-50">
-              <p-toggle-button
-                [options]="[
-                  { label: 'Rata' },
-                  { label: 'Dobanda' },
-                  { label: 'Principal' },
-                ]"
-                [selected]="chartView()"
-                [gradient]="{
-                  primaryColor: '#047f94',
-                  secondaryColor: '#d5a326',
-                }"
-                (selectionChange)="onChartViewChange($event)"
-              />
-            </div>
-          </div> </ng-container
-      ></p-highcharts-wrapper>
+          </div>
+        </ng-container></p-highcharts-wrapper
+      >
     </div>
   </div>
 </div>

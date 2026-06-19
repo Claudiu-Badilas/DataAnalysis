@@ -7,7 +7,6 @@ export namespace CompareRatesTrendChartUtils {
   export function getChart(
     left: RepaymentSchedule,
     right: RepaymentSchedule,
-    chartView: 'Rata' | 'Dobanda' | 'Principal',
   ): Highcharts.Options {
     const sources: Array<[RepaymentSchedule, string, string]> = [
       left ? [left, left.name, Colors.BS_TEAL] : null,
@@ -17,8 +16,8 @@ export namespace CompareRatesTrendChartUtils {
     const series: Highcharts.SeriesOptionsType[] = [];
 
     sources.forEach(([repaymentSchedule, name, color]) => {
-      const principalSeries: Highcharts.SeriesSplineOptions = {
-        type: 'spline',
+      const principalSeries: Highcharts.SeriesLineOptions = {
+        type: 'line',
         name: `${name} – Principal`,
         color,
         data: repaymentSchedule.monthlyInstalments.map((r) => ({
@@ -40,17 +39,8 @@ export namespace CompareRatesTrendChartUtils {
         })),
       };
 
-      if (chartView === 'Rata') {
-        series.push(principalSeries, interestSeries);
-      }
-
-      if (chartView === 'Principal') {
-        series.push(principalSeries);
-      }
-
-      if (chartView === 'Dobanda') {
-        series.push(interestSeries);
-      }
+      series.push(principalSeries);
+      series.push(interestSeries);
     });
 
     return {

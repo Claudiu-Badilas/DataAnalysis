@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 
@@ -10,7 +10,6 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
 
 import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-select/dropdown-select.component';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
-import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
@@ -22,7 +21,6 @@ import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.ch
   selector: 'p-mortgage-loan-compare',
   imports: [
     CommonModule,
-    ToggleButtonComponent,
     DropdownSelectComponent,
     HighchartWrapperComponent,
     MortgageLoanCompareBodyComponent,
@@ -73,13 +71,10 @@ export class MortgageLoanCompareComponent {
     return rs.find((r) => r.name === selected);
   });
 
-  chartView = signal<'Rata' | 'Dobanda' | 'Principal'>('Rata');
-
   compareRatesTrendChart = computed(() =>
     CompareRatesTrendChartUtils.getChart(
       this.leftRepaymentSchedule(),
       this.rightRepaymentSchedule(),
-      this.chartView(),
     ),
   );
 
@@ -142,10 +137,6 @@ export class MortgageLoanCompareComponent {
         selected: value,
       }),
     );
-  }
-
-  onChartViewChange(view: string) {
-    this.chartView.set(view as 'Rata' | 'Dobanda' | 'Principal');
   }
 
   onSelectionChange(module: string) {
