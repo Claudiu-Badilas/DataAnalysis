@@ -44,7 +44,7 @@ export namespace MortgageInterestProgressChartPieUtils {
       unpaidRates.map((r) => r.interestAmount),
     );
 
-    // 🔹 Build data dynamically based on selection
+    // Build data dynamically based on selection
     const rawData: {
       name: string;
       nameShort: string;
@@ -98,7 +98,7 @@ export namespace MortgageInterestProgressChartPieUtils {
       );
     }
 
-    // 🔹 Total based on filtered selection
+    // Total based on filtered selection
     const total = Calculator.sum(rawData.map((d) => d.value));
 
     const percent = (value: number) =>
@@ -113,15 +113,13 @@ export namespace MortgageInterestProgressChartPieUtils {
       color: d.color,
     }));
 
-    // Check if mobile (you might want to pass this as a parameter)
     const isMobile = window.innerWidth < 768;
 
     return {
       chart: {
         type: 'pie',
         spacing: isMobile ? [10, 10, 10, 10] : [20, 20, 20, 20],
-        // Make chart responsive
-        height: isMobile ? '80%' : undefined,
+        height: isMobile ? 280 : undefined,
       },
       title: { text: null, align: 'left' },
       legend: { enabled: false },
@@ -143,53 +141,80 @@ export namespace MortgageInterestProgressChartPieUtils {
       },
       plotOptions: {
         pie: {
-          innerSize: isMobile ? '65%' : '70%',
-          size: isMobile ? '95%' : '100%',
+          innerSize: isMobile ? '40%' : '50%',
+          size: isMobile ? '80%' : '100%',
           dataLabels: {
             enabled: true,
-            format: isMobile
-              ? '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)'
-              : '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
+            format:
+              '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
             style: {
-              fontSize: isMobile ? '10px' : '11px',
+              fontSize: isMobile ? '9px' : '11px',
               textOutline: isMobile ? '1px contrast' : 'none',
               fontWeight: 'bold',
               color: '#333',
               textShadow: isMobile ? '0 0 3px rgba(255,255,255,0.8)' : 'none',
             },
-            connectorWidth: isMobile ? 1.5 : 1,
-            connectorPadding: isMobile ? 10 : 20,
-            distance: isMobile ? 15 : 20,
-            // Better positioning for mobile
-            // allowOverlap: false,
+            connectorWidth: 1,
+            connectorPadding: isMobile ? 8 : 20,
+            distance: isMobile ? 10 : 20,
             crop: false,
             overflow: 'allow',
           },
         },
       },
-      // Responsive rules
       responsive: {
         rules: [
           {
             condition: {
-              maxWidth: 480, // Mobile
+              maxWidth: 580, // Mobile
             },
             chartOptions: {
               chart: {
                 spacing: [5, 5, 5, 5],
-                height: 350,
+                height: 220,
               },
               plotOptions: {
                 pie: {
-                  innerSize: '60%',
-                  size: '90%',
+                  innerSize: '65%', // Even thicker on very small screens
+                  size: '70%',
                   dataLabels: {
                     style: {
-                      fontSize: '9px',
+                      fontSize: '7px',
                       fontWeight: 'bold',
                     },
-                    distance: 10,
-                    connectorPadding: 5,
+                    distance: 6,
+                    connectorPadding: 4,
+                  },
+                },
+              },
+              tooltip: {
+                style: {
+                  fontSize: '11px',
+                },
+                padding: 8,
+              },
+            },
+          },
+          {
+            condition: {
+              minWidth: 481,
+              maxWidth: 768, // Tablet
+            },
+            chartOptions: {
+              chart: {
+                spacing: [10, 10, 10, 10],
+                height: 320,
+              },
+              plotOptions: {
+                pie: {
+                  innerSize: '40%', // Thicker on tablet
+                  size: '75%',
+                  dataLabels: {
+                    style: {
+                      fontSize: '8px',
+                    },
+                    distance: 8,
+                    connectorPadding: 6,
                   },
                 },
               },
@@ -202,22 +227,22 @@ export namespace MortgageInterestProgressChartPieUtils {
           },
           {
             condition: {
-              minWidth: 481,
-              maxWidth: 768, // Tablet
+              minWidth: 769, // Desktop
             },
             chartOptions: {
               chart: {
-                spacing: [10, 10, 10, 10],
-                height: 400,
+                height: 420,
               },
               plotOptions: {
                 pie: {
-                  innerSize: '65%',
+                  innerSize: '50%', // Thicker on desktop (was 70%)
+                  size: '100%',
                   dataLabels: {
                     style: {
-                      fontSize: '10px',
+                      fontSize: '11px',
                     },
-                    distance: 15,
+                    distance: 20,
+                    connectorPadding: 20,
                   },
                 },
               },
@@ -231,7 +256,6 @@ export namespace MortgageInterestProgressChartPieUtils {
           name: 'Mortgage Distribution (%)',
           data: pieChartData,
           showInLegend: false,
-          // Add animation for better UX
           animation: {
             duration: 1000,
           },
