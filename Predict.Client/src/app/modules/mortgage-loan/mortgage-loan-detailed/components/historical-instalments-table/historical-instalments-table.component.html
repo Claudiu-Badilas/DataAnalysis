@@ -294,10 +294,8 @@
             @for (row of group.instalments; track row.index) {
               <div class="mobile-item gray-item">
                 <div class="mobile-item-row">
-                  <div class="mobile-item-col">
+                  <div class="mobile-item-col justify-content-center">
                     <span class="item-index">#{{ row.index }}</span>
-                  </div>
-                  <div class="mobile-item-col">
                     <span
                       class="item-date"
                       [class.strike]="row.earlyPayment || row.instalmentPayment"
