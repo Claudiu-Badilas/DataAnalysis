@@ -9,29 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import Highcharts from 'highcharts';
-
-export const tooltipPositioner: Highcharts.TooltipPositionerCallbackFunction =
-  function (
-    this: Highcharts.Tooltip,
-    labelWidth: number,
-    labelHeight: number,
-    point: Highcharts.Point,
-  ): { x: number; y: number } {
-    const chart = this.chart;
-    const chartWidth = chart.plotWidth;
-    const chartLeft = chart.plotLeft;
-
-    let x = Math.max(
-      0,
-      Math.min(
-        point.plotX + chartLeft - labelWidth / 2,
-        chartLeft + chartWidth - labelWidth,
-      ),
-    );
-    let y = chart.plotTop + 10;
-
-    return { x: x, y: y };
-  };
+import { HighchartsWrapperUtils } from './utils/highcharts-wrapper.utils';
 
 @Component({
   selector: 'p-highcharts-wrapper',
@@ -65,28 +43,15 @@ export class HighchartWrapperComponent
     const container = this.el.nativeElement.querySelector('.chart-container');
     if (!container || this.chart) return;
 
-    const options: Highcharts.Options = {
-      ...this.chartOptions,
-      credits: { enabled: false },
-      tooltip: {
-        ...this.chartOptions.tooltip,
-        positioner: tooltipPositioner,
-      },
-    };
-
+    const options = HighchartsWrapperUtils.buildChartOptions(this.chartOptions);
     this.chart = Highcharts.chart(container, options);
   }
 
   private updateChart(): void {
     if (this.chart && this.chartOptions) {
-      const updatedOptions: Highcharts.Options = {
-        ...this.chartOptions,
-        tooltip: {
-          ...this.chartOptions.tooltip,
-          positioner: tooltipPositioner,
-        },
-      };
-
+      const updatedOptions = HighchartsWrapperUtils.buildChartOptions(
+        this.chartOptions,
+      );
       this.chart.update(updatedOptions);
     }
   }
