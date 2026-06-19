@@ -42,6 +42,7 @@ export namespace MortgageInterestProgressChartBarUtils {
     const unpaidInterest = Calculator.sum(
       unpaidRates.map((r) => r.interestAmount),
     );
+    const isMobile = window.innerWidth < 768;
 
     const rawData: {
       name: string;
@@ -50,37 +51,37 @@ export namespace MortgageInterestProgressChartBarUtils {
       color: string;
     }[] = [
       {
-        name: 'Principal Platit',
+        name: !isMobile ? 'Principal Platit' : 'PP',
         nameShort: 'PP',
         value: paidPrincipal,
         color: Colors.TEAL_400,
       },
       {
-        name: 'Principal Neplatit',
+        name: !isMobile ? 'Principal Neplatit' : 'PN',
         nameShort: 'PN',
         value: unpaidPrincipal,
         color: Colors.BS_DANGER,
       },
       {
-        name: 'Dobanda Platita',
+        name: !isMobile ? 'Dobanda Platita' : 'DP',
         nameShort: 'DP',
         value: paidInterest,
         color: Colors.BLUE_400,
       },
       {
-        name: 'PAD Platita',
+        name: !isMobile ? 'PAD Platita' : 'PAD',
         nameShort: 'PAD',
         value: paidInsurance,
         color: Colors.YELLOW_400,
       },
       {
-        name: 'Economii',
+        name: !isMobile ? 'Economii' : 'E',
         nameShort: 'E',
         value: savedInterest,
         color: Colors.GREEN_400,
       },
       {
-        name: 'Dobanda Neplatita',
+        name: !isMobile ? 'Dobanda Neplatita' : 'DN',
         nameShort: 'DN',
         value: unpaidInterest,
         color: Colors.BS_ORANGE,
@@ -99,7 +100,11 @@ export namespace MortgageInterestProgressChartBarUtils {
       .sort((a, b) => b.y - a.y);
 
     return {
-      chart: { type: 'bar', spacing: [20, 20, 20, 20] },
+      chart: {
+        type: 'bar',
+        spacing: [20, 20, 20, 20],
+        height: Math.max(400, barChartData.length * 50 + 100),
+      },
       title: { text: null, align: 'left' },
       legend: { enabled: false },
       tooltip: { enabled: false },
@@ -111,9 +116,18 @@ export namespace MortgageInterestProgressChartBarUtils {
         lineColor: '#E0E0E0',
         tickColor: '#E0E0E0',
       },
-      yAxis: { title: { text: null }, labels: { enabled: false } },
+      yAxis: {
+        title: { text: null },
+        labels: { enabled: false },
+        min: 0,
+        max: Math.max(...barChartData.map((d) => d.y)) * 1.15,
+      },
       plotOptions: {
         bar: {
+          pointWidth: isMobile ? 20 : 30,
+          pointPadding: 0.3,
+          groupPadding: 0.1,
+          borderRadius: 4,
           dataLabels: {
             enabled: true,
             format: '{point.amountCompact} RON',
@@ -130,6 +144,7 @@ export namespace MortgageInterestProgressChartBarUtils {
           colorByPoint: true,
           colors: barChartData.map((d) => d.color),
           showInLegend: false,
+          pointWidth: isMobile ? 18 : 25,
         },
       ] as SeriesOptionsType[],
     };
