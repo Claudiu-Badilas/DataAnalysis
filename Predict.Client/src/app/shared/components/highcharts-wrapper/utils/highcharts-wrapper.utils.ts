@@ -125,7 +125,7 @@ export namespace HighchartsWrapperUtils {
         ...baseOptions.tooltip,
         positioner: tooltipPositioner,
       },
-      responsive: getResponsiveConfig(),
+      responsive: baseOptions.responsive ?? getResponsiveConfig(),
     };
   }
 }
