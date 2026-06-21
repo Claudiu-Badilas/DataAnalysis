@@ -1,8 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+  inject,
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  effect,
+} from '@angular/core';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ReceiptsProductDomain } from '../../models/receipts-products.model';
+import { ObjectUtil } from 'src/app/shared/utils/object.utils';
+import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
+import { ProductPriceTrendChartUtils } from '../../utils/products-price-trend.chart.util';
 
 interface GroupedProduct {
   id: number;
@@ -48,7 +62,13 @@ interface Receipt {
 
 @Component({
   selector: 'p-most-common-products',
-  imports: [CommonModule, NumberFormatPipe, ToggleButtonComponent],
+  imports: [
+    CommonModule,
+    NumberFormatPipe,
+    ToggleButtonComponent,
+    HighchartWrapperComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="products-analytics mt-2">
       <div class="analytics-header">
@@ -196,11 +216,13 @@ interface Receipt {
                                 <th>Quantity</th>
                                 <th>Total Revenue</th>
                                 <th>% of Revenue</th>
+                                <th>Actions</th>
                               </tr>
                             </thead>
                             <tbody>
                               @for (
                                 item of getAllGroupedProducts();
+                                let first = $first;
                                 track item.id
                               ) {
                                 <tr class="product-row">
@@ -255,12 +277,34 @@ interface Receipt {
                                       </div>
                                     </div>
                                   </td>
+                                  <td class="actions-cell">
+                                    @if (hasPriceTrendChart(item.name)) {
+                                      <button
+                                        class="action-btn chart-btn"
+                                        (click)="openProductModal(item)"
+                                        title="View price trend chart"
+                                      >
+                                        <svg
+                                          width="16"
+                                          height="16"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                        >
+                                          <path d="M4 20h16M6 16l4-4 4 4 4-4" />
+                                          <path d="M18 12l-4-4-4 4-4-4" />
+                                        </svg>
+                                        <span>Chart</span>
+                                      </button>
+                                    }
+                                  </td>
                                 </tr>
                               }
 
                               @if (!getAllGroupedProducts().length) {
                                 <tr>
-                                  <td colspan="6" class="empty-cell">
+                                  <td colspan="7" class="empty-cell">
                                     No products available
                                   </td>
                                 </tr>
@@ -321,9 +365,29 @@ interface Receipt {
                                 >{{ item.count }}x {{ item.name }}</span
                               >
                             </div>
-                            <span class="product-quantity-badge"
-                              >Qty: {{ item.totalQuantity }}</span
-                            >
+                            <div class="mobile-actions">
+                              <span class="product-quantity-badge"
+                                >Qty: {{ item.totalQuantity }}</span
+                              >
+                              @if (hasPriceTrendChart(item.name)) {
+                                <button
+                                  class="action-btn-mobile chart-btn"
+                                  (click)="openProductModal(item)"
+                                >
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                  >
+                                    <path d="M4 20h16M6 16l4-4 4 4 4-4" />
+                                    <path d="M18 12l-4-4-4 4-4-4" />
+                                  </svg>
+                                </button>
+                              }
+                            </div>
                           </div>
                           <div class="mobile-product-details">
                             <div class="detail-item">
@@ -439,6 +503,7 @@ interface Receipt {
                                     <th>Price</th>
                                     <th>Quantity</th>
                                     <th>Total</th>
+                                    <th>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -485,6 +550,35 @@ interface Receipt {
                                           }}
                                           RON</strong
                                         >
+                                      </td>
+                                      <td class="actions-cell">
+                                        @if (hasPriceTrendChart(product.name)) {
+                                          <button
+                                            class="action-btn chart-btn"
+                                            (click)="
+                                              openProductModalFromReceipt(
+                                                product,
+                                                receipt
+                                              )
+                                            "
+                                            title="View price trend chart"
+                                          >
+                                            <svg
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                            >
+                                              <path
+                                                d="M4 20h16M6 16l4-4 4 4 4-4"
+                                              />
+                                              <path d="M18 12l-4-4-4 4-4-4" />
+                                            </svg>
+                                            <span>Chart</span>
+                                          </button>
+                                        }
                                       </td>
                                     </tr>
                                   }
@@ -561,9 +655,34 @@ interface Receipt {
                                     product.name
                                   }}</span>
                                 </div>
-                                <span class="product-quantity-badge"
-                                  >x{{ product.quantity }}</span
-                                >
+                                <div class="mobile-actions">
+                                  <span class="product-quantity-badge"
+                                    >x{{ product.quantity }}</span
+                                  >
+                                  @if (hasPriceTrendChart(product.name)) {
+                                    <button
+                                      class="action-btn-mobile chart-btn"
+                                      (click)="
+                                        openProductModalFromReceipt(
+                                          product,
+                                          receipt
+                                        )
+                                      "
+                                    >
+                                      <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                      >
+                                        <path d="M4 20h16M6 16l4-4 4 4 4-4" />
+                                        <path d="M18 12l-4-4-4 4-4-4" />
+                                      </svg>
+                                    </button>
+                                  }
+                                </div>
                               </div>
                               <div class="mobile-product-details">
                                 <div class="detail-item">
@@ -661,6 +780,7 @@ interface Receipt {
                                     <th>Quantity</th>
                                     <th>Total Revenue</th>
                                     <th>% of Period</th>
+                                    <th>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -721,12 +841,36 @@ interface Receipt {
                                           </div>
                                         </div>
                                       </td>
+                                      <td class="actions-cell">
+                                        @if (hasPriceTrendChart(item.name)) {
+                                          <button
+                                            class="action-btn chart-btn"
+                                            (click)="openProductModal(item)"
+                                            title="View price trend chart"
+                                          >
+                                            <svg
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                            >
+                                              <path
+                                                d="M4 20h16M6 16l4-4 4 4 4-4"
+                                              />
+                                              <path d="M18 12l-4-4-4 4-4-4" />
+                                            </svg>
+                                            <span>Chart</span>
+                                          </button>
+                                        }
+                                      </td>
                                     </tr>
                                   }
 
                                   @if (!period.multiple.length) {
                                     <tr>
-                                      <td colspan="6" class="empty-cell">
+                                      <td colspan="7" class="empty-cell">
                                         No products this period
                                       </td>
                                     </tr>
@@ -801,9 +945,29 @@ interface Receipt {
                                     >{{ item.count }}x {{ item.name }}</span
                                   >
                                 </div>
-                                <span class="product-quantity-badge"
-                                  >Qty: {{ item.totalQuantity }}</span
-                                >
+                                <div class="mobile-actions">
+                                  <span class="product-quantity-badge"
+                                    >Qty: {{ item.totalQuantity }}</span
+                                  >
+                                  @if (hasPriceTrendChart(item.name)) {
+                                    <button
+                                      class="action-btn-mobile chart-btn"
+                                      (click)="openProductModal(item)"
+                                    >
+                                      <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                      >
+                                        <path d="M4 20h16M6 16l4-4 4 4 4-4" />
+                                        <path d="M18 12l-4-4-4 4-4-4" />
+                                      </svg>
+                                    </button>
+                                  }
+                                </div>
                               </div>
                               <div class="mobile-product-details">
                                 <div class="detail-item">
@@ -863,282 +1027,1025 @@ interface Receipt {
         </div>
       </div>
     </div>
+
+    <!-- Product Detail Modal -->
+    @if (isModalOpen()) {
+      <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>{{ selectedProduct()?.name }} - Price Trend</h3>
+            <button class="modal-close" (click)="closeModal()">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="product-summary">
+              <div class="summary-item">
+                <span class="label">Total Purchases</span>
+                <span class="value">{{ selectedProduct()?.count }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Total Quantity</span>
+                <span class="value">{{
+                  selectedProduct()?.totalQuantity
+                }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Total Revenue</span>
+                <span class="value"
+                  >{{
+                    selectedProduct()?.totalRevenue | numberFormat: '0.00'
+                  }}
+                  RON</span
+                >
+              </div>
+              <div class="summary-item">
+                <span class="label">Avg Price</span>
+                <span class="value"
+                  >{{
+                    selectedProduct()?.avgPrice | numberFormat: '0.00'
+                  }}
+                  RON</span
+                >
+              </div>
+            </div>
+            <div class="chart-container">
+              <!-- Performance Optimized Chart Loading -->
+              @defer (on viewport; prefetch on idle) {
+                <p-highcharts-wrapper
+                  class="modal-chart-wrapper"
+                  [chartOptions]="getModalChartOptions()"
+                />
+              } @placeholder {
+                <div
+                  class="chart-placeholder modal-placeholder"
+                  style="height: 300px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;"
+                >
+                  <span style="font-size: 14px; color: #9ca3af;"
+                    >Loading chart...</span
+                  >
+                </div>
+              } @loading (minimum 500ms) {
+                <div
+                  class="chart-placeholder modal-placeholder"
+                  style="height: 300px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="loading-spinner"
+                    style="width: 30px; height: 30px; border: 3px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite;"
+                  ></div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Add loading spinner animation -->
+    <style>
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px) scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        z-index: 10;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .modal-close {
+        background: #f3f4f6;
+        border: none;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #6b7280;
+      }
+
+      .modal-close:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+      }
+
+      .modal-body {
+        padding: 24px;
+      }
+
+      .product-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .summary-item {
+        background: #f8fafc;
+        padding: 12px 16px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .summary-item .label {
+        font-size: 11px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .summary-item .value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      .summary-item .value.total {
+        color: #059669;
+      }
+
+      .chart-container {
+        min-height: 300px;
+      }
+
+      .modal-chart-wrapper {
+        width: 100%;
+        height: 300px;
+      }
+
+      .modal-placeholder {
+        height: 300px !important;
+      }
+
+      /* Action Button Styles */
+      .actions-cell {
+        width: 100px;
+        text-align: center;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #eff6ff;
+        color: #3b82f6;
+      }
+
+      .action-btn:hover {
+        background: #dbeafe;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+      }
+
+      .action-btn:active {
+        transform: translateY(0);
+      }
+
+      .action-btn svg {
+        flex-shrink: 0;
+      }
+
+      .action-btn-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #eff6ff;
+        color: #3b82f6;
+      }
+
+      .action-btn-mobile:hover {
+        background: #dbeafe;
+      }
+
+      .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .modal-content {
+          width: 95%;
+          margin: 20px;
+        }
+
+        .product-summary {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .modal-body {
+          padding: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .modal-content {
+          width: 100%;
+          margin: 10px;
+          border-radius: 12px;
+        }
+
+        .modal-header {
+          padding: 16px 20px;
+        }
+
+        .modal-header h3 {
+          font-size: 16px;
+        }
+
+        .product-summary {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .summary-item {
+          padding: 10px 12px;
+        }
+
+        .summary-item .value {
+          font-size: 14px;
+        }
+
+        .modal-body {
+          padding: 12px;
+        }
+
+        .action-btn {
+          padding: 4px 10px;
+          font-size: 11px;
+        }
+
+        .action-btn span {
+          display: none;
+        }
+
+        .action-btn-mobile {
+          padding: 3px 6px;
+        }
+      }
+    </style>
   `,
   styles: `
+    // most-common-products.component.scss
+
     .products-analytics {
-      background: white;
-      border-radius: 16px;
-      box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+      .analytics-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .subtitle {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #1e293b;
+          margin: 0;
+        }
+
+        .header-right {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 480px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          flex-shrink: 0;
+
+          &.revenue-icon {
+            background: linear-gradient(135deg, #059669, #10b981);
+          }
+
+          &.quantity-icon {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+          }
+
+          &.products-icon {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+          }
+
+          &.avg-icon {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+          }
+        }
+
+        .stat-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
+
+          .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+
+            &.positive {
+              color: #059669;
+            }
+          }
+        }
+      }
+
+      .table-container {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        .period-view {
+          .receipts-container {
+            .desktop-view {
+              display: block;
+
+              @media (max-width: 768px) {
+                display: none;
+              }
+            }
+
+            .mobile-view {
+              display: none;
+
+              @media (max-width: 768px) {
+                display: block;
+              }
+            }
+
+            .receipts-grid {
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .receipt-card {
+              background: white;
+              border-radius: 12px;
+              border: 1px solid #e5e7eb;
+              overflow: hidden;
+              transition: all 0.3s ease;
+
+              &:hover {
+                border-color: #d1d5db;
+              }
+
+              &.expanded {
+                border-color: #3b82f6;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+              }
+
+              .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 1.25rem;
+                cursor: pointer;
+                transition: background 0.2s;
+                user-select: none;
+
+                &:hover {
+                  background: #f8fafc;
+                }
+
+                .header-left {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+                  flex: 1;
+                  min-width: 0;
+
+                  .provider-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+
+                    .provider-initial {
+                      color: white;
+                      font-weight: 700;
+                      font-size: 14px;
+                    }
+                  }
+
+                  .provider-details {
+                    font-weight: 600;
+                    color: #1e293b;
+                    font-size: 0.95rem;
+                  }
+
+                  .receipt-date-small {
+                    font-size: 0.8rem;
+                    color: #6b7280;
+                    margin-left: 0.25rem;
+                  }
+
+                  .products-count {
+                    background: #e5e7eb;
+                    color: #4b5563;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    padding: 0.15rem 0.6rem;
+                    border-radius: 20px;
+                    margin-left: 0.5rem;
+                  }
+                }
+
+                .header-right {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+
+                  .price-summary {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+
+                    .total-price {
+                      .price-value {
+                        font-weight: 700;
+                        color: #1e293b;
+                        font-size: 1rem;
+                      }
+                    }
+
+                    .discount-badge {
+                      background: #fef2f2;
+                      color: #dc2626;
+                      font-size: 0.7rem;
+                      padding: 0.15rem 0.5rem;
+                      border-radius: 6px;
+                      font-weight: 600;
+                    }
+                  }
+                }
+              }
+
+              .card-expanded {
+                padding: 0 1.25rem 1.25rem;
+                border-top: 1px solid #e5e7eb;
+                animation: expandIn 0.3s ease;
+
+                .products-section {
+                  .products-table-wrapper {
+                    overflow-x: auto;
+
+                    .products-table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      font-size: 0.875rem;
+
+                      thead {
+                        th {
+                          text-align: left;
+                          padding: 0.75rem 0.5rem;
+                          font-weight: 600;
+                          color: #6b7280;
+                          font-size: 0.75rem;
+                          text-transform: uppercase;
+                          letter-spacing: 0.3px;
+                          border-bottom: 2px solid #e5e7eb;
+                          white-space: nowrap;
+                        }
+                      }
+
+                      tbody {
+                        td {
+                          padding: 0.75rem 0.5rem;
+                          border-bottom: 1px solid #f3f4f6;
+                          vertical-align: middle;
+
+                          &.provider-cell {
+                            width: 50px;
+
+                            .provider-icon-small {
+                              width: 32px;
+                              height: 32px;
+                              border-radius: 50%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              font-size: 12px;
+                              font-weight: 700;
+                              color: white;
+                            }
+                          }
+
+                          &.product-name-cell {
+                            .product-name {
+                              font-weight: 500;
+                              color: #1e293b;
+                            }
+                          }
+
+                          &.product-price {
+                            color: #4b5563;
+                            white-space: nowrap;
+                          }
+
+                          &.product-quantity {
+                            .quantity-badge {
+                              background: #f3f4f6;
+                              padding: 0.15rem 0.6rem;
+                              border-radius: 6px;
+                              font-size: 0.75rem;
+                              font-weight: 600;
+                              color: #4b5563;
+                              white-space: nowrap;
+                            }
+                          }
+
+                          &.product-total {
+                            font-weight: 600;
+                            color: #1e293b;
+                            white-space: nowrap;
+                          }
+
+                          &.percentage-cell {
+                            .percentage-bar-wrapper {
+                              min-width: 100px;
+
+                              .percentage-bar {
+                                position: relative;
+                                height: 20px;
+                                background: #f3f4f6;
+                                border-radius: 6px;
+                                overflow: hidden;
+
+                                .percentage-fill {
+                                  height: 100%;
+                                  border-radius: 6px;
+                                  transition: width 0.6s ease;
+
+                                  &.revenue-fill {
+                                    background: linear-gradient(
+                                      90deg,
+                                      #3b82f6,
+                                      #10b981
+                                    );
+                                  }
+                                }
+
+                                .percentage-text {
+                                  position: absolute;
+                                  top: 50%;
+                                  left: 50%;
+                                  transform: translate(-50%, -50%);
+                                  font-size: 0.7rem;
+                                  font-weight: 600;
+                                  color: #1e293b;
+                                  white-space: nowrap;
+                                }
+                              }
+                            }
+                          }
+
+                          &.actions-cell {
+                            .action-btn {
+                              display: inline-flex;
+                              align-items: center;
+                              gap: 4px;
+                              padding: 4px 10px;
+                              border: none;
+                              border-radius: 6px;
+                              font-size: 0.7rem;
+                              font-weight: 600;
+                              cursor: pointer;
+                              transition: all 0.2s;
+                              background: #eff6ff;
+                              color: #3b82f6;
+
+                              &:hover {
+                                background: #dbeafe;
+                                transform: translateY(-1px);
+                                box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+                              }
+
+                              svg {
+                                width: 14px;
+                                height: 14px;
+                              }
+                            }
+                          }
+                        }
+
+                        tr:last-child td {
+                          border-bottom: none;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // Mobile styles
+          .mobile-view {
+            .mobile-card {
+              background: white;
+              border-radius: 12px;
+              border: 1px solid #e5e7eb;
+              overflow: hidden;
+              margin-bottom: 1rem;
+
+              .mobile-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.875rem 1rem;
+                cursor: pointer;
+                user-select: none;
+
+                &:active {
+                  background: #f8fafc;
+                }
+
+                .mobile-header-left {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+                  flex: 1;
+                  min-width: 0;
+
+                  .provider-initial {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: 700;
+                    font-size: 13px;
+                    flex-shrink: 0;
+                  }
+
+                  .mobile-provider-info {
+                    flex: 1;
+                    min-width: 0;
+
+                    .mobile-provider-name {
+                      font-weight: 600;
+                      color: #1e293b;
+                      font-size: 0.9rem;
+                    }
+
+                    .mobile-date {
+                      font-size: 0.75rem;
+                      color: #6b7280;
+                    }
+                  }
+
+                  .products-count {
+                    background: #e5e7eb;
+                    color: #4b5563;
+                    font-size: 0.65rem;
+                    font-weight: 600;
+                    padding: 0.15rem 0.5rem;
+                    border-radius: 20px;
+                    margin-left: 0.25rem;
+                    flex-shrink: 0;
+                  }
+                }
+
+                .mobile-header-right {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-end;
+                  gap: 0.15rem;
+
+                  .mobile-total {
+                    .total-value {
+                      font-weight: 700;
+                      color: #1e293b;
+                      font-size: 0.9rem;
+                    }
+                  }
+
+                  .mobile-discount {
+                    font-size: 0.7rem;
+                    color: #dc2626;
+                    font-weight: 600;
+                  }
+                }
+              }
+
+              .mobile-card-body {
+                padding: 0 1rem 1rem;
+                border-top: 1px solid #e5e7eb;
+
+                .mobile-products-list {
+                  .mobile-product-item {
+                    padding: 0.75rem 0;
+                    border-bottom: 1px solid #f3f4f6;
+
+                    &:last-child {
+                      border-bottom: none;
+                    }
+
+                    .mobile-product-header {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+
+                      .product-header-left {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        flex: 1;
+                        min-width: 0;
+
+                        .provider-icon-small-mobile {
+                          width: 28px;
+                          height: 28px;
+                          border-radius: 50%;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: white;
+                          flex-shrink: 0;
+                        }
+
+                        .product-name {
+                          font-weight: 500;
+                          color: #1e293b;
+                          font-size: 0.85rem;
+                        }
+                      }
+
+                      .mobile-actions {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+
+                        .product-quantity-badge {
+                          background: #f3f4f6;
+                          padding: 0.1rem 0.5rem;
+                          border-radius: 4px;
+                          font-size: 0.7rem;
+                          font-weight: 600;
+                          color: #4b5563;
+                          white-space: nowrap;
+                        }
+
+                        .action-btn-mobile {
+                          display: inline-flex;
+                          align-items: center;
+                          justify-content: center;
+                          padding: 3px 6px;
+                          border: none;
+                          border-radius: 4px;
+                          font-size: 0.65rem;
+                          font-weight: 600;
+                          cursor: pointer;
+                          transition: all 0.2s;
+                          background: #eff6ff;
+                          color: #3b82f6;
+
+                          &:hover {
+                            background: #dbeafe;
+                          }
+
+                          svg {
+                            width: 14px;
+                            height: 14px;
+                          }
+                        }
+                      }
+                    }
+
+                    .mobile-product-details {
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.5rem;
+                      margin-top: 0.5rem;
+
+                      .detail-item {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.1rem;
+
+                        &.full-width {
+                          grid-column: 1 / -1;
+                        }
+
+                        .detail-label {
+                          font-size: 0.65rem;
+                          color: #6b7280;
+                          text-transform: uppercase;
+                          letter-spacing: 0.3px;
+                        }
+
+                        .detail-value {
+                          font-size: 0.85rem;
+                          font-weight: 600;
+                          color: #1e293b;
+
+                          &.total {
+                            color: #059669;
+                          }
+                        }
+
+                        .percentage-bar-mobile {
+                          position: relative;
+                          height: 16px;
+                          background: #f3f4f6;
+                          border-radius: 4px;
+                          overflow: hidden;
+
+                          .percentage-fill-mobile {
+                            height: 100%;
+                            border-radius: 4px;
+                            transition: width 0.6s ease;
+
+                            &.revenue-fill {
+                              background: linear-gradient(
+                                90deg,
+                                #3b82f6,
+                                #10b981
+                              );
+                            }
+                          }
+
+                          .percentage-text-mobile {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            font-size: 0.6rem;
+                            font-weight: 600;
+                            color: #1e293b;
+                            white-space: nowrap;
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  .empty-mobile {
+                    text-align: center;
+                    padding: 2rem 0;
+                    color: #6b7280;
+                    font-size: 0.9rem;
+                  }
+                }
+              }
+            }
+          }
+
+          .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: #6b7280;
+            font-size: 1rem;
+          }
+        }
+      }
     }
 
-    .analytics-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .subtitle {
-      font-size: 0.8125rem;
-      opacity: 0.9;
-      margin: 0;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: #e5e7eb;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s ease;
-    }
-
-    .stat-card:hover {
-      background: #f9fafb;
-    }
-
-    .stat-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .revenue-icon {
-      background: #d1fae5;
-      color: #10b981;
-    }
-
-    .quantity-icon {
-      background: #dbeafe;
-      color: #3b82f6;
-    }
-
-    .products-icon {
-      background: #fef3c7;
-      color: #f59e0b;
-    }
-
-    .avg-icon {
-      background: #fee2e2;
-      color: #ef4444;
-    }
-
-    .stat-info {
-      flex: 1;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      color: #6b7280;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .stat-value {
-      font-size: 1.125rem;
-      font-weight: 700;
-    }
-
-    .stat-value.positive {
-      color: #10b981;
-    }
-
-    .table-container {
-      overflow-y: auto;
-      background: #f9fafb;
-      height: calc(100vh - 200px);
-    }
-
-    .period-view {
-      padding: 5px;
-    }
-
-    /* Receipts Container Styles */
-    .receipts-container {
-      overflow-y: auto;
-    }
-
-    .desktop-view {
-      display: block;
-    }
-
-    .receipts-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    /* Receipt Card */
-    .receipt-card {
-      background: #fff;
-      border-radius: 16px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .receipt-card.expanded {
-      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
-    }
-
-    /* Card Header */
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: #fff;
-    }
-
-    .receipt-card.expanded .card-header {
-      background: linear-gradient(135deg, #fff 0%, #f0f9ff 100%);
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    .card-header:hover {
-      background: #f9fafb;
-    }
-
-    /* Header Sections */
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex: 1;
-    }
-
-    .provider-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .provider-icon-small {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .provider-icon-small-mobile {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .provider-initial {
-      color: #fff;
-      font-size: 20px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .provider-icon-small .provider-initial,
-    .provider-icon-small-mobile span {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .provider-details {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .receipt-date-small {
-      font-size: 13px;
-      color: #64748b;
-      font-weight: 500;
-    }
-
-    /* Header Right */
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .price-summary {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .total-price {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .price-value {
-      font-size: 20px;
-      font-weight: 800;
-      color: #059669;
-      letter-spacing: -0.5px;
-    }
-
-    .discount-badge {
-      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #dc2626;
-    }
-
-    .products-count {
-      background: #3b82f6;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    /* Expanded Content */
-    .card-expanded {
-      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
-    }
-
-    @keyframes slideDown {
+    @keyframes expandIn {
       from {
         opacity: 0;
         transform: translateY(-10px);
@@ -1149,424 +2056,212 @@ interface Receipt {
       }
     }
 
-    /* Products Section */
-    .products-section {
-      padding: 10px;
-    }
-
-    /* Products Table */
-    .products-table-wrapper {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-    }
-
-    .products-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-
-    .products-table th {
-      padding: 14px 16px;
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      color: #475569;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      text-align: left;
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    .products-table td {
-      padding: 14px 16px;
-      color: #334155;
-      font-size: 13px;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .product-row {
-      transition: all 0.2s;
-    }
-
-    .product-row:hover {
-      background: #f8fafc;
-    }
-
-    .product-row:last-child td {
-      border-bottom: none;
-    }
-
-    .provider-cell {
-      width: 60px;
-    }
-
-    .product-name-cell {
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .product-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .product-price {
-      color: #059669;
-      font-weight: 600;
-    }
-
-    .product-quantity {
-      text-align: center;
-    }
-
-    .quantity-badge {
-      display: inline-block;
-      background: #e2e8f0;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 12px;
-      color: #475569;
-    }
-
-    .product-total {
-      font-weight: 700;
-      color: #0f766e;
-      text-align: right;
-    }
-
-    .date-cell {
-      font-size: 12px;
-      color: #64748b;
-      white-space: nowrap;
-    }
-
-    .percentage-cell {
-      width: 140px;
-    }
-
-    .percentage-bar-wrapper {
-      width: 100%;
-    }
-
-    .percentage-bar {
-      position: relative;
-      background: #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 24px;
-      display: flex;
-      align-items: center;
-    }
-
-    .percentage-fill {
-      position: absolute;
-      left: 0;
+    // Modal styles
+    .modal-overlay {
+      position: fixed;
       top: 0;
-      bottom: 0;
-      border-radius: 10px;
-      transition: width 0.3s ease;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
     }
 
-    .revenue-fill {
-      background: linear-gradient(90deg, #3b82f6, #10b981);
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
-    .percentage-text {
-      position: relative;
-      z-index: 1;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0 8px;
-      color: #1f2937;
-    }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
 
-    /* Mobile View */
-    .mobile-view {
-      display: none;
-    }
-
-    .empty-cell {
-      text-align: center;
-      padding: 32px;
-      color: #9ca3af;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px;
-      color: #9ca3af;
-    }
-
-    .empty-mobile {
-      text-align: center;
-      padding: 24px;
-      color: #9ca3af;
-      font-size: 0.75rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .desktop-view {
-        display: none;
+      @media (max-width: 768px) {
+        width: 95%;
+        margin: 20px;
       }
 
-      .mobile-view {
-        display: block;
-        padding: 12px;
-        overflow-y: auto;
-      }
-
-      .mobile-card {
-        background: #fff;
-        border: 1px solid #e2e6ee;
+      @media (max-width: 480px) {
+        width: 100%;
+        margin: 10px;
         border-radius: 12px;
-        margin-bottom: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px) scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      background: white;
+      border-radius: 16px 16px 0 0;
+      z-index: 10;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1e293b;
+
+        @media (max-width: 480px) {
+          font-size: 16px;
+        }
       }
 
-      .mobile-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px;
-        background: #eff6ff;
-        cursor: pointer;
-      }
-
-      .mobile-card-header:active {
-        background: #e0f2fe;
-      }
-
-      .mobile-header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
-      }
-
-      .mobile-header-left .provider-initial {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
+      .modal-close {
+        background: #f3f4f6;
+        border: none;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        font-weight: 700;
-        font-size: 16px;
-        text-transform: uppercase;
-      }
-
-      .mobile-provider-info {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .mobile-provider-name {
-        font-weight: 600;
-        font-size: 14px;
-        color: #1e293b;
-      }
-
-      .mobile-date {
-        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s;
         color: #6b7280;
-      }
 
-      .mobile-header-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .mobile-total {
-        text-align: right;
-      }
-
-      .total-value {
-        font-weight: 700;
-        font-size: 14px;
-        color: #059669;
-      }
-
-      .mobile-discount {
-        background: #fee2e2;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #dc2626;
-      }
-
-      .mobile-card-body {
-        border-top: 1px solid #e2e6ee;
-        animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .mobile-products-list {
-        padding: 12px;
-      }
-
-      .mobile-product-item {
-        background: #f8fafc;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        padding: 12px;
-        border-left: 3px solid #3b82f6;
-      }
-
-      .mobile-product-item:last-child {
-        margin-bottom: 0;
-      }
-
-      .mobile-product-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e2e8f0;
-      }
-
-      .product-header-left {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-      }
-
-      .mobile-product-header .product-name {
-        font-weight: 600;
-        font-size: 13px;
-        color: #1e293b;
-      }
-
-      .product-quantity-badge {
-        background: #e2e8f0;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #475569;
-      }
-
-      .mobile-product-details {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .detail-item {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        flex: 1;
-      }
-
-      .detail-item.full-width {
-        flex: 1 1 100%;
-        margin-top: 8px;
-      }
-
-      .detail-label {
-        font-size: 9px;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-      }
-
-      .detail-value {
-        font-weight: 600;
-        font-size: 12px;
-        color: #1e293b;
-      }
-
-      .detail-value.total {
-        color: #0f766e;
-      }
-
-      .percentage-bar-mobile {
-        position: relative;
-        background: #e5e7eb;
-        border-radius: 10px;
-        overflow: hidden;
-        height: 20px;
-        display: flex;
-        align-items: center;
-      }
-
-      .percentage-fill-mobile {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        border-radius: 10px;
-        transition: width 0.3s ease;
-      }
-
-      .percentage-text-mobile {
-        position: relative;
-        z-index: 1;
-        font-size: 0.625rem;
-        font-weight: 600;
-        padding: 0 6px;
-        color: #1f2937;
+        &:hover {
+          background: #e5e7eb;
+          color: #1f2937;
+        }
       }
     }
 
-    @media (max-width: 480px) {
-      .mobile-view {
-        padding: 8px;
+    .modal-body {
+      padding: 24px;
+
+      @media (max-width: 768px) {
+        padding: 16px;
       }
 
-      .mobile-card-header {
-        padding: 10px;
+      @media (max-width: 480px) {
+        padding: 12px;
       }
 
-      .mobile-header-left .provider-initial {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
+      .product-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 480px) {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .summary-item {
+          background: #f8fafc;
+          padding: 12px 16px;
+          border-radius: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          @media (max-width: 480px) {
+            padding: 10px 12px;
+          }
+
+          .label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
+
+          .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+
+            @media (max-width: 480px) {
+              font-size: 14px;
+            }
+
+            &.total {
+              color: #059669;
+            }
+          }
+        }
       }
 
-      .total-value {
-        font-size: 13px;
-      }
+      .chart-container {
+        min-height: 300px;
 
-      .mobile-discount {
-        font-size: 10px;
-        padding: 3px 6px;
+        .modal-chart-wrapper {
+          width: 100%;
+          height: 300px;
+        }
       }
+    }
 
-      .mobile-product-item {
-        padding: 10px;
-      }
+    .loading-spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
 
-      .mobile-product-header .product-name {
-        font-size: 12px;
-      }
-
-      .detail-value {
-        font-size: 11px;
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
     }
   `,
 })
-export class MostCommonProductsComponent {
+export class MostCommonProductsComponent implements OnChanges {
+  private cdr = inject(ChangeDetectorRef);
+
   receipts = input<ReceiptsProductDomain[]>([]);
+
+  // Chart cache for performance optimization
+  private chartCache = new Map<string, any>();
+  private chartLoading = new Map<string, boolean>();
+  private chartLoaded = new Map<string, boolean>();
 
   viewMode = signal<'all' | 'monthly' | 'yearly' | 'receipts'>('monthly');
   expandedPeriodId = signal<string | null>(null);
   expandedReceiptId = signal<string | null>(null);
+
+  // Modal state
+  isModalOpen = signal<boolean>(false);
+  selectedProduct = signal<GroupedProduct | null>(null);
+  private modalChartOptions = signal<any>(null);
 
   // Provider mapping based on product name patterns
   private readonly providerMap = new Map<
@@ -1608,6 +2303,139 @@ export class MostCommonProductsComponent {
       },
     ],
   ]);
+
+  // Effect to clear cache when receipts change
+  constructor() {
+    effect(() => {
+      // Trigger when receipts change
+      const currentReceipts = this.receipts();
+      if (currentReceipts) {
+        // Clear caches when data changes
+        this.chartCache.clear();
+        this.chartLoading.clear();
+        this.chartLoaded.clear();
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['receipts']) {
+      // Clear all caches when input changes
+      this.chartCache.clear();
+      this.chartLoading.clear();
+      this.chartLoaded.clear();
+      this.cdr.markForCheck();
+    }
+  }
+
+  hasPriceTrendChart(productName: string): any {
+    return this.receipts().filter((r) => r.name === productName)?.length > 1;
+  }
+
+  // Optimized chart loading with caching
+  getPriceTrendChartOptimized(productName: string): any {
+    // Check if we already have the chart in cache
+    if (this.chartCache.has(productName)) {
+      return this.chartCache.get(productName);
+    }
+
+    // Check if chart is currently loading
+    if (this.chartLoading.get(productName)) {
+      return null;
+    }
+
+    // Mark as loading
+    this.chartLoading.set(productName, true);
+
+    // Use requestIdleCallback or setTimeout for non-blocking loading
+    const loadChart = () => {
+      try {
+        const options = ProductPriceTrendChartUtils.getChart(
+          this.receipts()?.filter((p) => p.name === productName) ?? [],
+        );
+        this.chartCache.set(productName, options);
+        this.chartLoaded.set(productName, true);
+        this.chartLoading.set(productName, false);
+        this.cdr.markForCheck();
+      } catch (error) {
+        console.error('Error loading chart for product:', productName, error);
+        this.chartLoading.set(productName, false);
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadChart, { timeout: 1000 });
+    } else {
+      setTimeout(loadChart, 50);
+    }
+
+    return null;
+  }
+
+  // Legacy method for compatibility (can be removed if not used elsewhere)
+  getPriceTrentChart(productName: string) {
+    return this.getPriceTrendChartOptimized(productName);
+  }
+
+  // Open modal for product
+  openProductModal(product: GroupedProduct) {
+    this.selectedProduct.set(product);
+    this.isModalOpen.set(true);
+    // Pre-load chart data
+    this.getModalChartOptions();
+    this.cdr.markForCheck();
+  }
+
+  // Open modal from receipt product
+  openProductModalFromReceipt(
+    product: ReceiptsProductDomain,
+    receipt: Receipt,
+  ) {
+    // Create a GroupedProduct from the receipt product
+    const groupedProduct: GroupedProduct = {
+      id: product.id,
+      name: product.name,
+      provider: product.provider,
+      count: 1,
+      totalQuantity: product.quantity ?? 0,
+      totalRevenue: (product.price ?? 0) * (product.quantity ?? 0),
+      avgPrice: product.price ?? 0,
+      latestDate: product.purchasedDate ?? null,
+      dates: [product.purchasedDate ?? new Date()],
+      percentageOfTotalQuantity: 0,
+      percentageOfTotalRevenue: 0,
+    };
+    this.openProductModal(groupedProduct);
+  }
+
+  // Get modal chart options
+  getModalChartOptions(): any {
+    const product = this.selectedProduct();
+    if (!product) return null;
+
+    if (this.modalChartOptions()) {
+      return this.modalChartOptions();
+    }
+
+    // Get all receipts for this product
+    const productReceipts = this.receipts().filter(
+      (p) => p.name === product.name,
+    );
+
+    if (productReceipts.length <= 1) return null;
+
+    const options = ProductPriceTrendChartUtils.getChart(productReceipts);
+    this.modalChartOptions.set(options);
+    return options;
+  }
+
+  // Close modal
+  closeModal() {
+    this.isModalOpen.set(false);
+    this.selectedProduct.set(null);
+    this.modalChartOptions.set(null);
+  }
 
   onToggle(value: string) {
     if (value === 'All') {
