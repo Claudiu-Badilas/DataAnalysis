@@ -10,7 +10,7 @@ export const receiptsRoutes: Routes = [
     children: [
       { path: 'summary', component: ReceiptsSummaryComponent },
       { path: 'products', component: ReceiptsProductsComponent },
-      { path: '', redirectTo: 'summary', pathMatch: 'full' },
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
     ],
   },
 ];
