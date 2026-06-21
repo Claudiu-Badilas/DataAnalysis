@@ -9,7 +9,6 @@ import * as ReceiptsActions from 'src/app/modules/receipts/actions/receipts.acti
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { ReceiptDomain } from '../models/receipts-domain.model';
 import { ReceiptsProductDomain } from '../receipts-products/models/receipts-products.model';
-import { DailyPurchasedProductChartUtils } from '../receipts-products/utils/daily-purchased-products.chart.util';
 import { ProductPriceTrendChartUtils } from '../receipts-products/utils/products-price-trend.chart.util';
 
 interface ReceiptsProductsState {
@@ -114,11 +113,6 @@ export const getAvailableReceiptsProductBySearchTerm = createSelector(
     ),
 );
 
-export const getDailyPurchasedProductChart = createSelector(
-  getStartDate,
-  getEndDate,
-  getAvailableReceiptsProductBySearchTerm,
-  DailyPurchasedProductChartUtils.getChart,
 );
 
 export const getProductPriceTrendChartUtils = createSelector(
