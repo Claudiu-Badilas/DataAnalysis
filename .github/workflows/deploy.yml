@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write # Changed to 'write' to allow version bump commit
+  contents: write # Needed for version bump commit
   pages: write
   id-token: write
 
@@ -20,14 +20,14 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./Predict.Client
+        working-directory: ./Predict.Client # All commands run from here
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0 # Important for git operations
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,30 +36,25 @@ jobs:
           cache: "npm"
           cache-dependency-path: "./Predict.Client/package-lock.json"
 
-      # ✅ ADD BUMP VERSION HERE - BEFORE install and build
+      # ✅ CORRECT - No cd needed
       - name: Bump version
-        run: |
-          cd ./Predict.Client
-          node scripts/bump-version.js
+        run: node scripts/bump-version.js
 
-      # ✅ Then install dependencies
       - name: Install dependencies
         run: npm install
 
-      # ✅ Then build the app
       - name: Build Angular app
         run: npm run build -- --configuration production --base-href "/predict/"
 
-      # ✅ Generate version.json from the bumped version
+      # ✅ CORRECT - No cd needed
       - name: Generate version.json
         run: |
-          cd ./Predict.Client
           VERSION=$(node -p "require('./package.json').version")
           DATE=$(date -I)
           echo "{\"version\":\"$VERSION\",\"releaseDate\":\"$DATE\"}" > ./dist/predict.client/browser/assets/version.json
 
       - name: List build output
-        run: ls -la ./Predict.Client/dist/predict.client/browser
+        run: ls -la ./dist/predict.client/browser
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -72,14 +67,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      # Optional: Commit the bumped version back to repo
-      - name: Commit version bump
-        if: success()
-        run: |
-          cd ./Predict.Client
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add package.json
-          git diff --staged --quiet || git commit -m "chore: bump version to $(node -p "require('./package.json').version")"
-          git push
