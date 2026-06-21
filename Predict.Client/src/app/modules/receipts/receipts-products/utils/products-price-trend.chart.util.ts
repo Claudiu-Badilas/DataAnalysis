@@ -46,13 +46,37 @@ export namespace ProductPriceTrendChartUtils {
         y: Number(p.price!.toFixed(2)),
         date: DateUtils.fromJsDateToString(p.purchasedDate),
         productName: p.name,
+        provider: p.provider,
       })),
       marker: {
-        enabled: false, // Remove points/markers from the chart
+        enabled: true,
+        radius: 5,
+        fillColor: '#FFFFFF',
+        lineWidth: 2,
+        lineColor: '#666666',
+        symbol: 'circle',
+        states: {
+          hover: {
+            radius: 7,
+            lineWidth: 3,
+          },
+        },
       },
       states: {
         hover: {
           lineWidth: 4,
+        },
+      },
+      // Add custom tooltip for each point
+      tooltip: {
+        pointFormatter: function () {
+          const point = this as any;
+          return `
+            <strong>${point.productName}</strong><br/>
+            <strong>${point.provider}</strong><br/>
+            <span style="color: #666; font-size: 12px;">${point.date}</span><br/>
+            <span style="font-size: 16px; font-weight: bold;">${point.y.toFixed(2)}</span>
+          `;
         },
       },
     };
@@ -62,12 +86,32 @@ export namespace ProductPriceTrendChartUtils {
         type: 'spline',
         height: 300,
         backgroundColor: 'transparent',
-
         spacing: [10, 10, 10, 10],
       },
       title: { text: null },
       subtitle: { text: null },
-      tooltip: { enabled: false },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderColor: '#E0E0E0',
+        borderRadius: 8,
+        borderWidth: 1,
+        shadow: true,
+        padding: 12,
+        style: {
+          fontSize: '13px',
+          fontFamily: 'Arial, sans-serif',
+          color: '#333333',
+        },
+        headerFormat: '',
+        pointFormat: `
+          <strong>{point.productName}</strong><br/>
+          <strong>{point.provider}</strong><br/>
+          <span style="color: #666; font-size: 12px;">{point.date}</span><br/>
+          <span style="font-size: 18px; font-weight: bold; color: #2E7D32;">{point.y:.2f}</span>
+        `,
+      },
       xAxis: {
         type: 'datetime',
         title: { text: null },
@@ -98,29 +142,6 @@ export namespace ProductPriceTrendChartUtils {
         },
       },
       legend: { enabled: false },
-      plotOptions: {
-        line: {
-          animation: {
-            duration: 1000,
-          },
-          connectNulls: false,
-          threshold: null,
-          marker: {
-            enabled: false, // Also disable markers at plotOptions level
-          },
-        },
-        series: {
-          shadow: {
-            color: 'rgba(0,0,0,0.05)',
-            width: 4,
-            offsetX: 0,
-            offsetY: 2,
-          },
-          marker: {
-            enabled: false, // Disable markers for all series
-          },
-        },
-      },
       credits: { enabled: false },
       responsive: getResponsiveConfig(),
       series: [series],
@@ -139,44 +160,17 @@ export namespace ProductPriceTrendChartUtils {
               spacing: [2, 2, 2, 2],
               height: 75, // Very small height
             },
-            plotOptions: {
-              pie: {
-                innerSize: '70%', // Even thicker on very small screens
-                size: '60%', // Smaller pie size
-                dataLabels: {
-                  style: {
-                    fontSize: '6px',
-                    fontWeight: 'bold',
-                  },
-                  distance: 3,
-                  connectorPadding: 2,
-                  padding: 2,
-                },
-              },
-            },
             tooltip: {
               style: {
                 fontSize: '9px',
               },
               padding: 4,
-            },
-            legend: {
-              itemStyle: {
-                fontSize: '8px',
-              },
-              itemMarginBottom: 2,
-              itemMarginTop: 2,
-              padding: 2,
-            },
-            title: {
-              style: {
-                fontSize: '10px',
-              },
-            },
-            subtitle: {
-              style: {
-                fontSize: '8px',
-              },
+              pointFormat: `
+                <strong>{point.productName}</strong><br/>
+                <strong>{point.provider}</strong><br/>
+                {point.date}<br/>
+                <span style="font-size: 12px; font-weight: bold;">{point.y:.2f}</span>
+              `,
             },
             xAxis: {
               labels: {
@@ -204,23 +198,17 @@ export namespace ProductPriceTrendChartUtils {
               spacing: [10, 10, 10, 10],
               height: 320,
             },
-            plotOptions: {
-              pie: {
-                innerSize: '40%', // Thicker on tablet
-                size: '75%',
-                dataLabels: {
-                  style: {
-                    fontSize: '8px',
-                  },
-                  distance: 8,
-                  connectorPadding: 6,
-                },
-              },
-            },
             tooltip: {
               style: {
                 fontSize: '12px',
               },
+              padding: 8,
+              pointFormat: `
+                <strong>{point.productName}</strong><br/>
+                <strong>{point.provider}</strong><br/>
+                {point.date}<br/>
+                <span style="font-size: 14px; font-weight: bold;">{point.y:.2f}</span>
+              `,
             },
           },
         },
@@ -232,18 +220,17 @@ export namespace ProductPriceTrendChartUtils {
             chart: {
               height: 420,
             },
-            plotOptions: {
-              pie: {
-                innerSize: '50%', // Thicker on desktop (was 70%)
-                size: '100%',
-                dataLabels: {
-                  style: {
-                    fontSize: '11px',
-                  },
-                  distance: 20,
-                  connectorPadding: 20,
-                },
+            tooltip: {
+              style: {
+                fontSize: '13px',
               },
+              padding: 12,
+              pointFormat: `
+                <strong>{point.productName}</strong><br/>
+                <strong>{point.provider}</strong><br/>
+                {point.date}<br/>
+                <span style="font-size: 18px; font-weight: bold; color: #2E7D32;">{point.y:.2f}</span>
+              `,
             },
           },
         },

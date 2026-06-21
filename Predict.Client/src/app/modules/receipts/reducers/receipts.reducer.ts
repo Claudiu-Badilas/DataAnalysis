@@ -113,11 +113,7 @@ export const getAvailableReceiptsProductBySearchTerm = createSelector(
     ),
 );
 
-);
-
 export const getProductPriceTrendChartUtils = createSelector(
-  getStartDate,
-  getEndDate,
   getAvailableReceiptsProductBySearchTerm,
   ProductPriceTrendChartUtils.getChart,
 );
