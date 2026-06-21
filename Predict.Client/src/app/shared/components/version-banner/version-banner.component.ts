@@ -8,7 +8,7 @@ import { VersionService } from '../../services/version.service';
       <div newVersion class="version-banner">
         <div class="banner-card">
           <div class="banner-header">
-            <span class="badge">🆕 New Update</span>
+            <span class="badge"> New Update</span>
             <button (click)="dismiss()" class="btn-close">✕</button>
           </div>
           <div class="banner-body">
