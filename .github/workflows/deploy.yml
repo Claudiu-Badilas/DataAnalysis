@@ -36,7 +36,7 @@ jobs:
           cache-dependency-path: "./Predict.Client/package-lock.json" # Points to the correct lock file
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build Angular app
         run: npm run build -- --configuration production --base-href "/predict/"
