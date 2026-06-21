@@ -902,28 +902,16 @@
         <div class="product-summary">
           <div class="summary-item">
             <span class="label">Total Purchases</span>
-            <span class="value">{{ selectedProduct()?.count }}</span>
+            <span class="value">{{ getProductTotalPurchases() }}</span>
           </div>
           <div class="summary-item">
             <span class="label">Total Quantity</span>
-            <span class="value">{{ selectedProduct()?.totalQuantity }}</span>
+            <span class="value">{{ getProductTotalQuantity() }}</span>
           </div>
           <div class="summary-item">
             <span class="label">Total Revenue</span>
-            <span class="value"
-              >{{
-                selectedProduct()?.totalRevenue | numberFormat: "0.00"
-              }}
-              RON</span
-            >
-          </div>
-          <div class="summary-item">
-            <span class="label">Avg Price</span>
-            <span class="value"
-              >{{
-                selectedProduct()?.avgPrice | numberFormat: "0.00"
-              }}
-              RON</span
+            <span class="value total"
+              >{{ getProductTotalRevenue() | numberFormat: "0.00" }} RON</span
             >
           </div>
         </div>

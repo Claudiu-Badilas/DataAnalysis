@@ -1,21 +1,20 @@
 import { CommonModule } from '@angular/common';
 import {
-  Component,
-  computed,
-  input,
-  signal,
   ChangeDetectionStrategy,
-  inject,
   ChangeDetectorRef,
+  Component,
   OnChanges,
   SimpleChanges,
+  computed,
   effect,
+  inject,
+  input,
+  signal,
 } from '@angular/core';
+import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { ReceiptsProductDomain } from '../../models/receipts-products.model';
-import { ObjectUtil } from 'src/app/shared/utils/object.utils';
-import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ProductPriceTrendChartUtils } from '../../utils/products-price-trend.chart.util';
 
 interface GroupedProduct {
@@ -206,6 +205,38 @@ export class MostCommonProductsComponent implements OnChanges {
     return this.getPriceTrendChartOptimized(productName);
   }
 
+  // Get product data using the same filter as the chart
+  getProductData() {
+    const product = this.selectedProduct();
+    if (!product) return null;
+
+    return this.receipts().filter((p) => p.name === product.name);
+  }
+
+  // Get total purchases count
+  getProductTotalPurchases(): number {
+    const productData = this.getProductData();
+    if (!productData) return 0;
+    return productData.length;
+  }
+
+  // Get total quantity
+  getProductTotalQuantity(): number {
+    const productData = this.getProductData();
+    if (!productData) return 0;
+    return productData.reduce((sum, p) => sum + (p.quantity ?? 0), 0);
+  }
+
+  // Get total revenue
+  getProductTotalRevenue(): number {
+    const productData = this.getProductData();
+    if (!productData) return 0;
+    return productData.reduce(
+      (sum, p) => sum + (p.price ?? 0) * (p.quantity ?? 0),
+      0,
+    );
+  }
+
   // Open modal for product
   openProductModal(product: GroupedProduct) {
     this.selectedProduct.set(product);
@@ -246,7 +277,7 @@ export class MostCommonProductsComponent implements OnChanges {
       return this.modalChartOptions();
     }
 
-    // Get all receipts for this product
+    // Get all receipts for this product using the same filter
     const productReceipts = this.receipts().filter(
       (p) => p.name === product.name,
     );
