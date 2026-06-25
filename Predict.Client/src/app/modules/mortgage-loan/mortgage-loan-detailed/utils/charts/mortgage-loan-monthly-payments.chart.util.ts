@@ -1,6 +1,7 @@
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Colors } from 'src/app/shared/styles/colors';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
+import { MathUtil } from 'src/app/shared/utils/math.utils';
 import { ObjectUtil } from 'src/app/shared/utils/object.utils';
 import { HistoricalInstalmentPayment } from '../../models/base-loan-rate.model';
 
@@ -82,19 +83,20 @@ export namespace MortgageLoanMonthlyPaymentsChartUtils {
       ),
     );
 
-    // Calculate maximum stacked value per category
-    const maxBarValue = categories.reduce((max, _, index) => {
-      const totalAtCategory =
+    // Calculate total per category
+    const totalsPerCategory = categories.map((_, index) => {
+      return (
         (scheduledPaymentsPrincipalData[index] || 0) +
         (earlyPaymentsData[index] || 0) +
         (scheduledPaymentsinsuranceCostData[index] || 0) +
         (scheduledPaymentsIntrestsData[index] || 0) +
         (unpaidPrincipalData[index] || 0) +
         (unpaidInsurenceData[index] || 0) +
-        (unpaidInterestData[index] || 0);
+        (unpaidInterestData[index] || 0)
+      );
+    });
 
-      return Math.max(max, totalAtCategory);
-    }, 0);
+    const yAxisMax = MathUtil.calculatePercentile(totalsPerCategory, 90) * 1.1;
 
     return {
       chart: { zooming: { type: 'x' } },
@@ -102,7 +104,7 @@ export namespace MortgageLoanMonthlyPaymentsChartUtils {
       xAxis: { categories, labels: { enabled: false } },
       yAxis: {
         title: { text: null },
-        max: maxBarValue,
+        max: yAxisMax,
         endOnTick: false,
       },
       plotOptions: {
