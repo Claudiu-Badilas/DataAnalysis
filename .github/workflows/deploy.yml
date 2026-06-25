@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write # Needed for version bump commit
+  contents: read
   pages: write
   id-token: write
 
@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./Predict.Client # All commands run from here
+        working-directory: ./Predict.Client
 
     steps:
       - name: Checkout repository
@@ -36,22 +36,11 @@ jobs:
           cache: "npm"
           cache-dependency-path: "./Predict.Client/package-lock.json"
 
-      # ✅ CORRECT - No cd needed
-      - name: Bump version
-        run: node scripts/bump-version.js
-
       - name: Install dependencies
         run: npm install
 
       - name: Build Angular app
         run: npm run build -- --configuration production --base-href "/predict/"
-
-      # ✅ CORRECT - No cd needed
-      - name: Generate version.json
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          DATE=$(date -I)
-          echo "{\"version\":\"$VERSION\",\"releaseDate\":\"$DATE\"}" > ./dist/predict.client/browser/assets/version.json
 
       - name: List build output
         run: ls -la ./dist/predict.client/browser
