@@ -15,7 +15,7 @@ export class VersionService {
   private startVersionCheck() {
     // Check immediately and then every 60 seconds
     this.checkVersion();
-    interval(60000).subscribe(() => this.checkVersion());
+    interval(3000).subscribe(() => this.checkVersion());
   }
 
   private checkVersion() {
@@ -23,6 +23,7 @@ export class VersionService {
       .get<{ version: string }>('/predict/assets/version.json')
       .subscribe({
         next: (data) => {
+          console.log('🚀 ~ VersionService ~ checkVersion ~ data:', data);
           if (data.version !== this.currentVersion) {
             // Check if this version was already dismissed
             const dismissed =
