@@ -40,20 +40,24 @@ jobs:
         run: npm install
 
       - name: Build Angular app with version
-        run: npm run gh-build
+        run: |
+          npm run build:version -- --configuration production
+          # The build:version script will generate version.json
 
       - name: Verify version.json exists
         run: |
+          echo "📁 Checking build output:"
+          ls -la ./dist/predict.client/
+
           if [ -f "./dist/predict.client/version.json" ]; then
-            echo "✅ version.json created successfully"
+            echo "✅ version.json found!"
             cat ./dist/predict.client/version.json
           else
-            echo "❌ version.json not found!"
+            echo "❌ version.json NOT found in build output!"
+            echo "📁 Contents of dist/predict.client:"
+            ls -la ./dist/predict.client/
             exit 1
           fi
-
-      - name: List build output
-        run: ls -la ./dist/predict.client/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
