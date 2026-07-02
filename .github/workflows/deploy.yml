@@ -39,11 +39,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Angular app
-        run: npm run build -- --configuration production --base-href "/predict/"
+      - name: Build Angular app with version
+        run: npm run gh-build
+
+      - name: Verify version.json exists
+        run: |
+          if [ -f "./dist/predict.client/version.json" ]; then
+            echo "✅ version.json created successfully"
+            cat ./dist/predict.client/version.json
+          else
+            echo "❌ version.json not found!"
+            exit 1
+          fi
 
       - name: List build output
-        run: ls -la ./dist/predict.client/browser
+        run: ls -la ./dist/predict.client/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -51,7 +61,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./Predict.Client/dist/predict.client/browser"
+          path: "./Predict.Client/dist/predict.client"
 
       - name: Deploy to GitHub Pages
         id: deployment
