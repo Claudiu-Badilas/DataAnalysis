@@ -5,16 +5,18 @@ import { VersionService } from '../../services/version.service';
 @Component({
   selector: 'app-new-version-banner',
   template: `
-    <div *ngIf="showBanner" class="version-banner">
-      <div class="banner-content">
-        <span class="banner-icon">🔄</span>
-        <span class="banner-text">
-          A new version ({{ latestVersion }}) is available!
-        </span>
-        <button (click)="updateApp()" class="update-btn">Update Now</button>
-        <button (click)="dismissBanner()" class="dismiss-btn">✕</button>
+    @if (showBanner) {
+      <div class="version-banner">
+        <div class="banner-content">
+          <span class="banner-icon">🔄</span>
+          <span class="banner-text">
+            A new version ({{ latestVersion }}) is available!
+          </span>
+          <button (click)="updateApp()" class="update-btn">Update Now</button>
+          <button (click)="dismissBanner()" class="dismiss-btn">✕</button>
+        </div>
       </div>
-    </div>
+    }
   `,
   styles: [
     `
