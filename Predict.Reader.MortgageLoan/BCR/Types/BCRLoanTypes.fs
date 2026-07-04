@@ -2,7 +2,7 @@
 
 open System
 
-module BCRMortgageLoanTypes =
+module BCRLoanTypes =
 
     type Instalment =
         { InstalmentId: int option

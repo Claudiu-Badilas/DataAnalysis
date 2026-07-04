@@ -5,9 +5,9 @@ open Predict.Reader.Common.Utils
 open iTextSharp.text.pdf
 open System.IO
 open System.Globalization
-open Predict.Reader.MortgageLoan.BCR.Types.BCRMortgageLoanTypes
+open Predict.Reader.MortgageLoan.BCR.Types.BCRLoanTypes
 
-module BCRMortgageLoanReader =
+module BCRLoanReader =
 
     let getLocalPdfs path =
         Directory.EnumerateFiles(path, "*.pdf")
@@ -43,7 +43,7 @@ module BCRMortgageLoanReader =
         | None -> None
 
 
-    let getMortgageDetails (pdf: PdfReader) : Instalment list =
+    let getLoanDetails (pdf: PdfReader) : Instalment list =
         let text = PdfUtils.getTextFromPdf pdf
 
         let pages =
@@ -78,28 +78,28 @@ module BCRMortgageLoanReader =
 
         rate
 
-    let loadMortgages path =
+    let loadDetails path =
         getLocalPdfs path
         |> Array.Parallel.map (fun (fileName, pdf) ->
             { defaultGraficRambursare with
                 Name = fileName
-                MonthlyInstalments = getMortgageDetails pdf
+                MonthlyInstalments = getLoanDetails pdf
                 Date = DateTime.ParseExact(fileName, "dd-MMM-yyyy", CultureInfo.InvariantCulture) })
         |> Array.toList
 
-    let getBcrMorgages () =
-        let basePath = @"D:\Projects\PredictFiles\Morgages\BCR"
+    let getBcrLoanDetails () =
+        let basePath = @"D:\Projects\PredictFiles\Loan\BCR"
 
         let basePayments =
-            loadMortgages $"{basePath}\BasePayment"
+            loadDetails $"{basePath}\BasePayment"
             |> List.map (fun file -> { file with IsBasePayment = true })
 
         let normalPayments =
-            loadMortgages $"{basePath}\NormalPayment"
+            loadDetails $"{basePath}\NormalPayment"
             |> List.map (fun file -> { file with IsNormalPayment = true })
 
         let extraPayments =
-            loadMortgages $"{basePath}\ExtraPayment"
+            loadDetails $"{basePath}\ExtraPayment"
             |> List.map (fun file -> { file with IsExtraPayment = true })
 
         basePayments @ normalPayments @ extraPayments |> List.sortByDescending _.Date

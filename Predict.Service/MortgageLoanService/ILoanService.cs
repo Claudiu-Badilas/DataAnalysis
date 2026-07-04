@@ -2,7 +2,7 @@
 
 namespace Predict.Service;
 
-public interface IMortgageLoanService
+public interface ILoanService
 {
     List<GraficRambursare> GetBcrMortgageLoans();
 

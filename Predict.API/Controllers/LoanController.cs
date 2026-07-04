@@ -4,10 +4,10 @@ using Predict.Service;
 namespace Predict.Controllers;
 
 [Route("api/v1")]
-public class MortgageLoanController(IMortgageLoanService mortgageLoanService) : BaseController
+public class LoanController(ILoanService mortgageLoanService) : BaseController
 {
 
-    [HttpGet("mortgage-loan/bcr")]
+    [HttpGet("loan/bcr")]
     public async Task<ActionResult> GetMortgageLoanDetails() 
         => Ok(mortgageLoanService.GetBcrMortgageLoans());
 }

@@ -37,7 +37,7 @@ public class Startup(IConfiguration config)
         services.AddSingleton<IAccountService, AccountService>();
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IReceiptsService, ReceiptsService>();
-        services.AddSingleton<IMortgageLoanService, MortgageLoanService>();
+        services.AddSingleton<ILoanService, LoanService>();
 
         services.AddSingleton<IEnvironmentConfiguration, EnvironmentConfiguration>();
 

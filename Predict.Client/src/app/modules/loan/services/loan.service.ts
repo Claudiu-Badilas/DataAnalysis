@@ -24,9 +24,7 @@ export class LoanService {
     if (cachedDtos) return of(this.convertToModels(cachedDtos));
 
     return this._httpClient
-      .get<
-        RepaymentScheduleDto[]
-      >('https://localhost:8080/api/v1/loan/bcr')
+      .get<RepaymentScheduleDto[]>('https://localhost:8080/api/v1/loan/bcr')
       .pipe(
         tap((dtos) =>
           this._localStorage.setItem(LoanService_STORAGE_KEY, dtos),
