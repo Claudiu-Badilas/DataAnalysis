@@ -58,38 +58,80 @@
   color: #9ca3af;
 }
 
-/* Group Header Row */
-.group-header-row {
+/* Year Group Header */
+.year-group-header-row {
   cursor: pointer;
-  background: #eff6ff;
+  background: #f0f4ff;
+  border-bottom: 2px solid #d1d9e6;
 }
 
-.group-header-row:hover {
-  background: #e0f2fe;
+.year-group-header-row:hover {
+  background: #e0e8f5;
 }
 
-.group-header-cell {
-  padding: 12px 16px !important;
-}
-
-.group-header-content {
+.year-group-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  padding: 10px 16px;
 }
 
-.group-info {
+.year-group-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-.chevron {
-  display: flex;
-  align-items: center;
+.year-group-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: #1a3a6b;
+}
+
+.year-group-count {
   color: #3b82f6;
+  font-size: 12px;
+  background: #eff6ff;
+  padding: 2px 10px;
+  border-radius: 30px;
+  border: 1px solid #3b82f6;
+}
+
+.year-group-totals {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 13px;
+}
+
+.year-total {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.year-principal {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.year-interest {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.year-remaining {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Monthly Group Header */
+.monthly-group-header-row {
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+.monthly-group-header-row:hover {
+  background: #f1f5f9;
 }
 
 .group-title {
@@ -106,8 +148,7 @@
   border: 1px solid #3b82f6;
 }
 
-.total-principal {
-  color: #f59e0b;
+.total-interest {
   font-weight: 600;
 }
 
@@ -137,16 +178,6 @@
   border-right: 7px solid #10b981;
 }
 
-.gray {
-  background: #f8fafc;
-}
-.gray td:first-child {
-  border-left: 7px solid #676c72;
-}
-.gray td:last-child {
-  border-right: 7px solid #676c72;
-}
-
 .last-bottom-border {
   border-bottom: 1px solid currentColor;
 }
@@ -174,31 +205,66 @@
     height: calc(100vh - 200px);
   }
 
-  .mobile-group-card {
-    border: 1px solid #e2e6ee;
+  .mobile-year-card {
+    border: 1px solid #d1d9e6;
     border-radius: 12px;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
     overflow: hidden;
-    box-shadow:
-      0 2px 4px -1px rgba(0, 0, 0, 0.05),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
   }
 
-  .mobile-normal-header {
-    background: #f8fafc;
-    padding: 10px 12px;
+  .mobile-year-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e2e6ee;
+    padding: 14px 16px;
+    background: #f0f4ff;
+    cursor: pointer;
+    transition: background 0.2s ease;
   }
 
-  .mobile-normal-count {
-    color: #6b7280;
+  .mobile-year-header:active {
+    background: #e0e8f5;
+  }
+
+  .mobile-year-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-year-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: #1a3a6b;
+  }
+
+  .mobile-year-count {
+    color: #3b82f6;
     font-size: 11px;
-    background: #f1f5f9;
-    padding: 2px 8px;
-    border-radius: 12px;
+    padding: 2px 10px;
+    border-radius: 30px;
+    border: 1px solid #3b82f6;
+  }
+
+  .mobile-year-totals {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mobile-year-total {
+    font-weight: 600;
+    font-size: 13px;
+    color: #1f2937;
+  }
+
+  .mobile-group-card {
+    border: 1px solid #e2e6ee;
+    border-radius: 8px;
+    margin: 5px;
+    overflow: hidden;
+    background: white;
   }
 
   .mobile-group-header {
@@ -206,31 +272,29 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    background: #eff6ff;
+    background: #f8fafc;
     cursor: pointer;
     transition: background 0.2s ease;
   }
 
   .mobile-group-header:active {
-    background: #e0f2fe;
+    background: #f1f5f9;
   }
 
   .mobile-group-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 5px;
   }
 
   .mobile-group-title {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .mobile-group-count {
     color: #3b82f6;
     font-size: 10px;
-
     padding: 2px 8px;
     border-radius: 30px;
     border: 1px solid #3b82f6;
@@ -293,7 +357,6 @@
     border-left: 3px solid #94a3b8;
   }
 
-  /* 2-Row Layout Grid */
   .mobile-item-row {
     display: flex;
     justify-content: space-between;
@@ -310,8 +373,6 @@
     flex-direction: column;
     align-items: center;
   }
-
-  /* Column widths for second row */
 
   .item-index {
     font-weight: 700;
@@ -347,10 +408,6 @@
     color: #ef4444;
   }
 
-  .pad-value {
-    color: #3b82f6;
-  }
-
   .remaining-value {
     color: #1f2937;
   }
@@ -367,6 +424,23 @@
     height: calc(100vh - 180px);
   }
 
+  .mobile-year-header {
+    padding: 12px;
+  }
+
+  .mobile-year-title {
+    font-size: 14px;
+  }
+
+  .mobile-year-count {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  .mobile-year-total {
+    font-size: 11px;
+  }
+
   .mobile-group-header {
     padding: 10px;
   }
@@ -381,23 +455,11 @@
   }
 
   .mobile-group-total {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .mobile-item {
     padding: 10px;
-  }
-
-  .col-index {
-    width: 36px;
-  }
-
-  .col-date {
-    width: 70px;
-  }
-
-  .col-remaining {
-    width: 85px;
   }
 
   .item-index {
