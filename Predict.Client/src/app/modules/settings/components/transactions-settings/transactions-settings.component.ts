@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SettingsService } from 'src/app/modules/mortgage-loan/services/settings.service';
+import { LoanSettingsService } from 'src/app/modules/loan/services/loan-settings.service';
 import { TransactionService_STORAGE_KEY } from 'src/app/modules/transaction/services/transaction.service';
 import { SuccessModalComponent } from 'src/app/shared/components/modals/success-modal/success-modal.component';
 
@@ -11,7 +11,7 @@ import { SuccessModalComponent } from 'src/app/shared/components/modals/success-
   styleUrl: './transactions-settings.component.scss',
 })
 export class TransactionsSettingsComponent {
-  private settingsService = inject(SettingsService);
+  private settingsService = inject(LoanSettingsService);
   private modalService = inject(NgbModal);
 
   storageKeys: {

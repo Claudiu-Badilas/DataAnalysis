@@ -16,7 +16,7 @@ export class TopBarComponent implements OnInit {
   @Input() hasFiltersContent: boolean = false;
 
   modules = [
-    { label: 'Mortgage', icon: 'wallet', url: '/mortgage-loan' },
+    { label: 'Loan', icon: 'wallet', url: '/loan' },
     { label: 'Transactions', icon: 'trending', url: '/transactions' },
     { label: 'Receipts', icon: 'receipt', url: '/receipts' },
     { label: 'Invoices', icon: 'file', url: '/invoices' },

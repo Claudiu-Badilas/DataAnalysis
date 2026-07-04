@@ -24,9 +24,9 @@ import * as fromReceipts from 'src/app/modules/receipts/reducers/receipts.reduce
 import { ReceiptsEffects } from 'src/app/modules/receipts/effects/receipts.effects';
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import { TransactionsEffects } from 'src/app/modules/transaction/effects/transactions.effects';
-import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
-import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/loan-compare/reducers/loan-compare.reducer';
-import { MortgageLoanEffects } from 'src/app/modules/mortgage-loan/effects/mortgage-loan.effects';
+import * as fromLoan from 'src/app/modules/loan/reducers/loan.reducer';
+import * as fromLoanCompare from 'src/app/modules/loan/loan-compare/reducers/loan-compare.reducer';
+import { LoanEffects } from 'src/app/modules/loan/effects/loan.effects';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthenticationInterceptor } from 'src/app/platform/authentication/interceptor/authentication.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -66,15 +66,15 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(EffectsModule.forFeature([TransactionsEffects])),
 
     importProvidersFrom(
-      StoreModule.forFeature('MortgageLoanState', fromMortgageLoan.reducer),
+      StoreModule.forFeature('LoanState', fromLoan.reducer),
     ),
     importProvidersFrom(
       StoreModule.forFeature(
-        'MortgageLoanStateCompare',
-        fromMortgageLoanCompare.reducer,
+        'LoanStateCompare',
+        fromLoanCompare.reducer,
       ),
     ),
-    importProvidersFrom(EffectsModule.forFeature([MortgageLoanEffects])),
+    importProvidersFrom(EffectsModule.forFeature([LoanEffects])),
 
     // Global providers (interceptors, etc.)
     {

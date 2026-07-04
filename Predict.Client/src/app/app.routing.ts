@@ -8,11 +8,9 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'mortgage-loan',
+    path: 'loan',
     loadChildren: () =>
-      import('./modules/mortgage-loan/mortgage-loan.routing').then(
-        (m) => m.mortgageLoanRoutes,
-      ),
+      import('./modules/loan/loan.routing').then((m) => m.loanRoutes),
   },
   {
     path: 'transactions',

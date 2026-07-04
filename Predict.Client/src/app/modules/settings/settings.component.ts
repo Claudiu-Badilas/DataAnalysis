@@ -16,7 +16,7 @@ export class SettingsComponent {
   activeTab: string = 'tab1';
 
   tabs = [
-    { id: 'tab1', label: 'Mortgage', url: 'mortgage-loan' },
+    { id: 'tab1', label: 'Loan', url: 'loan' },
     { id: 'tab2', label: 'Transactions', url: 'transactions' },
     { id: 'tab3', label: 'Receipts', url: 'receipts' },
   ];
