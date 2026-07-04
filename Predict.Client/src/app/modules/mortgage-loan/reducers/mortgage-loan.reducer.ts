@@ -7,11 +7,11 @@ import {
 } from '@ngrx/store';
 import * as MortgageLoanActions from 'src/app/modules/mortgage-loan/actions/mortgage-loan.actions';
 import * as MortgageLoanDetailedActions from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/actions/mortgage-loan-detailed.actions';
-import { OverviewRepaymentSchedule } from '../mortgage-loan-overview/models/overview-mortgage-loan.model';
+import { LoanSimulatorRepaymentSchedule } from '../loan-simulator/models/loan-simulator.model';
 import { RepaymentSchedule } from './../models/mortgage.model';
 
 interface OverviewMortgageLoanState {
-  repaymentSchedules: OverviewRepaymentSchedule[];
+  repaymentSchedules: LoanSimulatorRepaymentSchedule[];
   selectedRepaymentScheduleName: string;
   selectedInstalmentPayments: number[];
   selectedEarlyPayments: number[];

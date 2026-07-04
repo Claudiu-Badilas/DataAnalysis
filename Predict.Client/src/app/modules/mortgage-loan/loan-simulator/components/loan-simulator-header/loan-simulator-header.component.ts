@@ -4,15 +4,15 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
-import { MonthlyInstalmentManager } from '../../models/overview-mortgage-loan.model';
+import { MonthlyInstalmentManager } from '../../models/loan-simulator.model';
 
 @Component({
-  selector: 'p-mortgage-loan-overview-header',
+  selector: 'p-loan-simulator-header',
   imports: [CommonModule, NumberFormatPipe],
-  templateUrl: './mortgage-loan-overview-header.component.html',
-  styleUrl: './mortgage-loan-overview-header.component.scss',
+  templateUrl: './loan-simulator-header.component.html',
+  styleUrl: './loan-simulator-header.component.scss',
 })
-export class MortgageLoanOverviewHeaderComponent {
+export class LoanSimulatorHeaderComponent {
   monthlyInstalmentGroups = input.required<MonthlyInstalmentManager[]>();
 
   overviewLoanInstalments = computed(() =>

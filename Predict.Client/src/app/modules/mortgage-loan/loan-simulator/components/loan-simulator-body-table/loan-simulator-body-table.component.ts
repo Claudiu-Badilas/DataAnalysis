@@ -10,11 +10,11 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import {
   MonthlyInstalmentManager,
-  OverviewLoanInstalment,
-} from '../../models/overview-mortgage-loan.model';
+  LoanSimulatorInstalment,
+} from '../../models/loan-simulator.model';
 
 @Component({
-  selector: 'p-mortgage-loan-overview-body-table',
+  selector: 'p-loan-simulator-body-table',
   imports: [
     CommonModule,
     FormsModule,
@@ -22,10 +22,10 @@ import {
     CheckboxComponent,
     HoldTriggerDirective,
   ],
-  templateUrl: './mortgage-loan-overview-body-table.component.html',
-  styleUrl: './mortgage-loan-overview-body-table.component.scss',
+  templateUrl: './loan-simulator-body-table.component.html',
+  styleUrl: './loan-simulator-body-table.component.scss',
 })
-export class MortgageLoanOverviewBodyTableComponent {
+export class LoanSimulatorBodyTableComponent {
   monthlyInstalmentGroups = input<MonthlyInstalmentManager[]>([]);
 
   store = inject(Store<fromMortgageLoan.MortgageLoanState>);
@@ -34,7 +34,7 @@ export class MortgageLoanOverviewBodyTableComponent {
     group.expanded = !group.expanded;
   }
 
-  toggleRow(row: OverviewLoanInstalment) {
+  toggleRow(row: LoanSimulatorInstalment) {
     row.instalmentPayment = !row.instalmentPayment;
   }
 
@@ -60,7 +60,7 @@ export class MortgageLoanOverviewBodyTableComponent {
     };
   }
 
-  onSelectInstalmentPayment(instalment: OverviewLoanInstalment) {
+  onSelectInstalmentPayment(instalment: LoanSimulatorInstalment) {
     this.store.dispatch(
       MortgageLoanActions.selectedInstalmentPaymentChanged({
         values: [instalment.instalmentId],
@@ -68,7 +68,7 @@ export class MortgageLoanOverviewBodyTableComponent {
     );
   }
 
-  onSelectEarlyPayment(instalment: OverviewLoanInstalment) {
+  onSelectEarlyPayment(instalment: LoanSimulatorInstalment) {
     this.store.dispatch(
       MortgageLoanActions.selectedEarlyPaymentChanged({
         values: [instalment.instalmentId],

@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import * as MortgageLoanActions from 'src/app/modules/mortgage-loan/actions/mortgage-loan.actions';
-import * as fromMortgageLoanOverview from 'src/app/modules/mortgage-loan/mortgage-loan-overview/selectors/mortgage-loan-overview.selectors';
+import * as fromLoanSimulator from 'src/app/modules/mortgage-loan/loan-simulator/selectors/loan-simulator.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { LocalStorageService } from 'src/app/platform/services/local-storage.service';
 import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-select/dropdown-select.component';
@@ -12,41 +12,41 @@ import { NumericInputComponent } from 'src/app/shared/components/numeric-input/n
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
-import { MortgageLoanOverviewBodyTableComponent } from './components/mortgage-loan-overview-body-table/mortgage-loan-overview-body-table.component';
-import { MortgageLoanOverviewHeaderComponent } from './components/mortgage-loan-overview-header/mortgage-loan-overview-header.component';
+import { LoanSimulatorBodyTableComponent } from './components/loan-simulator-body-table/loan-simulator-body-table.component';
+import { LoanSimulatorHeaderComponent } from './components/loan-simulator-header/loan-simulator-header.component';
 import { mapInstalementSimulation } from './utils/instalment-simulation.utils';
 
 @Component({
-  selector: 'p-mortgage-loan-overview',
+  selector: 'p-loan-simulator',
   imports: [
     CommonModule,
     DropdownSelectComponent,
-    MortgageLoanOverviewHeaderComponent,
-    MortgageLoanOverviewBodyTableComponent,
+    LoanSimulatorHeaderComponent,
+    LoanSimulatorBodyTableComponent,
     NumericInputComponent,
     TopBarComponent,
     ToggleButtonActionsComponent,
   ],
-  templateUrl: './mortgage-loan-overview.component.html',
-  styleUrls: ['./mortgage-loan-overview.component.scss'],
+  templateUrl: './loan-simulator.component.html',
+  styleUrls: ['./loan-simulator.component.scss'],
 })
-export class MortgageLoanOverviewComponent {
+export class LoanSimulatorComponent {
   monthlyInstalmentBatches = toSignal(
-    this.store.select(fromMortgageLoanOverview.getMonthlyInstalmentBatches),
+    this.store.select(fromLoanSimulator.getMonthlyInstalmentBatches),
   );
   selectedRepaymentScheduleName$ = this.store.select(
-    fromMortgageLoanOverview.getSelectedRepaymentScheduleName,
+    fromLoanSimulator.getSelectedRepaymentScheduleName,
   );
   dropDownSelectOptions$ = this.store
     .select(fromMortgageLoan.getRepaymentSchedules)
     .pipe(map((rs) => rs.map((r) => r.name)));
 
   selectedRepaymentScheduleBase = toSignal(
-    this.store.select(fromMortgageLoanOverview.getSelectedRepaymentSchedule),
+    this.store.select(fromLoanSimulator.getSelectedRepaymentSchedule),
   );
 
-  monthlyAmountKey = 'MortgageLoanOverview_MonthlyAmount';
-  paymentsKey = 'MortgageLoanOverview_Payments';
+  monthlyAmountKey = 'LoanSimulator_MonthlyAmount';
+  paymentsKey = 'LoanSimulator_Payments';
 
   monthlyAmount = signal<number>(
     this._localStorageService.getItem(this.monthlyAmountKey) ?? 3500,

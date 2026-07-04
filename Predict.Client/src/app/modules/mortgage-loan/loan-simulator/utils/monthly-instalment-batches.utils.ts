@@ -2,8 +2,8 @@ import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { RepaymentSchedule } from '../../models/mortgage.model';
 import {
   MonthlyInstalmentManager as MonthlyInstalmentBatch,
-  OverviewLoanInstalment,
-} from '../models/overview-mortgage-loan.model';
+  LoanSimulatorInstalment,
+} from '../models/loan-simulator.model';
 import { DateStateManager } from './date-state-manager.service';
 
 export function generateMonthlyInstalmentBatches(
@@ -30,7 +30,7 @@ function createOverviewBaseLoanInstalments(
   base: RepaymentSchedule,
   selectedInstalmentPayments: number[],
   selectedEarlyPayments: number[],
-): OverviewLoanInstalment[] {
+): LoanSimulatorInstalment[] {
   const dateManager = new DateStateManager();
   const selectedInstalmentSet = new Set(selectedInstalmentPayments);
   const selectedEarlyPaymentSet = new Set(selectedEarlyPayments);
@@ -73,7 +73,7 @@ function createOverviewBaseLoanInstalments(
         instalmentPayment: hasInstalmentPayment,
         earlyPayment: hasEarlyPayment,
         disabled: false,
-      } as OverviewLoanInstalment;
+      } as LoanSimulatorInstalment;
     })
     .map((instalment, i, arr) => {
       const prev = arr[i - 1];
@@ -92,27 +92,27 @@ function createOverviewBaseLoanInstalments(
             !next.earlyPayment &&
             (instalment.instalmentPayment || instalment.earlyPayment));
       }
-      return { ...instalment, disabled: !enable } as OverviewLoanInstalment;
+      return { ...instalment, disabled: !enable } as LoanSimulatorInstalment;
     });
 }
 
 function createMonthlyInstalmentBatches(
-  overviewBaseLoanInstalments: OverviewLoanInstalment[],
+  overviewBaseLoanInstalments: LoanSimulatorInstalment[],
 ): MonthlyInstalmentBatch[] {
   const batches: MonthlyInstalmentBatch[] = [];
-  let tempBatch: OverviewLoanInstalment[] = [];
+  let tempBatch: LoanSimulatorInstalment[] = [];
 
   overviewBaseLoanInstalments.forEach((current, index, array) => {
     const next = array[index + 1];
 
-    const total = (val: OverviewLoanInstalment) =>
+    const total = (val: LoanSimulatorInstalment) =>
       val.earlyPayment ? val.principalAmount : val.totalInstalment;
     const batchTotalInstalment = Calculator.sum([
       ...tempBatch.map((v) => total(v)),
       total(current),
     ]);
 
-    const early = (val: OverviewLoanInstalment) =>
+    const early = (val: LoanSimulatorInstalment) =>
       val.earlyPayment ? val.principalAmount : 0;
     const batchTotalEarlyPayment = Calculator.sum([
       ...tempBatch.map((v) => early(v)),
@@ -123,7 +123,7 @@ function createMonthlyInstalmentBatches(
       ...current,
       batchTotalInstalment,
       batchTotalEarlyPayment,
-    } as OverviewLoanInstalment);
+    } as LoanSimulatorInstalment);
 
     if (current.instalmentPayment || current.earlyPayment) {
       if (next && !next.earlyPayment) {

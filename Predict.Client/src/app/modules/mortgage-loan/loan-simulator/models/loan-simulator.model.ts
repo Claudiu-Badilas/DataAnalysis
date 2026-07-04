@@ -1,4 +1,4 @@
-export type OverviewLoanInstalment = {
+export type LoanSimulatorInstalment = {
   instalmentId: number | null;
   paymentDate: Date | null;
   newPaymentDate: Date | null;
@@ -17,9 +17,9 @@ export type OverviewLoanInstalment = {
   disabled: boolean;
 };
 
-export type OverviewRepaymentSchedule = {
+export type LoanSimulatorRepaymentSchedule = {
   name: string;
-  overviewLoanInstalments: OverviewLoanInstalment[];
+  loanSimulatorInstalments: LoanSimulatorInstalment[];
 };
 
 export class MonthlyInstalmentManager {
@@ -28,7 +28,7 @@ export class MonthlyInstalmentManager {
   public id: number;
   public title: Date;
 
-  constructor(public instalments: OverviewLoanInstalment[]) {
+  constructor(public instalments: LoanSimulatorInstalment[]) {
     if (!instalments.length) return;
 
     this.completed = instalments.some((i) => i.instalmentPayment);

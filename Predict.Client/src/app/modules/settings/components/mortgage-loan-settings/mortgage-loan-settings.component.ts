@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MortgageLoanService_STORAGE_KEY } from 'src/app/modules/mortgage-loan/services/overview-mortgage.service';
+import { MortgageLoanService_STORAGE_KEY } from 'src/app/modules/mortgage-loan/services/mortgage-loan.service';
 import { SettingsService } from 'src/app/modules/mortgage-loan/services/settings.service';
 import { ReceiptsService_STORAGE_KEY } from 'src/app/modules/receipts/services/receipts.service';
 import { TransactionService_STORAGE_KEY } from 'src/app/modules/transaction/services/transaction.service';
