@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/selectors/mortgage-loan-detailed.selectors';
+import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/loan-detailed/selectors/loan-detailed.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
@@ -10,12 +10,12 @@ import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
 import { MathUtil } from 'src/app/shared/utils/math.utils';
 
 @Component({
-  selector: 'p-mortgage-loan-detailed-header',
+  selector: 'p-loan-detailed-header',
   imports: [CommonModule, NumberFormatPipe],
-  templateUrl: './mortgage-loan-detailed-header.component.html',
-  styleUrl: './mortgage-loan-detailed-header.component.scss',
+  templateUrl: './loan-detailed-header.component.html',
+  styleUrl: './loan-detailed-header.component.scss',
 })
-export class MortgageLoanDetailedHeaderComponent {
+export class LoanDetailedHeaderComponent {
   private readonly store = inject(Store<fromMortgageLoan.MortgageLoanState>);
 
   readonly updatedBaseRepaymentScheduleBasedOnLatestStates = toSignal(

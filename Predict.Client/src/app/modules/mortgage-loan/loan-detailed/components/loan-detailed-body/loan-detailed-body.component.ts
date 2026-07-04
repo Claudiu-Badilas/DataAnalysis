@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/selectors/mortgage-loan-detailed.selectors';
+import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/loan-detailed/selectors/loan-detailed.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
@@ -13,17 +13,17 @@ import { MortgageLoanMonthlyPaymentsChartUtils } from '../../utils/charts/mortga
 import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
 
 @Component({
-  selector: 'p-mortgage-loan-detailed-body',
+  selector: 'p-loan-detailed-body',
   imports: [
     CommonModule,
     HighchartWrapperComponent,
     HistoricalInstalmentsTableComponent,
     ToggleButtonComponent,
   ],
-  templateUrl: './mortgage-loan-detailed-body.component.html',
-  styleUrl: './mortgage-loan-detailed-body.component.scss',
+  templateUrl: './loan-detailed-body.component.html',
+  styleUrl: './loan-detailed-body.component.scss',
 })
-export class MortgageLoanDetailedBodyComponent {
+export class LoanDetailedBodyComponent {
   historicalInstalments = toSignal(
     this.store.select(fromMortgageLoanDetailed.getHistoricalInstalmentPayments),
   );

@@ -2,30 +2,30 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import * as MortgageLoanDetailedActions from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/actions/mortgage-loan-detailed.actions';
-import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/mortgage-loan-detailed/selectors/mortgage-loan-detailed.selectors';
+import * as MortgageLoanDetailedActions from 'src/app/modules/mortgage-loan/loan-detailed/actions/loan-detailed.actions';
+import * as fromMortgageLoanDetailed from 'src/app/modules/mortgage-loan/loan-detailed/selectors/loan-detailed.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-select/dropdown-select.component';
-import { MortgageLoanDetailedBodyComponent } from './components/mortgage-loan-detailed-body/mortgage-loan-detailed-body.component';
-import { MortgageLoanDetailedHeaderComponent } from './components/mortgage-loan-detailed-header/mortgage-loan-detailed-header.component';
+import { LoanDetailedBodyComponent } from './components/loan-detailed-body/loan-detailed-body.component';
+import { LoanDetailedHeaderComponent } from './components/loan-detailed-header/loan-detailed-header.component';
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 
 @Component({
-  selector: 'p-mortgage-loan-detailed',
+  selector: 'p-loan-detailed',
   imports: [
     CommonModule,
-    MortgageLoanDetailedHeaderComponent,
-    MortgageLoanDetailedBodyComponent,
+    LoanDetailedHeaderComponent,
+    LoanDetailedBodyComponent,
     DropdownSelectComponent,
     TopBarComponent,
     ToggleButtonActionsComponent,
   ],
-  templateUrl: './mortgage-loan-detailed.component.html',
-  styleUrl: './mortgage-loan-detailed.component.scss',
+  templateUrl: './loan-detailed.component.html',
+  styleUrl: './loan-detailed.component.scss',
 })
-export class MortgageLoanDetailedComponent {
+export class LoanDetailedComponent {
   selectedRepaymentScheduleName$ = this.store.select(
     fromMortgageLoanDetailed.getDetailedSelectedRepaymentScheduleName,
   );
