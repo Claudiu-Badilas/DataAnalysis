@@ -2,17 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
-import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/mortgage-loan-compare/selectors/mortgage-loan-compare.selectors';
+import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/loan-compare/selectors/loan-compare.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 
 @Component({
-  selector: 'p-mortgage-loan-compare-body',
+  selector: 'p-loan-compare-body',
   imports: [CommonModule, NumberFormatPipe],
-  templateUrl: './mortgage-loan-compare-body.component.html',
-  styleUrl: './mortgage-loan-compare-body.component.scss',
+  templateUrl: './loan-compare-body.component.html',
+  styleUrl: './loan-compare-body.component.scss',
 })
-export class MortgageLoanCompareBodyComponent {
+export class LoanCompareBodyComponent {
   private readonly store = inject(Store<fromMortgageLoan.MortgageLoanState>);
 
   leftHistoricalInstalmentPaymentBatchesManager = toSignal(

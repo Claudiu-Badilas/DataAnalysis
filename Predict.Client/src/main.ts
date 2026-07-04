@@ -25,7 +25,7 @@ import { ReceiptsEffects } from 'src/app/modules/receipts/effects/receipts.effec
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import { TransactionsEffects } from 'src/app/modules/transaction/effects/transactions.effects';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
-import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/mortgage-loan-compare/reducers/mortgage-loan-compare.reducer';
+import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/loan-compare/reducers/loan-compare.reducer';
 import { MortgageLoanEffects } from 'src/app/modules/mortgage-loan/effects/mortgage-loan.effects';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthenticationInterceptor } from 'src/app/platform/authentication/interceptor/authentication.interceptor';

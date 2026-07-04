@@ -1,5 +1,5 @@
 import { Action, createFeatureSelector, createReducer, on } from '@ngrx/store';
-import * as MortgageLoanCompareActions from 'src/app/modules/mortgage-loan/mortgage-loan-compare/actions/mortgage-loan-compare.actions';
+import * as MortgageLoanCompareActions from 'src/app/modules/mortgage-loan/loan-compare/actions/loan-compare.actions';
 
 export interface MortgageLoanStateCompare {
   leftSelectedRepaymentScheduleName: string;

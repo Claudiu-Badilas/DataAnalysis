@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/mortgage-loan-compare/reducers/mortgage-loan-compare.reducer';
+import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/loan-compare/reducers/loan-compare.reducer';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
 import { HistoricalInstalmentPaymentBatchesManager } from '../../mortgage-loan-detailed/models/base-loan-rate.model';

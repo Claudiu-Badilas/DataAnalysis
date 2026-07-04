@@ -3,8 +3,8 @@ import { Component, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 
-import * as MortgageLoanCompareActions from 'src/app/modules/mortgage-loan/mortgage-loan-compare/actions/mortgage-loan-compare.actions';
-import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/mortgage-loan-compare/selectors/mortgage-loan-compare.selectors';
+import * as MortgageLoanCompareActions from 'src/app/modules/mortgage-loan/loan-compare/actions/loan-compare.actions';
+import * as fromMortgageLoanCompare from 'src/app/modules/mortgage-loan/loan-compare/selectors/loan-compare.selectors';
 import * as fromMortgageLoan from 'src/app/modules/mortgage-loan/reducers/mortgage-loan.reducer';
 import * as fromAppStore from 'src/app/store/app-state.reducer';
 
@@ -14,23 +14,23 @@ import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
-import { MortgageLoanCompareBodyComponent } from './components/mortgage-loan-compare-body/mortgage-loan-compare-body.component';
+import { LoanCompareBodyComponent } from './components/loan-compare-body/loan-compare-body.component';
 import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.chart.util';
 
 @Component({
-  selector: 'p-mortgage-loan-compare',
+  selector: 'p-loan-compare',
   imports: [
     CommonModule,
     DropdownSelectComponent,
     HighchartWrapperComponent,
-    MortgageLoanCompareBodyComponent,
+    LoanCompareBodyComponent,
     TopBarComponent,
     ToggleButtonActionsComponent,
   ],
-  templateUrl: './mortgage-loan-compare.component.html',
-  styleUrls: ['./mortgage-loan-compare.component.scss'],
+  templateUrl: './loan-compare.component.html',
+  styleUrls: ['./loan-compare.component.scss'],
 })
-export class MortgageLoanCompareComponent {
+export class LoanCompareComponent {
   repaymentSchedules = toSignal(
     this.store.select(fromMortgageLoan.getRepaymentSchedules),
     { initialValue: [] },
