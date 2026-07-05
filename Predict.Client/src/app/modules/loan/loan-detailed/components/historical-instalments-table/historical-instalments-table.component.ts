@@ -97,7 +97,9 @@ export class HistoricalInstalmentsTableComponent {
       return {
         year,
         expanded: expandedYears.has(year),
-        monthlyGroups,
+        monthlyGroups: monthlyGroups.sort(
+          (a, b) => b.title.valueOf() - a.title.valueOf(),
+        ),
         subtotal,
       };
     });
