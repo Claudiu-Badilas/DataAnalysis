@@ -1,4 +1,4 @@
-﻿using static Predict.Reader.MortgageLoan.BCR.Types.BCRMortgageLoanTypes;
+﻿using static Predict.Reader.MortgageLoan.BCR.Types.BCRLoanTypes;
 
 namespace Predict.Service;
 

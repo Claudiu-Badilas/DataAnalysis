@@ -1,6 +1,6 @@
 ﻿using Predict.Reader.MortgageLoan.BCR;
 using Predict.Service.CacheServicel;
-using static Predict.Reader.MortgageLoan.BCR.Types.BCRMortgageLoanTypes;
+using static Predict.Reader.MortgageLoan.BCR.Types.BCRLoanTypes;
 
 namespace Predict.Service;
 

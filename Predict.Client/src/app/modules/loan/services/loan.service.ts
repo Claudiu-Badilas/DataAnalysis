@@ -6,7 +6,7 @@ import { LocalStorageService } from 'src/app/platform/services/local-storage.ser
 import { PrintoutsService } from 'src/app/platform/services/printouts.service';
 import { RepaymentSchedule, RepaymentScheduleDto } from '../models/loan.model';
 
-export const LoanService_STORAGE_KEY = 'GraficRambursare_18-Jun-2026';
+export const LoanService_STORAGE_KEY = 'GraficRambursare_18-Jul-2026';
 
 @Injectable({ providedIn: 'root' })
 export class LoanService {
