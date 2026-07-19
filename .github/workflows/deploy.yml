@@ -28,6 +28,14 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # Ensure we get all files even if .git is missing
+          clean: false
+
+      - name: Verify repository state
+        run: |
+          pwd
+          ls -la
+          git status || echo "Not a git repository, continuing..."
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -37,13 +45,16 @@ jobs:
           cache-dependency-path: "./Predict.Client/package-lock.json"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          # If install fails, try with --legacy-peer-deps
+          # npm install --legacy-peer-deps
 
       - name: Build Angular app
         run: npm run build -- --configuration production --base-href "/predict/"
 
       - name: List build output
-        run: ls -la ./dist/predict.client/browser
+        run: ls -la ./dist/predict.client/browser || echo "Build directory not found"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
