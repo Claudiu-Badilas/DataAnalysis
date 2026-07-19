@@ -14,7 +14,7 @@
           }}</span>
         </div>
         <div class="footer-info">
-          <span>⏱️ {{ validManagers()[0].getDuration() ?? "N/A" }}y</span>
+          <span> {{ validManagers()[0].getDuration() ?? "N/A" }}y</span>
           <span class="footer-vs">↔</span>
           <span>{{ validManagers()[1].getDuration() ?? "N/A" }}y</span>
         </div>
@@ -25,7 +25,7 @@
         <!-- Row 1: Principal & Interest -->
         <div class="compact-row">
           <div class="metric-group">
-            <div class="metric-label">💰 Principal</div>
+            <div class="metric-label">Principal</div>
             <div class="metric-values">
               <span class="value-left">{{
                 validManagers()[0].getUnpaidPrincipalAmmount()
@@ -47,7 +47,7 @@
           </div>
           <div class="metric-divider"></div>
           <div class="metric-group">
-            <div class="metric-label">📈 Interest</div>
+            <div class="metric-label">Dobanda</div>
             <div class="metric-values">
               <span class="value-left">{{
                 validManagers()[0].getUnpaidAmmountInterest()
@@ -72,7 +72,7 @@
         <!-- Row 2: Insurance & Total -->
         <div class="compact-row">
           <div class="metric-group">
-            <div class="metric-label">🛡️ Insurance</div>
+            <div class="metric-label">Asig.</div>
             <div class="metric-values">
               <span class="value-left">{{
                 validManagers()[0].getUnpaidInsuranceAmmount()
@@ -94,7 +94,7 @@
           </div>
           <div class="metric-divider"></div>
           <div class="metric-group metric-group--highlight">
-            <div class="metric-label">🏆 Total Paid</div>
+            <div class="metric-label">Total</div>
             <div class="metric-values">
               <span class="value-left value-bold">{{
                 validManagers()[0].getPaidAmmount() | numberFormat: "0.00"
@@ -117,7 +117,7 @@
     </div>
   } @else {
     <div class="no-comparison">
-      <span>🔍 Select two loans to compare</span>
+      <span> Select two loans to compare</span>
     </div>
   }
 </div>
