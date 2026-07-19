@@ -78,8 +78,8 @@ export namespace InterestProgressChartPieUtils {
           color: Colors.BLUE_400,
         },
         {
-          name: 'PAD Platita',
-          nameShort: 'PAD',
+          name: 'Asig. Platita',
+          nameShort: 'Asig.',
           value: paidInsurance,
           color: Colors.YELLOW_400,
         },

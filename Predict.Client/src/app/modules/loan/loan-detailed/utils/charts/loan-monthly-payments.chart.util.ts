@@ -157,7 +157,7 @@ export namespace LoanMonthlyPaymentsChartUtils {
         },
         {
           type: 'column',
-          name: 'PAD',
+          name: 'Asig.',
           color: Colors.YELLOW_400,
           data: scheduledPaymentsinsuranceCostData,
           showInLegend: false,
@@ -178,7 +178,7 @@ export namespace LoanMonthlyPaymentsChartUtils {
         },
         {
           type: 'column',
-          name: 'PAD Neplatita',
+          name: 'Asig. Neplatita',
           color: Colors.YELLOW_400,
           data: unpaidInsurenceData,
           showInLegend: false,

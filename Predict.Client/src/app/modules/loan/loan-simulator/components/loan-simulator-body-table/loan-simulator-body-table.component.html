@@ -25,7 +25,7 @@
         <th class="text-center">Data</th>
         <th class="text-center">Credit</th>
         <th class="text-center">Dobândă</th>
-        <th class="text-center">PAD</th>
+        <th class="text-center">Asig.</th>
         <th class="text-center">Total</th>
         <th class="text-center">1/2</th>
         <th class="text-center">Anticipat</th>
@@ -321,10 +321,16 @@
                       class="item-value interest-value"
                       [class.strike]="row.earlyPayment"
                     >
-                      {{
-                        row.interestAmount + row.insuranceCost
-                          | numberFormat: "0.00"
-                      }}
+                      {{ row.interestAmount | numberFormat: "0.00" }}
+                    </span>
+                  </div>
+                  <div class="mobile-item-col">
+                    <span class="item-label">Asig.</span>
+                    <span
+                      class="item-value interest-value"
+                      [class.strike]="row.earlyPayment"
+                    >
+                      {{ row.insuranceCost | numberFormat: "0.00" }}
                     </span>
                   </div>
                   <div class="mobile-item-col">
@@ -391,6 +397,12 @@
                   <span class="item-label">Dobândă</span>
                   <span class="item-value interest-value">
                     {{ row.interestAmount | numberFormat: "0.00" }}
+                  </span>
+                </div>
+                <div class="mobile-item-col">
+                  <span class="item-label">Asig.</span>
+                  <span class="item-value interest-value">
+                    {{ row.insuranceCost | numberFormat: "0.00" }}
                   </span>
                 </div>
                 <div class="mobile-item-col">

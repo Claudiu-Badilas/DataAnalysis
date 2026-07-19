@@ -69,8 +69,8 @@ export namespace InterestProgressChartBarUtils {
         color: Colors.BLUE_400,
       },
       {
-        name: !isMobile ? 'PAD Platita' : 'PAD',
-        nameShort: 'PAD',
+        name: !isMobile ? 'Asig. Platita' : 'Asig.',
+        nameShort: 'Asig.',
         value: paidInsurance,
         color: Colors.YELLOW_400,
       },
