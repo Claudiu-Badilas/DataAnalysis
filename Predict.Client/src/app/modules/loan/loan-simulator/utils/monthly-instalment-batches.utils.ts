@@ -19,7 +19,11 @@ export function generateMonthlyInstalmentBatches(
     selectedEarlyPayments,
   );
 
+  const variableInstalmentStartingDate =
+    base.monthlyInstalments[59].paymentDate;
+
   const monthlyInstalmentBatches = createMonthlyInstalmentBatches(
+    variableInstalmentStartingDate,
     overviewBaseLoanInstalments,
   );
 
@@ -97,6 +101,7 @@ function createOverviewBaseLoanInstalments(
 }
 
 function createMonthlyInstalmentBatches(
+  variableInstalmentStartingDate: Date,
   overviewBaseLoanInstalments: LoanSimulatorInstalment[],
 ): MonthlyInstalmentBatch[] {
   const batches: MonthlyInstalmentBatch[] = [];
@@ -127,12 +132,16 @@ function createMonthlyInstalmentBatches(
 
     if (current.instalmentPayment || current.earlyPayment) {
       if (next && !next.earlyPayment) {
-        batches.push(new MonthlyInstalmentBatch(tempBatch));
+        batches.push(
+          new MonthlyInstalmentBatch(variableInstalmentStartingDate, tempBatch),
+        );
         tempBatch = [];
       }
     }
     if ((!current.instalmentPayment && !current.earlyPayment) || !next) {
-      batches.push(new MonthlyInstalmentBatch(tempBatch));
+      batches.push(
+        new MonthlyInstalmentBatch(variableInstalmentStartingDate, tempBatch),
+      );
       tempBatch = [];
     }
   });

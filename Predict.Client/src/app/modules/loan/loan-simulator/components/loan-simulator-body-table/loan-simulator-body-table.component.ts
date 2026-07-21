@@ -12,6 +12,8 @@ import {
   MonthlyInstalmentManager,
   LoanSimulatorInstalment,
 } from '../../models/loan-simulator.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import * as fromLoanSimulator from 'src/app/modules/loan/loan-simulator/selectors/loan-simulator.selectors';
 
 @Component({
   selector: 'p-loan-simulator-body-table',
@@ -29,6 +31,10 @@ export class LoanSimulatorBodyTableComponent {
   monthlyInstalmentGroups = input<MonthlyInstalmentManager[]>([]);
 
   store = inject(Store<fromLoan.LoanState>);
+
+  selectedRepaymentScheduleBase = toSignal(
+    this.store.select(fromLoanSimulator.getSelectedRepaymentSchedule),
+  );
 
   toggleGroup(group: MonthlyInstalmentManager) {
     group.expanded = !group.expanded;

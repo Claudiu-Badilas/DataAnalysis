@@ -74,9 +74,7 @@ export class LoanSimulatorComponent {
   }
 
   onDropdownSelected(value: string) {
-    this.store.dispatch(
-      LoanActions.selectedLoanChanged({ selected: value }),
-    );
+    this.store.dispatch(LoanActions.selectedLoanChanged({ selected: value }));
   }
 
   onMonthlyAmountChange(monthlyAmount: number) {

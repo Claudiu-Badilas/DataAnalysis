@@ -89,6 +89,7 @@
         @if (!group.completed || group.expanded) {
           @for (
             row of group.instalments;
+            let index = $index;
             let last = $last;
             track row.instalmentId
           ) {
@@ -140,6 +141,13 @@
                 }"
               >
                 {{ row.principalAmount | numberFormat: "0.00" }}
+
+                ({{
+                  group.getCalculatedPrincipalAmount(
+                    selectedRepaymentScheduleBase(),
+                    row
+                  ) | numberFormat: "0.00"
+                }})
               </td>
               <td
                 class="text-center"
@@ -150,6 +158,13 @@
                 }"
               >
                 {{ row.interestAmount | numberFormat: "0.00" }}
+
+                ({{
+                  group.getCalculatedInterestAmount(
+                    selectedRepaymentScheduleBase(),
+                    row
+                  ) | numberFormat: "0.00"
+                }})
               </td>
 
               <td
@@ -161,6 +176,13 @@
                 }"
               >
                 {{ row.insuranceCost | numberFormat: "0.00" }}
+
+                ({{
+                  group.getCalculatedInsuranceCost(
+                    selectedRepaymentScheduleBase(),
+                    row
+                  ) | numberFormat: "0.00"
+                }})
               </td>
 
               <td
