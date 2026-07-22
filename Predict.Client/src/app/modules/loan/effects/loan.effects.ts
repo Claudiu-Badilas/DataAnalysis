@@ -26,13 +26,14 @@ export class LoanEffects {
       ),
       switchMap(([loans, calculateRepaymentSchedules]) => {
         const base = loans.find((loan) => loan.isBasePayment);
+
+        const variableInterestStartDate =
+          base.monthlyInstalments[5 * 12 - 1].paymentDate;
+
         const repaymentSchedules = loans.map((loan) => {
           if (calculateRepaymentSchedules) {
             loan.monthlyInstalments.forEach((instalment) =>
-              instalment.calculateInstamlment(
-                base.monthlyInstalments[5 * 12 - 1].paymentDate,
-                loan,
-              ),
+              instalment.calculateInstamlment(variableInterestStartDate, loan),
             );
           }
           return loan;

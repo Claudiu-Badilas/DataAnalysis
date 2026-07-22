@@ -45,10 +45,10 @@ export class Instalment {
   }
 
   calculateInstamlment(
-    flexibleInterestDate: Date,
+    variableInterestStartDate: Date,
     repaymentSchedule: RepaymentSchedule,
   ) {
-    if (JsDateUtils.isSameOrBefore(this.paymentDate, flexibleInterestDate))
+    if (JsDateUtils.isSameOrBefore(this.paymentDate, variableInterestStartDate))
       return;
 
     this.interestAmount = LoanRecalcualtionUtils.getCalculatedInterestAmount(
