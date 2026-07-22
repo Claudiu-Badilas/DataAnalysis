@@ -1,0 +1,12 @@
+<div class="toggle-container">
+  <button
+    (click)="onToggle()"
+    [class.active]="toggle"
+    class="toggle-switch"
+    role="switch"
+    [attr.aria-checked]="toggle"
+    type="button"
+  >
+    <span class="toggle-slider"></span>
+  </button>
+</div>

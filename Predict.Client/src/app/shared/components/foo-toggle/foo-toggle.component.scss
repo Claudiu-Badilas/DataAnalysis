@@ -1,0 +1,96 @@
+.toggle-container {
+  display: inline-flex;
+  align-items: center;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 18px;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.toggle-switch.active {
+  background-color: #2196f3;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: white;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(12px);
+}
+
+/* Extra small size option */
+.toggle-switch.xsmall {
+  width: 26px;
+  height: 16px;
+  border-radius: 16px;
+}
+
+.toggle-switch.xsmall .toggle-slider {
+  width: 12px;
+  height: 12px;
+  top: 2px;
+  left: 2px;
+}
+
+.toggle-switch.xsmall.active .toggle-slider {
+  transform: translateX(10px);
+}
+
+/* Hover effects for devices with hover capability */
+@media (hover: hover) {
+  .toggle-switch:hover:not(.active) {
+    background-color: #b8b8b8;
+  }
+
+  .toggle-switch.active:hover {
+    background-color: #1976d2;
+  }
+}
+
+.toggle-switch:active .toggle-slider {
+  transform: scale(0.9);
+}
+
+.toggle-switch.active:active .toggle-slider {
+  transform: translateX(12px) scale(0.9);
+}
+
+.toggle-switch:focus-visible {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.toggle-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .toggle-switch,
+  .toggle-slider {
+    transition: none !important;
+  }
+}
