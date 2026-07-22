@@ -1,6 +1,7 @@
 .toggle-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  transform: rotate(90deg);
 }
 
 .toggle-switch {
