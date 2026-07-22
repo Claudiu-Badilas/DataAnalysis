@@ -39,6 +39,21 @@ export class Instalment {
 
     this.paymentDate = DateUtils.fromSplittedStringToJsDate(res.paymentDate);
   }
+
+  calculateInstamlment(repaymentSchedule: RepaymentSchedule) {
+    this.interestAmount = LoanRecalcualtionUtils.getCalculatedInterestAmount(
+      repaymentSchedule,
+      this,
+    );
+    this.insuranceCost = LoanRecalcualtionUtils.getCalculatedInsuranceCost(
+      repaymentSchedule,
+      this,
+    );
+    this.principalAmount = LoanRecalcualtionUtils.getCalculatedPrincipalAmount(
+      repaymentSchedule,
+      this,
+    );
+  }
 }
 
 export class RepaymentSchedule {
@@ -57,6 +72,73 @@ export class RepaymentSchedule {
     this.date = DateUtils.fromSplittedStringToJsDate(res.date);
     this.monthlyInstalments = res.monthlyInstalments.map(
       (r) => new Instalment(r),
+    );
+
+    this.monthlyInstalments = res.monthlyInstalments.map((r) => {
+      const instalment = new Instalment(r);
+      return instalment;
+    });
+  }
+}
+
+/**
+ *  if (loadDefault) {
+        instalment.interestAmount = LoanUtils.getCalculatedInterestAmount(
+          loan,
+          instalment,
+        );
+        instalment.insuranceCost = LoanUtils.getCalculatedInsuranceCost(
+          loan,
+          instalment,
+        );
+        instalment.principalAmount = LoanUtils.getCalculatedPrincipalAmount(
+          loan,
+          instalment,
+        );
+      }
+ */
+
+export namespace LoanRecalcualtionUtils {
+  export function getCalculatedInterestAmount(
+    repaymentSchedule: RepaymentSchedule,
+    instalment: Instalment,
+  ) {
+    if (instalment.instalmentId === 1) return instalment.interestAmount;
+
+    const foundInstalment = repaymentSchedule.monthlyInstalments.find(
+      (i) => i.instalmentId === instalment.instalmentId - 1,
+    );
+    if (!foundInstalment) return null;
+    return (foundInstalment.remainingBalance * 5.79) / 100 / 12;
+  }
+
+  export function getCalculatedInsuranceCost(
+    repaymentSchedule: RepaymentSchedule,
+    instalment: Instalment,
+  ) {
+    if (instalment.instalmentId === 1) return instalment.insuranceCost;
+
+    const foundInstalment = repaymentSchedule.monthlyInstalments.find(
+      (i) => i.instalmentId === instalment.instalmentId - 1,
+    );
+
+    if (!foundInstalment) return null;
+
+    return (0.026 / 100) * foundInstalment.remainingBalance;
+  }
+
+  export function getCalculatedPrincipalAmount(
+    repaymentSchedule: RepaymentSchedule,
+    instalment: Instalment,
+  ) {
+    if (instalment.instalmentId === 1) return instalment.principalAmount;
+
+    const firstInstalment = repaymentSchedule.monthlyInstalments[1];
+
+    return (
+      firstInstalment.totalInstalment -
+      firstInstalment.insuranceCost -
+      getCalculatedInterestAmount(repaymentSchedule, instalment)
     );
   }
 }

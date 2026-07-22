@@ -1,10 +1,16 @@
 <p-top-bar [hasModuleNavContent]="true" [hasFiltersContent]="true">
   <ng-container module-navigation>
-    <p-toggle-button-actions
-      [options]="['Overview', 'Detailed', 'Compare']"
-      [selected]="'Compare'"
-      (selectionChange)="onSelectionChange($event)"
-    />
+    <div class="d-flex align-items-center justify-content-center">
+      <p-toggle-button-actions
+        [options]="['Overview', 'Detailed', 'Compare']"
+        [selected]="'Compare'"
+        (selectionChange)="onSelectionChange($event)"
+      />
+      <p-foo-toggle
+        [toggle]="calculateRepaymentSchedules()"
+        (toggleChange)="onCalculateRepaymentSchedulesChanged($event)"
+      />
+    </div>
   </ng-container>
   <ng-container filter-content>
     <div class="pt-2">

@@ -15,6 +15,7 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
 import { LoanSimulatorBodyTableComponent } from './components/loan-simulator-body-table/loan-simulator-body-table.component';
 import { LoanSimulatorHeaderComponent } from './components/loan-simulator-header/loan-simulator-header.component';
 import { mapInstalementSimulation } from './utils/instalment-simulation.utils';
+import { FooToggleComponent } from 'src/app/shared/components/foo-toggle/foo-toggle.component';
 
 @Component({
   selector: 'p-loan-simulator',
@@ -26,6 +27,7 @@ import { mapInstalementSimulation } from './utils/instalment-simulation.utils';
     NumericInputComponent,
     TopBarComponent,
     ToggleButtonActionsComponent,
+    FooToggleComponent,
   ],
   templateUrl: './loan-simulator.component.html',
   styleUrls: ['./loan-simulator.component.scss'],
@@ -43,6 +45,9 @@ export class LoanSimulatorComponent {
 
   selectedRepaymentScheduleBase = toSignal(
     this.store.select(fromLoanSimulator.getSelectedRepaymentSchedule),
+  );
+  calculateRepaymentSchedules = toSignal(
+    this.store.select(fromLoan.getCalculateRepaymentSchedules),
   );
 
   monthlyAmountKey = 'LoanSimulator_MonthlyAmount';
@@ -74,9 +79,7 @@ export class LoanSimulatorComponent {
   }
 
   onDropdownSelected(value: string) {
-    this.store.dispatch(
-      LoanActions.selectedLoanChanged({ selected: value }),
-    );
+    this.store.dispatch(LoanActions.selectedLoanChanged({ selected: value }));
   }
 
   onMonthlyAmountChange(monthlyAmount: number) {
@@ -95,5 +98,15 @@ export class LoanSimulatorComponent {
         route: `/loan/${module.toLowerCase()}`,
       }),
     );
+  }
+
+  onCalculateRepaymentSchedulesChanged(state: boolean) {
+    this.store.dispatch(
+      LoanActions.calculateRepaymentSchedulesChanged({
+        calculateRepaymentSchedules: state,
+      }),
+    );
+
+    this.store.dispatch(LoanActions.loadRepaymentSchedules());
   }
 }

@@ -22,6 +22,7 @@ interface DetailedLoanState {
 }
 
 export interface LoanState {
+  calculateRepaymentSchedules: boolean;
   repaymentSchedules: RepaymentSchedule[];
 
   overview: OverviewLoanState;
@@ -30,6 +31,7 @@ export interface LoanState {
 }
 
 const initialState: LoanState = {
+  calculateRepaymentSchedules: false,
   repaymentSchedules: [],
 
   overview: {
@@ -46,6 +48,13 @@ const initialState: LoanState = {
 
 const loanReducer = createReducer(
   initialState,
+  on(
+    LoanActions.calculateRepaymentSchedulesChanged,
+    (state, { calculateRepaymentSchedules }) => ({
+      ...state,
+      calculateRepaymentSchedules,
+    }),
+  ),
   on(LoanActions.setLoansSuccess, (state, { repaymentSchedules }) => ({
     ...state,
     repaymentSchedules,
@@ -108,6 +117,11 @@ export function reducer(state: LoanState, action: Action) {
 }
 
 export const getLoanState = createFeatureSelector<LoanState>('LoanState');
+
+export const getCalculateRepaymentSchedules = createSelector(
+  getLoanState,
+  (state) => state.calculateRepaymentSchedules,
+);
 
 export const getRepaymentSchedules = createSelector(
   getLoanState,

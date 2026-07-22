@@ -11,6 +11,8 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
 import { DropdownSelectComponent } from 'src/app/shared/components/dropdown-select/dropdown-select.component';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 
+import * as LoanActions from 'src/app/modules/loan/actions/loan.actions';
+import { FooToggleComponent } from 'src/app/shared/components/foo-toggle/foo-toggle.component';
 import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-button-actions/toggle-button-actions.component';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
@@ -26,6 +28,7 @@ import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.ch
     LoanCompareBodyComponent,
     TopBarComponent,
     ToggleButtonActionsComponent,
+    FooToggleComponent,
   ],
   templateUrl: './loan-compare.component.html',
   styleUrls: ['./loan-compare.component.scss'],
@@ -35,21 +38,17 @@ export class LoanCompareComponent {
     this.store.select(fromLoan.getRepaymentSchedules),
     { initialValue: [] },
   );
-
   baseRepaymentSchedule = toSignal(
     this.store.select(fromLoan.getBaseRepaymentSchedule),
   );
-
   selectedLeftValue = toSignal(
-    this.store.select(
-      fromLoanCompare.getLeftSelectedRepaymentScheduleName,
-    ),
+    this.store.select(fromLoanCompare.getLeftSelectedRepaymentScheduleName),
   );
-
   selectedRightValue = toSignal(
-    this.store.select(
-      fromLoanCompare.getRightSelectedRepaymentScheduleName,
-    ),
+    this.store.select(fromLoanCompare.getRightSelectedRepaymentScheduleName),
+  );
+  calculateRepaymentSchedules = toSignal(
+    this.store.select(fromLoan.getCalculateRepaymentSchedules),
   );
 
   repaymentSchedulesOptions = computed(() => {
@@ -145,5 +144,15 @@ export class LoanCompareComponent {
         route: `/loan/${module.toLowerCase()}`,
       }),
     );
+  }
+
+  onCalculateRepaymentSchedulesChanged(state: boolean) {
+    this.store.dispatch(
+      LoanActions.calculateRepaymentSchedulesChanged({
+        calculateRepaymentSchedules: state,
+      }),
+    );
+
+    this.store.dispatch(LoanActions.loadRepaymentSchedules());
   }
 }

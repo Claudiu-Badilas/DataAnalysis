@@ -1,6 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { RepaymentSchedule } from '../models/loan.model';
 
+export const calculateRepaymentSchedulesChanged = createAction(
+  '[Loan] Calculate Repayment Schedules Changed',
+  props<{ calculateRepaymentSchedules: boolean }>(),
+);
+
 export const loadRepaymentSchedules = createAction(
   '[Loan] Load Repayment Schedule',
 );
