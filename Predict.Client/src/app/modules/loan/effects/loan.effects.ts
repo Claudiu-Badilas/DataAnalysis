@@ -30,7 +30,7 @@ export class LoanEffects {
           if (calculateRepaymentSchedules) {
             loan.monthlyInstalments.forEach((instalment) =>
               instalment.calculateInstamlment(
-                base.monthlyInstalments[5 * 12].paymentDate,
+                base.monthlyInstalments[5 * 12 - 1].paymentDate,
                 loan,
               ),
             );
