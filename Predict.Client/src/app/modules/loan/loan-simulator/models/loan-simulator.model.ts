@@ -15,6 +15,7 @@ export type LoanSimulatorInstalment = {
   instalmentPayment: boolean;
   earlyPayment: boolean;
   disabled: boolean;
+  recalculated: boolean;
 };
 
 export type LoanSimulatorRepaymentSchedule = {

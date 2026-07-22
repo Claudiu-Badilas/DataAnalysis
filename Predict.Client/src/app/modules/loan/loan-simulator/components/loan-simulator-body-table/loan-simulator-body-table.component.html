@@ -139,7 +139,8 @@
                   disabled: !group.completed && row.disabled,
                 }"
               >
-                {{ row.principalAmount | numberFormat: "0.00" }}
+                {{ row.principalAmount | numberFormat: "0.00"
+                }}{{ row.recalculated ? "*" : "" }}
               </td>
               <td
                 class="text-center"
@@ -149,7 +150,8 @@
                   disabled: !group.completed && row.disabled,
                 }"
               >
-                {{ row.interestAmount | numberFormat: "0.00" }}
+                {{ row.interestAmount | numberFormat: "0.00"
+                }}{{ row.recalculated ? "*" : "" }}
               </td>
 
               <td
@@ -160,7 +162,8 @@
                   disabled: !group.completed && row.disabled,
                 }"
               >
-                {{ row.insuranceCost | numberFormat: "0.00" }}
+                {{ row.insuranceCost | numberFormat: "0.00"
+                }}{{ row.recalculated ? "*" : "" }}
               </td>
 
               <td
@@ -306,7 +309,8 @@
                   <div class="mobile-item-col">
                     <span class="item-label">Credit</span>
                     <span class="item-value principal-value"
-                      >{{ row.principalAmount | numberFormat: "0.00" }}
+                      >{{ row.principalAmount | numberFormat: "0.00"
+                      }}{{ row.recalculated ? "*" : "" }}
                     </span>
                   </div>
                   <div class="mobile-item-col">
@@ -321,7 +325,8 @@
                       class="item-value interest-value"
                       [class.strike]="row.earlyPayment"
                     >
-                      {{ row.interestAmount | numberFormat: "0.00" }}
+                      {{ row.interestAmount | numberFormat: "0.00"
+                      }}{{ row.recalculated ? "*" : "" }}
                     </span>
                   </div>
                   <div class="mobile-item-col">
@@ -330,7 +335,8 @@
                       class="item-value interest-value"
                       [class.strike]="row.earlyPayment"
                     >
-                      {{ row.insuranceCost | numberFormat: "0.00" }}
+                      {{ row.insuranceCost | numberFormat: "0.00"
+                      }}{{ row.recalculated ? "*" : "" }}
                     </span>
                   </div>
                   <div class="mobile-item-col">
@@ -390,19 +396,22 @@
                 <div class="mobile-item-col">
                   <span class="item-label">Credit</span>
                   <span class="item-value principal-value"
-                    >{{ row.principalAmount | numberFormat: "0.00" }}
+                    >{{ row.principalAmount | numberFormat: "0.00"
+                    }}{{ row.recalculated ? "*" : "" }}
                   </span>
                 </div>
                 <div class="mobile-item-col">
                   <span class="item-label">Dobândă</span>
                   <span class="item-value interest-value">
-                    {{ row.interestAmount | numberFormat: "0.00" }}
+                    {{ row.interestAmount | numberFormat: "0.00"
+                    }}{{ row.recalculated ? "*" : "" }}
                   </span>
                 </div>
                 <div class="mobile-item-col">
                   <span class="item-label">Asig.</span>
                   <span class="item-value interest-value">
-                    {{ row.insuranceCost | numberFormat: "0.00" }}
+                    {{ row.insuranceCost | numberFormat: "0.00"
+                    }}{{ row.recalculated ? "*" : "" }}
                   </span>
                 </div>
                 <div class="mobile-item-col">

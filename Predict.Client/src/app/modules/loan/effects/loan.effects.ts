@@ -25,10 +25,14 @@ export class LoanEffects {
         this.store.select(fromLoan.getCalculateRepaymentSchedules),
       ),
       switchMap(([loans, calculateRepaymentSchedules]) => {
+        const base = loans.find((loan) => loan.isBasePayment);
         const repaymentSchedules = loans.map((loan) => {
           if (calculateRepaymentSchedules) {
             loan.monthlyInstalments.forEach((instalment) =>
-              instalment.calculateInstamlment(loan),
+              instalment.calculateInstamlment(
+                base.monthlyInstalments[5 * 12].paymentDate,
+                loan,
+              ),
             );
           }
           return loan;

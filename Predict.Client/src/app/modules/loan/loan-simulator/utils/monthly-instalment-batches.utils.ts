@@ -73,6 +73,7 @@ function createOverviewBaseLoanInstalments(
         instalmentPayment: hasInstalmentPayment,
         earlyPayment: hasEarlyPayment,
         disabled: false,
+        recalculated: instalment.recalculated,
       } as LoanSimulatorInstalment;
     })
     .map((instalment, i, arr) => {

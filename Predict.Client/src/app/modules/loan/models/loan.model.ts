@@ -1,4 +1,5 @@
 import { DateUtils } from 'src/app/shared/utils/date.utils';
+import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
 
 export type InstalmentDto = {
   instalmentId: number;
@@ -34,17 +35,27 @@ export class Instalment {
   totalInstalment: number;
   remainingBalance: number;
 
+  recalculated: boolean;
+
   constructor(res: InstalmentDto) {
     Object.assign(this, res);
-
     this.paymentDate = DateUtils.fromSplittedStringToJsDate(res.paymentDate);
+
+    this.recalculated = false;
   }
 
-  calculateInstamlment(repaymentSchedule: RepaymentSchedule) {
+  calculateInstamlment(
+    flexibleInterestDate: Date,
+    repaymentSchedule: RepaymentSchedule,
+  ) {
+    if (JsDateUtils.isSameOrBefore(this.paymentDate, flexibleInterestDate))
+      return;
+
     this.interestAmount = LoanRecalcualtionUtils.getCalculatedInterestAmount(
       repaymentSchedule,
       this,
     );
+
     this.insuranceCost = LoanRecalcualtionUtils.getCalculatedInsuranceCost(
       repaymentSchedule,
       this,
@@ -53,6 +64,7 @@ export class Instalment {
       repaymentSchedule,
       this,
     );
+    this.recalculated = true;
   }
 }
 
