@@ -30,13 +30,11 @@ export class LoanEffects {
         const variableInterestStartDate =
           base.monthlyInstalments[5 * 12 - 1].paymentDate;
 
-        const repaymentSchedules = loans.map((loan) => {
+        const repaymentSchedules = loans.map((schedule) => {
           if (calculateRepaymentSchedules) {
-            loan.monthlyInstalments.forEach((instalment) =>
-              instalment.calculateInstamlment(variableInterestStartDate, loan),
-            );
+            schedule.recalculateFixedRate(variableInterestStartDate);
           }
-          return loan;
+          return schedule;
         });
 
         return [

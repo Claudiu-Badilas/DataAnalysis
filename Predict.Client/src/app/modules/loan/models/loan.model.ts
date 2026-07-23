@@ -44,26 +44,38 @@ export class Instalment {
     this.recalculated = false;
   }
 
-  calculateInstamlment(
-    variableInterestStartDate: Date,
-    repaymentSchedule: RepaymentSchedule,
-  ) {
-    if (JsDateUtils.isSameOrBefore(this.paymentDate, variableInterestStartDate))
-      return;
-
-    this.interestAmount = LoanRecalcualtionUtils.getCalculatedInterestAmount(
-      repaymentSchedule,
-      this,
+  calculateInstalment(prevInstalment: Instalment, fixedMonthlyPayment: number) {
+    this.interestAmount = LoanRecalcualtionUtils.round(
+      LoanRecalcualtionUtils.getCalculatedInterestAmount(prevInstalment),
     );
 
-    this.insuranceCost = LoanRecalcualtionUtils.getCalculatedInsuranceCost(
-      repaymentSchedule,
-      this,
+    this.insuranceCost = LoanRecalcualtionUtils.round(
+      LoanRecalcualtionUtils.getCalculatedInsuranceCost(prevInstalment),
     );
-    this.principalAmount = LoanRecalcualtionUtils.getCalculatedPrincipalAmount(
-      repaymentSchedule,
-      this,
+
+    this.totalInstalment = LoanRecalcualtionUtils.round(fixedMonthlyPayment);
+
+    this.principalAmount = LoanRecalcualtionUtils.round(
+      LoanRecalcualtionUtils.getCalculatedPrincipalAmount(
+        this.totalInstalment,
+        this.interestAmount,
+        this.insuranceCost,
+      ),
     );
+
+    this.remainingBalance = LoanRecalcualtionUtils.round(
+      prevInstalment.remainingBalance - this.principalAmount,
+    );
+
+    if (this.remainingBalance < 0) {
+      this.principalAmount += this.remainingBalance;
+      this.remainingBalance = 0;
+
+      this.totalInstalment = LoanRecalcualtionUtils.round(
+        this.principalAmount + this.interestAmount + this.insuranceCost,
+      );
+    }
+
     this.recalculated = true;
   }
 }
@@ -91,66 +103,71 @@ export class RepaymentSchedule {
       return instalment;
     });
   }
+
+  recalculateFixedRate(
+    variableInterestStartDate: Date,
+    annualInterest = LoanRecalcualtionUtils.ANNUAL_INTEREST,
+  ) {
+    const startIndex = this.monthlyInstalments.findIndex((i) =>
+      JsDateUtils.isAfter(i.paymentDate, variableInterestStartDate),
+    );
+
+    if (startIndex <= 0) {
+      return;
+    }
+
+    const remainingMonths = this.monthlyInstalments.length - startIndex;
+
+    const previous = this.monthlyInstalments[startIndex - 1];
+
+    const fixedPayment = LoanRecalcualtionUtils.calculateFixedMonthlyPayment(
+      previous.remainingBalance,
+      annualInterest,
+      remainingMonths,
+    );
+
+    for (let i = startIndex; i < this.monthlyInstalments.length; i++) {
+      this.monthlyInstalments[i].calculateInstalment(
+        this.monthlyInstalments[i - 1],
+        fixedPayment,
+      );
+    }
+  }
 }
 
-/**
- *  if (loadDefault) {
-        instalment.interestAmount = LoanUtils.getCalculatedInterestAmount(
-          loan,
-          instalment,
-        );
-        instalment.insuranceCost = LoanUtils.getCalculatedInsuranceCost(
-          loan,
-          instalment,
-        );
-        instalment.principalAmount = LoanUtils.getCalculatedPrincipalAmount(
-          loan,
-          instalment,
-        );
-      }
- */
-
 export namespace LoanRecalcualtionUtils {
-  export function getCalculatedInterestAmount(
-    repaymentSchedule: RepaymentSchedule,
-    instalment: Instalment,
-  ) {
-    if (instalment.instalmentId === 1) return instalment.interestAmount;
+  export const ANNUAL_INTEREST = 5.79;
 
-    const foundInstalment = repaymentSchedule.monthlyInstalments.find(
-      (i) => i.instalmentId === instalment.instalmentId - 1,
+  export function calculateFixedMonthlyPayment(
+    balance: number,
+    annualInterest: number,
+    months: number,
+  ): number {
+    const monthlyRate = annualInterest / 100 / 12;
+
+    return (
+      (balance * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+      (Math.pow(1 + monthlyRate, months) - 1)
     );
-    if (!foundInstalment) return null;
-    return (foundInstalment.remainingBalance * 5.79) / 100 / 12;
   }
 
-  export function getCalculatedInsuranceCost(
-    repaymentSchedule: RepaymentSchedule,
-    instalment: Instalment,
-  ) {
-    if (instalment.instalmentId === 1) return instalment.insuranceCost;
+  export function getCalculatedInterestAmount(prevInstalment: Instalment) {
+    return (prevInstalment.remainingBalance * ANNUAL_INTEREST) / 100 / 12;
+  }
 
-    const foundInstalment = repaymentSchedule.monthlyInstalments.find(
-      (i) => i.instalmentId === instalment.instalmentId - 1,
-    );
-
-    if (!foundInstalment) return null;
-
-    return (0.026 / 100) * foundInstalment.remainingBalance;
+  export function getCalculatedInsuranceCost(prevInstalment: Instalment) {
+    return (prevInstalment.remainingBalance * 0.026) / 100;
   }
 
   export function getCalculatedPrincipalAmount(
-    repaymentSchedule: RepaymentSchedule,
-    instalment: Instalment,
+    fixedPayment: number,
+    interest: number,
+    insurance: number,
   ) {
-    if (instalment.instalmentId === 1) return instalment.principalAmount;
+    return fixedPayment - interest - insurance;
+  }
 
-    const firstInstalment = repaymentSchedule.monthlyInstalments[1];
-
-    return (
-      firstInstalment.totalInstalment -
-      firstInstalment.insuranceCost -
-      getCalculatedInterestAmount(repaymentSchedule, instalment)
-    );
+  export function round(value: number) {
+    return Math.round(value * 100) / 100;
   }
 }
