@@ -1,4 +1,4 @@
-<header class="topbar">
+<header class="topbar" #topbarRef>
   <div class="topbar__inner">
     <div class="brand">
       <img src="assets/icons/logo.svg" alt="no-image" />
@@ -9,10 +9,16 @@
       <ng-content select="[module-navigation]"></ng-content>
     </div>
 
-    <!-- Filter Button - Desktop -->
+    <!-- Filter Button - Desktop only -->
     @if (hasFiltersContent) {
-      <button type="button" class="actions__link" (click)="openFilterPanel()">
+      <button
+        type="button"
+        class="actions__link filter-btn filter-btn--desktop"
+        [class.active]="isFilterPanelOpen"
+        (click)="toggleFilterPanel()"
+      >
         <img src="assets/icons/filter.svg" alt="filter" />
+        <span class="action-label">Filter</span>
       </button>
     }
 
@@ -55,56 +61,48 @@
       </button>
     </div>
   </div>
-</header>
 
-<!-- Dropdown Menu - Moved OUTSIDE topbar -->
-<div class="dropdown-menu" *ngIf="hasModuleNavContent && isMenuOpen">
-  <div class="dropdown-header">
-    <span class="dropdown-title">Menu</span>
-    <button class="close-btn" (click)="closeMenu()">✕</button>
-  </div>
-  <div class="dropdown-items">
-    @for (option of modules; track option) {
-      <button
-        class="dropdown-item"
-        [class.active]="isActiveRoute(option.url)"
-        (click)="onNavigateTo(option.url); closeMenu()"
-      >
-        <img [src]="'assets/icons/' + option.icon + '.svg'" />
-        <span>{{ option.label }}</span>
-      </button>
-    }
-    <!-- Filter option inside burger menu dropdown - only shown when there are filters -->
-    @if (hasFiltersContent) {
-      <button class="dropdown-item" (click)="openFilterPanel(); closeMenu()">
-        <img src="assets/icons/filter.svg" alt="filter" />
-        <span>Filter</span>
-      </button>
-    }
-  </div>
-</div>
-
-<!-- Filter Panel - Moved OUTSIDE topbar -->
-@if (hasFiltersContent) {
-  <div class="filter-panel" [class.open]="isFilterPanelOpen">
-    <div class="filter-panel__header">
-      <span class="filter-panel__title">Filters</span>
-      <button class="filter-panel__close" (click)="closeFilterPanel()">
-        ✕
-      </button>
-    </div>
-    <div class="filter-panel__content">
-      <ng-content select="[filter-content]"></ng-content>
-    </div>
-  </div>
-}
-
-<!-- Overlays - Moved OUTSIDE topbar -->
-<div class="menu-overlay" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
-@if (hasFiltersContent) {
+  <!-- Extended Menu - Single row with icons below top bar -->
   <div
-    class="filter-overlay"
-    *ngIf="isFilterPanelOpen"
-    (click)="closeFilterPanel()"
-  ></div>
-}
+    class="mobile-extended-menu"
+    *ngIf="hasModuleNavContent && isMenuOpen"
+    #mobileMenuRef
+  >
+    <div class="mobile-extended-menu__items">
+      @for (option of modules; track option) {
+        <button
+          class="mobile-extended-menu__item"
+          [class.active]="isActiveRoute(option.url)"
+          (click)="onNavigateTo(option.url); closeMenu()"
+        >
+          <img [src]="'assets/icons/' + option.icon + '.svg'" />
+          <span class="mobile-extended-menu__label">{{ option.label }}</span>
+        </button>
+      }
+      <!-- Filter option inside extended menu - only shown when there are filters -->
+      @if (hasFiltersContent) {
+        <button
+          class="mobile-extended-menu__item"
+          (click)="toggleFilterPanel(); closeMenu()"
+        >
+          <img src="assets/icons/filter.svg" alt="filter" />
+          <span class="mobile-extended-menu__label">Filter</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Filter Panel - Extends from top bar -->
+  @if (hasFiltersContent) {
+    <div
+      class="filter-panel"
+      [class.open]="isFilterPanelOpen"
+      [class.animating]="isAnimating"
+      #filterPanelRef
+    >
+      <div class="filter-panel__content">
+        <ng-content select="[filter-content]"></ng-content>
+      </div>
+    </div>
+  }
+</header>
