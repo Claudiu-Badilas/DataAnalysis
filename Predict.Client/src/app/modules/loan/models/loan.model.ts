@@ -63,19 +63,6 @@ export class Instalment {
       ),
     );
 
-    this.remainingBalance = LoanRecalcualtionUtils.round(
-      prevInstalment.remainingBalance - this.principalAmount,
-    );
-
-    if (this.remainingBalance < 0) {
-      this.principalAmount += this.remainingBalance;
-      this.remainingBalance = 0;
-
-      this.totalInstalment = LoanRecalcualtionUtils.round(
-        this.principalAmount + this.interestAmount + this.insuranceCost,
-      );
-    }
-
     this.recalculated = true;
   }
 }
@@ -104,32 +91,21 @@ export class RepaymentSchedule {
     });
   }
 
-  recalculateFixedRate(
-    variableInterestStartDate: Date,
-    annualInterest = LoanRecalcualtionUtils.ANNUAL_INTEREST,
-  ) {
+  recalculateFixedRate(variableInterestStartDate: Date) {
     const startIndex = this.monthlyInstalments.findIndex((i) =>
       JsDateUtils.isAfter(i.paymentDate, variableInterestStartDate),
     );
 
-    if (startIndex <= 0) {
-      return;
-    }
+    if (startIndex <= 0) return;
 
-    const remainingMonths = this.monthlyInstalments.length - startIndex;
-
-    const previous = this.monthlyInstalments[startIndex - 1];
-
-    const fixedPayment = LoanRecalcualtionUtils.calculateFixedMonthlyPayment(
-      previous.remainingBalance,
-      annualInterest,
-      remainingMonths,
+    const previous = this.monthlyInstalments.find((i) =>
+      JsDateUtils.isSame(i.paymentDate, variableInterestStartDate),
     );
 
     for (let i = startIndex; i < this.monthlyInstalments.length; i++) {
       this.monthlyInstalments[i].calculateInstalment(
         this.monthlyInstalments[i - 1],
-        fixedPayment,
+        previous.totalInstalment,
       );
     }
   }
@@ -137,19 +113,6 @@ export class RepaymentSchedule {
 
 export namespace LoanRecalcualtionUtils {
   export const ANNUAL_INTEREST = 5.79;
-
-  export function calculateFixedMonthlyPayment(
-    balance: number,
-    annualInterest: number,
-    months: number,
-  ): number {
-    const monthlyRate = annualInterest / 100 / 12;
-
-    return (
-      (balance * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-      (Math.pow(1 + monthlyRate, months) - 1)
-    );
-  }
 
   export function getCalculatedInterestAmount(prevInstalment: Instalment) {
     return (prevInstalment.remainingBalance * ANNUAL_INTEREST) / 100 / 12;

@@ -217,8 +217,7 @@
                   disabled: !group.completed && row.disabled,
                 }"
               >
-                {{ row.remainingBalance | numberFormat: "0.00"
-                }}{{ row.recalculated ? "*" : "" }}
+                {{ row.remainingBalance | numberFormat: "0.00" }}
               </td>
             </tr>
           }
@@ -428,8 +427,7 @@
                 <div class="mobile-item-col">
                   <span class="item-label">Sold</span>
                   <span class="item-value remaining-value">
-                    {{ row.remainingBalance | numberFormat: "0.00"
-                    }}{{ row.recalculated ? "*" : "" }}
+                    {{ row.remainingBalance | numberFormat: "0.00" }}
                   </span>
                 </div>
               </div>
