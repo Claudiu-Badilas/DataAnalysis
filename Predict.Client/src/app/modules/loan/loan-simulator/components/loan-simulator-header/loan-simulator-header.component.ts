@@ -18,10 +18,16 @@ export class LoanSimulatorHeaderComponent {
   completedPayments = computed(() =>
     this.monthlyInstalmentGroups().filter((r) => r.completed),
   );
+  incompletedPayments = computed(() =>
+    this.monthlyInstalmentGroups().filter((r) => !r.completed),
+  );
 
   simulatedPeriod = computed(() => {
-    const years = Math.floor(this.completedPayments().length / 12);
-    const months = this.completedPayments().length % 12;
+    const completedPayments = Math.floor(this.completedPayments().length);
+    const incompletedPayments = Math.floor(this.incompletedPayments().length);
+    const totalPyments = completedPayments + incompletedPayments;
+    const years = Math.floor(totalPyments / 12);
+    const months = totalPyments % 12;
     if (years <= 0) return `${months}m`;
     return `${years}y ${months}m`;
   });
