@@ -51,20 +51,8 @@ export namespace CompareRatesTrendChartUtils {
 
     return {
       title: { text: null, align: 'left' },
-      chart: {
-        zooming: { type: 'x' },
-        style: {
-          fontFamily: 'Arial, sans-serif',
-        },
-      },
-      xAxis: {
-        type: 'datetime',
-        labels: {
-          formatter: function () {
-            return Highcharts.dateFormat('%b %Y', this.value as number);
-          },
-        },
-      },
+      chart: { zooming: { type: 'x' } },
+      xAxis: { type: 'datetime' },
       yAxis: {
         title: { text: null },
         labels: {
@@ -77,16 +65,7 @@ export namespace CompareRatesTrendChartUtils {
           },
         },
       },
-      plotOptions: {
-        series: {
-          marker: { enabled: false },
-          events: {
-            mouseOver: function () {
-              // Trigger tooltip update
-            },
-          },
-        },
-      },
+      plotOptions: { series: { marker: { enabled: false } } },
       tooltip: {
         shared: true,
         useHTML: true,
@@ -106,25 +85,23 @@ export namespace CompareRatesTrendChartUtils {
           );
 
           let tooltipHtml = `
-      <div style="padding: 8px 0; min-width: 250px;">
-        <b style="font-size: 14px;"> Date: ${date}</b>
-        <hr style="border: 1px solid #ddd; margin: 8px 0;" />
+      <div  >
+        <b style="font-size: 11px;"> Date: ${date}</b>
     `;
 
           // === PRINCIPAL AREA ===
           if (principalPoints.length > 0) {
             tooltipHtml += `
         <div style="margin: 6px 0; padding: 8px; background: #f0f7fa; border-radius: 6px; border-left: 4px solid #00838f;">
-          <strong style="font-size: 13px; color: #00838f;">Principal</strong>
-      `;
+       `;
 
             principalPoints.forEach((p: any) => {
               const sourceName = p.series.name.split(' – ')[0] || p.series.name;
               tooltipHtml += `
-          <div style="display: flex; justify-content: space-between; padding: 2px 0; margin-left: 8px;">
+          <div style="display: flex; justify-content: space-between;">
             <span>
               <span style="color:${p.series.color}; font-weight: bold;">●</span>
-              ${sourceName}:
+              Principal - ${sourceName}:
             </span>
             <span><b>${p.y.toFixed(2)}</b></span>
           </div>
@@ -138,16 +115,15 @@ export namespace CompareRatesTrendChartUtils {
           if (interestPoints.length > 0) {
             tooltipHtml += `
         <div style="margin: 6px 0; padding: 8px; background: #fcf4f4; border-radius: 6px; border-left: 4px solid #e91e63;">
-          <strong style="font-size: 13px; color: #e91e63;">Dobanda</strong>
-      `;
+       `;
 
             interestPoints.forEach((p: any) => {
               const sourceName = p.series.name.split(' – ')[0] || p.series.name;
               tooltipHtml += `
-          <div style="display: flex; justify-content: space-between; padding: 2px 0; margin-left: 8px;">
+          <div style="display: flex; justify-content: space-between;">
             <span>
               <span style="color:${p.series.color}; font-weight: bold;">─</span>
-              ${sourceName}:
+              Dobanda - ${sourceName}:
             </span>
             <span><b>${p.y.toFixed(2)}</b></span>
           </div>
@@ -161,15 +137,7 @@ export namespace CompareRatesTrendChartUtils {
           return tooltipHtml;
         },
       },
-      legend: {
-        enabled: true,
-        layout: 'horizontal',
-        align: 'center',
-        verticalAlign: 'bottom',
-        itemStyle: {
-          fontSize: '12px',
-        },
-      },
+      legend: { enabled: false },
       series,
     };
   }
