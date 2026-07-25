@@ -1,6 +1,7 @@
 import Highcharts from 'highcharts';
 import { Colors } from 'src/app/shared/styles/colors';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
+import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
 import { RepaymentSchedule } from '../../models/loan.model';
 
 export namespace CompareRatesTrendChartUtils {
@@ -13,6 +14,13 @@ export namespace CompareRatesTrendChartUtils {
       right ? [right, right.name, Colors.PINK_500] : null,
     ].filter(Boolean) as Array<[RepaymentSchedule, string, string]>;
 
+    const leftStatDate = left.monthlyInstalments[0].paymentDate;
+    const rightStatDate = right.monthlyInstalments[0].paymentDate;
+
+    const startDate = JsDateUtils.isAfter(leftStatDate, rightStatDate)
+      ? leftStatDate
+      : rightStatDate;
+
     const series: Highcharts.SeriesOptionsType[] = [];
 
     sources.forEach(([repaymentSchedule, name, color]) => {
@@ -21,13 +29,15 @@ export namespace CompareRatesTrendChartUtils {
         type: 'line',
         name: `${name} – Principal`,
         color,
-        data: repaymentSchedule.monthlyInstalments.map((r, index) => ({
-          x: r.paymentDate.getTime(),
-          y: Number(r.principalAmount.toFixed(2)),
-          date: DateUtils.fromJsDateToString(r.paymentDate),
-          instalment: index + 1,
-          totalInstalment: Number(r.totalInstalment.toFixed(2)),
-        })),
+        data: repaymentSchedule.monthlyInstalments
+          .filter((i) => JsDateUtils.isSameOrAfter(i.paymentDate, startDate))
+          .map((r, index) => ({
+            x: r.paymentDate.getTime(),
+            y: Number(r.principalAmount.toFixed(2)),
+            date: DateUtils.fromJsDateToString(r.paymentDate),
+            instalment: index + 1,
+            totalInstalment: Number(r.totalInstalment.toFixed(2)),
+          })),
       };
 
       // Interest series - dashed line
@@ -36,13 +46,15 @@ export namespace CompareRatesTrendChartUtils {
         name: `${name} – Dobanda`,
         color,
         dashStyle: 'ShortDash',
-        data: repaymentSchedule.monthlyInstalments.map((r, index) => ({
-          x: r.paymentDate.getTime(),
-          y: Number(r.interestAmount.toFixed(2)),
-          date: DateUtils.fromJsDateToString(r.paymentDate),
-          instalment: index + 1,
-          totalInstalment: Number(r.totalInstalment.toFixed(2)),
-        })),
+        data: repaymentSchedule.monthlyInstalments
+          .filter((i) => JsDateUtils.isSameOrAfter(i.paymentDate, startDate))
+          .map((r, index) => ({
+            x: r.paymentDate.getTime(),
+            y: Number(r.interestAmount.toFixed(2)),
+            date: DateUtils.fromJsDateToString(r.paymentDate),
+            instalment: index + 1,
+            totalInstalment: Number(r.totalInstalment.toFixed(2)),
+          })),
       };
 
       series.push(principalSeries);
