@@ -6,11 +6,6 @@
         [selected]="'Detailed'"
         (selectionChange)="onSelectionChange($event)"
       />
-
-      <p-foo-toggle
-        [toggle]="calculateRepaymentSchedules()"
-        (toggleChange)="onCalculateRepaymentSchedulesChanged($event)"
-      />
     </div>
   </ng-container>
   <ng-container filter-content>
@@ -20,6 +15,15 @@
       placeholder="No Selection"
       (selectionChange)="onDropdownSelected($event)"
     />
+    <div class="pt-2 d-flex align-items-center justify-content-between">
+      <div class="sidebar-label">Dobanda Fixa 5.79%</div>
+      <div>
+        <p-foo-toggle
+          [toggle]="calculateRepaymentSchedules()"
+          (toggleChange)="onCalculateRepaymentSchedulesChanged($event)"
+        />
+      </div>
+    </div>
   </ng-container>
 </p-top-bar>
 
