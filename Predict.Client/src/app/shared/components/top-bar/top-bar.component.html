@@ -14,11 +14,11 @@
       <button
         type="button"
         class="actions__link filter-btn filter-btn--desktop"
+        style="border: none"
         [class.active]="isFilterPanelOpen"
         (click)="toggleFilterPanel()"
       >
         <img src="assets/icons/filter.svg" alt="filter" />
-        <span class="action-label">Filter</span>
       </button>
     }
 
@@ -48,6 +48,18 @@
           <img [src]="'assets/icons/' + option.icon + '.svg'" />
         </button>
       }
+    </div>
+
+    <!-- Mobile Filter Button - Only shown when module-nav has content AND filters exist -->
+    <div class="mobile-filter" *ngIf="hasModuleNavContent && hasFiltersContent">
+      <button
+        type="button"
+        class="filter-btn filter-btn--mobile"
+        [class.active]="isFilterPanelOpen"
+        (click)="toggleFilterPanel()"
+      >
+        <img src="assets/icons/filter.svg" alt="filter" />
+      </button>
     </div>
 
     <!-- Burger Menu - Only shown when module-nav has content AND on mobile -->
@@ -102,6 +114,10 @@
     >
       <div class="filter-panel__content">
         <ng-content select="[filter-content]"></ng-content>
+      </div>
+      <!-- Double arrow to close filter panel -->
+      <div class="filter-panel__close-btn" (click)="closeFilterPanel()">
+        <img src="assets/icons/double-arrows.svg" alt="" />
       </div>
     </div>
   }
