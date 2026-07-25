@@ -54,7 +54,7 @@ export class LoanSimulatorComponent {
   paymentsKey = 'LoanSimulator_Payments';
 
   monthlyAmount = signal<number>(
-    this._localStorageService.getItem(this.monthlyAmountKey) ?? 3500,
+    this._localStorageService.getItem(this.monthlyAmountKey) ?? 3750,
   );
   payments = signal<number>(
     this._localStorageService.getItem(this.paymentsKey) ?? 1,

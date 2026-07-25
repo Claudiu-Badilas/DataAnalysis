@@ -60,7 +60,9 @@
           <span class="stat-item__value">
             {{ paidMonthlyInstalments() | numberFormat: "0" : 0 }}
             /
-            {{ monthlyInstalments() | numberFormat: "0" : 0 }}
+            {{ monthlyInstalments() | numberFormat: "0" : 0 }} ({{
+              simulatedPeriod()
+            }})
           </span>
         </div>
 
@@ -89,7 +91,9 @@
           <span class="stat-item__value">
             {{ paidMonthlyInstalments() | numberFormat: "0" : 0 }}
             /
-            {{ monthlyInstalments() | numberFormat: "0" : 0 }}
+            {{ monthlyInstalments() | numberFormat: "0" : 0 }} ({{
+              simulatedPeriod()
+            }})
           </span>
         </div>
 

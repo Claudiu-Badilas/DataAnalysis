@@ -15,20 +15,25 @@ import { MonthlyInstalmentManager } from '../../models/loan-simulator.model';
 export class LoanSimulatorHeaderComponent {
   monthlyInstalmentGroups = input.required<MonthlyInstalmentManager[]>();
 
-  overviewLoanInstalments = computed(() =>
-    this.monthlyInstalmentGroups()
+  completedPayments = computed(() =>
+    this.monthlyInstalmentGroups().filter((r) => r.completed),
+  );
+
+  simulatedPeriod = computed(() => {
+    const years = Math.floor(this.completedPayments().length / 12);
+    const months = this.completedPayments().length % 12;
+    if (years <= 0) return `${months}m`;
+    return `${years}y ${months}m`;
+  });
+
+  payments = computed(() =>
+    this.completedPayments()
       .flatMap((r) => r.instalments)
       .filter((r) => r.instalmentPayment || r.earlyPayment),
   );
 
-  payments = computed(() =>
-    this.overviewLoanInstalments().filter(
-      (r) => r.instalmentPayment || r.earlyPayment,
-    ),
-  );
-
   instalmentPayments = computed(() =>
-    this.overviewLoanInstalments().filter((r) => r.instalmentPayment),
+    this.payments().filter((r) => r.instalmentPayment),
   );
 
   totalInstalmentPayments = computed(() =>
@@ -45,9 +50,7 @@ export class LoanSimulatorHeaderComponent {
     Calculator.sum(this.payments().map((a) => a.principalAmount)),
   );
 
-  earlyPayments = computed(() =>
-    this.overviewLoanInstalments().filter((r) => r.earlyPayment),
-  );
+  earlyPayments = computed(() => this.payments().filter((r) => r.earlyPayment));
 
   lastEarlyPayment = computed(() => this.earlyPayments().at(-1));
 
@@ -74,7 +77,7 @@ export class LoanSimulatorHeaderComponent {
   );
 
   initialRemainingBalance = computed(() => {
-    const firstInstalment = this.overviewLoanInstalments()[0];
+    const firstInstalment = this.payments()[0];
     return Calculator.sum([
       firstInstalment?.remainingBalance,
       firstInstalment?.principalAmount,
