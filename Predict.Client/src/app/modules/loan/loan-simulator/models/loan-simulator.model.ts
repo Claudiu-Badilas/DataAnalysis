@@ -25,7 +25,7 @@ export type LoanSimulatorRepaymentSchedule = {
 
 export class MonthlyInstalmentManager {
   public completed: boolean = false;
-  public expanded: boolean = true;
+  public expanded: boolean = false;
   public id: number;
   public title: Date;
 

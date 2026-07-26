@@ -1,7 +1,7 @@
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { RepaymentSchedule } from '../../models/loan.model';
 import {
-  MonthlyInstalmentManager as MonthlyInstalmentBatch,
+  MonthlyInstalmentManager,
   LoanSimulatorInstalment,
 } from '../models/loan-simulator.model';
 import { DateStateManager } from './date-state-manager.service';
@@ -10,7 +10,7 @@ export function generateMonthlyInstalmentBatches(
   base: RepaymentSchedule | null,
   selectedInstalmentPayments: number[],
   selectedEarlyPayments: number[],
-): MonthlyInstalmentBatch[] {
+): MonthlyInstalmentManager[] {
   if (!base) return [];
 
   const overviewBaseLoanInstalments = createOverviewBaseLoanInstalments(
@@ -99,8 +99,8 @@ function createOverviewBaseLoanInstalments(
 
 function createMonthlyInstalmentBatches(
   overviewBaseLoanInstalments: LoanSimulatorInstalment[],
-): MonthlyInstalmentBatch[] {
-  const batches: MonthlyInstalmentBatch[] = [];
+): MonthlyInstalmentManager[] {
+  const batches: MonthlyInstalmentManager[] = [];
   let tempBatch: LoanSimulatorInstalment[] = [];
 
   overviewBaseLoanInstalments.forEach((current, index, array) => {
@@ -128,15 +128,18 @@ function createMonthlyInstalmentBatches(
 
     if (current.instalmentPayment || current.earlyPayment) {
       if (next && !next.earlyPayment) {
-        batches.push(new MonthlyInstalmentBatch(tempBatch));
+        batches.push(new MonthlyInstalmentManager(tempBatch));
         tempBatch = [];
       }
     }
     if ((!current.instalmentPayment && !current.earlyPayment) || !next) {
-      batches.push(new MonthlyInstalmentBatch(tempBatch));
+      batches.push(new MonthlyInstalmentManager(tempBatch));
       tempBatch = [];
     }
   });
 
-  return batches;
+  return batches.map((b, i) => {
+    b.expanded = i === 0;
+    return b;
+  });
 }
