@@ -68,9 +68,9 @@ interface PeriodGroup {
           @if (viewMode() === 'all') {
             <!-- All View -->
             <div class="view-all">
-              <!-- Chart Section -->
+              <!-- Chart Section - Hidden on mobile -->
               @if (selectedCategory() === null) {
-                <div class="chart-section">
+                <div class="chart-section desktop-only">
                   <p-highcharts-wrapper
                     class="chart-wrapper"
                     [chartOptions]="updateBarChart(selectedTransaction())"
@@ -81,14 +81,14 @@ interface PeriodGroup {
               <!-- Transactions List -->
               <div class="transactions-section">
                 <div class="section-header">
-                  <span class="section-title">Top Transactions</span>
+                  <span class="section-title">Top</span>
                   <span class="section-badge">{{
                     getAllGroupedTransactions().length
                   }}</span>
                 </div>
 
-                <!-- Desktop Grid -->
-                <div class="transactions-grid desktop-grid">
+                <!-- Transactions Grid -->
+                <div class="transactions-grid">
                   @for (
                     item of getAllGroupedTransactions();
                     track item.provider
@@ -102,7 +102,7 @@ interface PeriodGroup {
                           >
                             {{ item.provider }}
                           </span>
-                          <span class="tx-count">{{ item.count }}×</span>
+                          <span class="tx-count">{{ item.count }}</span>
                         </div>
                         <div
                           class="category-pill"
@@ -116,111 +116,34 @@ interface PeriodGroup {
                         <span class="date-text">{{
                           formatDay(item.latestDate)
                         }}</span>
-                        <span
-                          class="amount-text"
-                          [class.positive]="item.total > 0"
-                          [class.negative]="item.total < 0"
-                        >
-                          {{ item.total | numberFormat: '0.00' }}
-                        </span>
-                      </div>
-                      <div class="card-row progress-row">
-                        @if (item.total > 0 && totalIncome() > 0) {
-                          <div class="progress-bar">
-                            <div
-                              class="progress-fill income-fill"
-                              [style.width.%]="item.percentageOfIncome"
-                            ></div>
-                            <span class="progress-label"
-                              >{{
+                        <div class="amount-group">
+                          <span
+                            class="amount-text"
+                            [class.positive]="item.total > 0"
+                            [class.negative]="item.total < 0"
+                          >
+                            {{ item.total | numberFormat: '0.00' }}
+                          </span>
+                          @if (item.total > 0 && totalIncome() > 0) {
+                            <span class="percentage-badge income-badge">
+                              {{
                                 item.percentageOfIncome | numberFormat: '0.0'
-                              }}%</span
-                            >
-                          </div>
-                        } @else if (item.total < 0 && totalExpense() > 0) {
-                          <div class="progress-bar">
-                            <div
-                              class="progress-fill expense-fill"
-                              [style.width.%]="item.percentageOfExpense"
-                            ></div>
-                            <span class="progress-label"
-                              >{{
+                              }}%
+                            </span>
+                          } @else if (item.total < 0 && totalExpense() > 0) {
+                            <span class="percentage-badge expense-badge">
+                              {{
                                 item.percentageOfExpense | numberFormat: '0.0'
-                              }}%</span
-                            >
-                          </div>
-                        }
+                              }}%
+                            </span>
+                          }
+                        </div>
                       </div>
                     </div>
                   }
 
                   @if (!getAllGroupedTransactions().length) {
                     <div class="empty-state">No transactions</div>
-                  }
-                </div>
-
-                <!-- Mobile List -->
-                <div class="mobile-list">
-                  @for (
-                    item of getAllGroupedTransactions();
-                    track item.provider
-                  ) {
-                    <div class="mobile-item highlight-card">
-                      <div class="mobile-row">
-                        <span class="mobile-provider">{{ item.provider }}</span>
-                        <span class="mobile-count">{{ item.count }}×</span>
-                        <div
-                          class="category-chip"
-                          (click)="onSelectCategory(item.category)"
-                          [style.background]="getCategoryColor(item.category)"
-                        >
-                          {{ getCategoryLabel(item.category) }}
-                        </div>
-                      </div>
-                      <div class="mobile-row">
-                        <span class="mobile-date">{{
-                          formatDay(item.latestDate)
-                        }}</span>
-                        <span
-                          class="mobile-amount"
-                          [class.positive]="item.total > 0"
-                          [class.negative]="item.total < 0"
-                        >
-                          {{ item.total | numberFormat: '0.00' }}
-                        </span>
-                      </div>
-                      <div class="mobile-row progress-row">
-                        @if (item.total > 0 && totalIncome() > 0) {
-                          <div class="progress-bar">
-                            <div
-                              class="progress-fill income-fill"
-                              [style.width.%]="item.percentageOfIncome"
-                            ></div>
-                            <span class="progress-label"
-                              >{{
-                                item.percentageOfIncome | numberFormat: '0.0'
-                              }}%</span
-                            >
-                          </div>
-                        } @else if (item.total < 0 && totalExpense() > 0) {
-                          <div class="progress-bar">
-                            <div
-                              class="progress-fill expense-fill"
-                              [style.width.%]="item.percentageOfExpense"
-                            ></div>
-                            <span class="progress-label"
-                              >{{
-                                item.percentageOfExpense | numberFormat: '0.0'
-                              }}%</span
-                            >
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-
-                  @if (!getAllGroupedTransactions().length) {
-                    <div class="empty-mobile">No transactions</div>
                   }
                 </div>
               </div>
@@ -237,9 +160,9 @@ interface PeriodGroup {
                   <div class="period-header" (click)="togglePeriod(period)">
                     <div class="header-left">
                       <span class="header-title">{{ period.title }}</span>
-                      <span class="header-count"
-                        >{{ period.transactionCount }}tx</span
-                      >
+                      <span class="header-count">{{
+                        period.transactionCount
+                      }}</span>
                       @if (period.isSalaryPeriod) {
                         <span class="salary-tag">💰</span>
                       }
@@ -277,8 +200,9 @@ interface PeriodGroup {
                   <!-- Period Content -->
                   @if (period.isExpanded) {
                     <div class="period-content">
+                      <!-- Chart Section - Hidden on mobile -->
                       @if (selectedCategory() === null) {
-                        <div class="chart-section">
+                        <div class="chart-section compact-chart desktop-only">
                           <p-highcharts-wrapper
                             class="chart-wrapper"
                             [chartOptions]="updateBarChart(period.transactions)"
@@ -287,8 +211,8 @@ interface PeriodGroup {
                       }
 
                       <div class="transactions-section compact">
-                        <!-- Desktop Grid -->
-                        <div class="transactions-grid desktop-grid">
+                        <!-- Transactions Grid -->
+                        <div class="transactions-grid">
                           @for (item of period.multiple; track item.provider) {
                             <div class="transaction-card highlight-card">
                               <div class="card-row">
@@ -299,9 +223,7 @@ interface PeriodGroup {
                                   >
                                     {{ item.provider }}
                                   </span>
-                                  <span class="tx-count"
-                                    >{{ item.count }}×</span
-                                  >
+                                  <span class="tx-count">{{ item.count }}</span>
                                 </div>
                                 <div
                                   class="category-pill"
@@ -317,122 +239,42 @@ interface PeriodGroup {
                                 <span class="date-text">{{
                                   formatDay(item.latestDate)
                                 }}</span>
-                                <span
-                                  class="amount-text"
-                                  [class.positive]="item.total > 0"
-                                  [class.negative]="item.total < 0"
-                                >
-                                  {{ item.total | numberFormat: '0.00' }}
-                                </span>
-                              </div>
-                              <div class="card-row progress-row">
-                                @if (item.total > 0 && period.totalIncome > 0) {
-                                  <div class="progress-bar">
-                                    <div
-                                      class="progress-fill income-fill"
-                                      [style.width.%]="item.percentageOfIncome"
-                                    ></div>
-                                    <span class="progress-label"
-                                      >{{
+                                <div class="amount-group">
+                                  <span
+                                    class="amount-text"
+                                    [class.positive]="item.total > 0"
+                                    [class.negative]="item.total < 0"
+                                  >
+                                    {{ item.total | numberFormat: '0.00' }}
+                                  </span>
+                                  @if (
+                                    item.total > 0 && period.totalIncome > 0
+                                  ) {
+                                    <span class="percentage-badge income-badge">
+                                      {{
                                         item.percentageOfIncome
                                           | numberFormat: '0.0'
-                                      }}%</span
+                                      }}%
+                                    </span>
+                                  } @else if (
+                                    item.total < 0 && period.totalExpense > 0
+                                  ) {
+                                    <span
+                                      class="percentage-badge expense-badge"
                                     >
-                                  </div>
-                                } @else if (
-                                  item.total < 0 && period.totalExpense > 0
-                                ) {
-                                  <div class="progress-bar">
-                                    <div
-                                      class="progress-fill expense-fill"
-                                      [style.width.%]="item.percentageOfExpense"
-                                    ></div>
-                                    <span class="progress-label"
-                                      >{{
+                                      {{
                                         item.percentageOfExpense
                                           | numberFormat: '0.0'
-                                      }}%</span
-                                    >
-                                  </div>
-                                }
+                                      }}%
+                                    </span>
+                                  }
+                                </div>
                               </div>
                             </div>
                           }
 
                           @if (!period.multiple.length) {
                             <div class="empty-state">No transactions</div>
-                          }
-                        </div>
-
-                        <!-- Mobile List -->
-                        <div class="mobile-list">
-                          @for (item of period.multiple; track item.provider) {
-                            <div class="mobile-item highlight-card">
-                              <div class="mobile-row">
-                                <span class="mobile-provider">{{
-                                  item.provider
-                                }}</span>
-                                <span class="mobile-count"
-                                  >{{ item.count }}×</span
-                                >
-                                <div
-                                  class="category-chip"
-                                  (click)="onSelectCategory(item.category)"
-                                  [style.background]="
-                                    getCategoryColor(item.category)
-                                  "
-                                >
-                                  {{ getCategoryLabel(item.category) }}
-                                </div>
-                              </div>
-                              <div class="mobile-row">
-                                <span class="mobile-date">{{
-                                  formatDay(item.latestDate)
-                                }}</span>
-                                <span
-                                  class="mobile-amount"
-                                  [class.positive]="item.total > 0"
-                                  [class.negative]="item.total < 0"
-                                >
-                                  {{ item.total | numberFormat: '0.00' }}
-                                </span>
-                              </div>
-                              <div class="mobile-row progress-row">
-                                @if (item.total > 0 && period.totalIncome > 0) {
-                                  <div class="progress-bar">
-                                    <div
-                                      class="progress-fill income-fill"
-                                      [style.width.%]="item.percentageOfIncome"
-                                    ></div>
-                                    <span class="progress-label"
-                                      >{{
-                                        item.percentageOfIncome
-                                          | numberFormat: '0.0'
-                                      }}%</span
-                                    >
-                                  </div>
-                                } @else if (
-                                  item.total < 0 && period.totalExpense > 0
-                                ) {
-                                  <div class="progress-bar">
-                                    <div
-                                      class="progress-fill expense-fill"
-                                      [style.width.%]="item.percentageOfExpense"
-                                    ></div>
-                                    <span class="progress-label"
-                                      >{{
-                                        item.percentageOfExpense
-                                          | numberFormat: '0.0'
-                                      }}%</span
-                                    >
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          }
-
-                          @if (!period.multiple.length) {
-                            <div class="empty-mobile">No transactions</div>
                           }
                         </div>
                       </div>
@@ -442,7 +284,7 @@ interface PeriodGroup {
               }
 
               @if (!currentPeriods().length) {
-                <div class="empty-state-large">No data available</div>
+                <div class="empty-state-large">No data</div>
               }
             </div>
           }
@@ -498,11 +340,82 @@ interface PeriodGroup {
       padding: 6px 8px;
       margin-bottom: 6px;
       border: 1px solid #f0f2f5;
+      display: flex;
+      flex-direction: column;
     }
 
+    .chart-section.compact-chart {
+      padding: 4px 6px;
+      margin-bottom: 4px;
+    }
+
+    /* Hide chart on mobile */
+    .desktop-only {
+      display: block;
+    }
+
+    /* Chart wrapper */
     .chart-wrapper {
       width: 100%;
-      max-height: 220px;
+      height: 300px;
+      display: block;
+    }
+
+    .chart-wrapper ::ng-deep .highcharts-container {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Compact chart height */
+    .chart-section.compact-chart .chart-wrapper {
+      height: 240px;
+    }
+
+    /* ===== RESPONSIVE CHART HEIGHTS ===== */
+    @media (max-width: 1024px) {
+      .chart-wrapper {
+        height: 260px;
+      }
+      .chart-section.compact-chart .chart-wrapper {
+        height: 210px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      /* Hide chart on tablets and smaller */
+      .desktop-only {
+        display: none !important;
+      }
+
+      .chart-wrapper {
+        height: 220px;
+      }
+      .chart-section.compact-chart .chart-wrapper {
+        height: 180px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      /* Hide chart on mobile */
+      .desktop-only {
+        display: none !important;
+      }
+
+      .chart-wrapper {
+        height: 180px;
+      }
+      .chart-section.compact-chart .chart-wrapper {
+        height: 150px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .chart-wrapper {
+        height: 150px;
+      }
+      .chart-section.compact-chart .chart-wrapper {
+        height: 130px;
+      }
     }
 
     /* ===== TRANSACTIONS SECTION ===== */
@@ -529,32 +442,32 @@ interface PeriodGroup {
     }
 
     .section-title {
-      font-size: 0.7rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #1a1a2e;
     }
 
     .section-badge {
-      font-size: 0.55rem;
+      font-size: 0.7rem;
       font-weight: 500;
       color: #6b6b8d;
       background: #f0f2f5;
-      padding: 0 6px;
+      padding: 0 8px;
       border-radius: 8px;
-      line-height: 1.6;
+      line-height: 1.8;
     }
 
     /* ===== TRANSACTION CARDS ===== */
     .transactions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 4px;
     }
 
     .transaction-card {
       background: #fafbfc;
       border-radius: 6px;
-      padding: 4px 6px;
+      padding: 6px 8px;
       border: 1px solid #eef0f3;
       transition: all 0.15s ease;
     }
@@ -574,31 +487,26 @@ interface PeriodGroup {
       justify-content: space-between;
       align-items: center;
       gap: 4px;
-      padding: 1px 0;
+      padding: 2px 0;
     }
 
     .card-row.middle {
       border-top: 1px solid #eef0f3;
-      border-bottom: 1px solid #eef0f3;
-      padding: 2px 0;
-      margin: 1px 0;
-    }
-
-    .card-row.progress-row {
-      padding-top: 1px;
+      padding: 4px 0;
+      margin: 2px 0 0 0;
     }
 
     .provider-group {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       flex: 1;
       min-width: 0;
     }
 
     .provider-name {
       font-weight: 500;
-      font-size: 0.65rem;
+      font-size: 0.85rem;
       color: #1a1a2e;
       white-space: nowrap;
       overflow: hidden;
@@ -606,26 +514,26 @@ interface PeriodGroup {
     }
 
     .tx-count {
-      font-size: 0.5rem;
+      font-size: 0.6rem;
       color: #8b8baa;
       background: #eef0f3;
-      padding: 0 4px;
+      padding: 0 6px;
       border-radius: 6px;
       flex-shrink: 0;
-      line-height: 1.4;
+      line-height: 1.6;
     }
 
     .category-pill {
       flex-shrink: 0;
-      padding: 0 6px;
+      padding: 0 8px;
       border-radius: 8px;
       color: white;
-      font-size: 0.5rem;
+      font-size: 0.7rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s ease;
       user-select: none;
-      line-height: 1.6;
+      line-height: 1.8;
     }
 
     .category-pill:hover {
@@ -638,13 +546,20 @@ interface PeriodGroup {
     }
 
     .date-text {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       color: #6b6b8d;
       font-weight: 500;
     }
 
+    .amount-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .amount-text {
-      font-size: 0.7rem;
+      font-size: 0.95rem;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
@@ -656,122 +571,21 @@ interface PeriodGroup {
       color: #e74c5e;
     }
 
-    .progress-bar {
-      position: relative;
-      background: #eef0f3;
-      border-radius: 8px;
-      overflow: hidden;
-      height: 14px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    .progress-fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      border-radius: 8px;
-      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .income-fill {
-      background: linear-gradient(90deg, #6366f1, #0caa6c);
-    }
-    .expense-fill {
-      background: linear-gradient(90deg, #f97316, #e74c5e);
-    }
-
-    .progress-label {
-      position: relative;
-      z-index: 1;
-      font-size: 0.5rem;
+    .percentage-badge {
+      font-size: 0.6rem;
       font-weight: 600;
-      padding: 0 4px;
-      color: #1a1a2e;
-      width: 100%;
-      text-align: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
 
-    /* ===== MOBILE LIST ===== */
-    .mobile-list {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .mobile-item {
-      background: #fafbfc;
-      border-radius: 6px;
-      padding: 4px 6px;
-      border: 1px solid #eef0f3;
-    }
-
-    .mobile-item.highlight-card {
-      background: #fffbf0;
-      border-color: #fde68a;
-    }
-
-    .mobile-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 4px;
-      padding: 1px 0;
-    }
-
-    .mobile-row.progress-row {
-      padding-top: 1px;
-    }
-
-    .mobile-provider {
-      font-weight: 500;
-      font-size: 0.65rem;
-      color: #1a1a2e;
-      flex: 1;
-    }
-
-    .mobile-count {
-      font-size: 0.5rem;
-      color: #8b8baa;
-      background: #eef0f3;
-      padding: 0 4px;
-      border-radius: 6px;
-      line-height: 1.4;
-    }
-
-    .category-chip {
-      padding: 0 6px;
-      border-radius: 8px;
-      color: white;
-      font-size: 0.5rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      flex-shrink: 0;
-      line-height: 1.6;
-    }
-
-    .category-chip:active {
-      transform: scale(0.92);
-    }
-
-    .mobile-date {
-      font-size: 0.55rem;
-      color: #6b6b8d;
-    }
-
-    .mobile-amount {
-      font-size: 0.7rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .mobile-amount.positive {
+    .income-badge {
+      background: #ecfdf5;
       color: #0caa6c;
     }
-    .mobile-amount.negative {
+
+    .expense-badge {
+      background: #fef2f2;
       color: #e74c5e;
     }
 
@@ -794,11 +608,11 @@ interface PeriodGroup {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 8px;
+      padding: 6px 10px;
       cursor: pointer;
       transition: background 0.15s ease;
-      gap: 4px;
-      min-height: 32px;
+      gap: 6px;
+      min-height: 36px;
     }
 
     .period-header:hover {
@@ -808,46 +622,46 @@ interface PeriodGroup {
     .header-left {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       flex: 1;
       min-width: 0;
     }
 
     .header-title {
       font-weight: 600;
-      font-size: 0.7rem;
+      font-size: 0.95rem;
       color: #1a1a2e;
     }
 
     .header-count {
-      font-size: 0.5rem;
+      font-size: 0.7rem;
       color: #6b6b8d;
       background: #f0f2f5;
-      padding: 0 4px;
+      padding: 0 8px;
       border-radius: 6px;
-      line-height: 1.4;
+      line-height: 1.6;
     }
 
     .salary-tag {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
     .income-tag,
     .expense-tag,
     .diff-tag {
-      padding: 0 4px;
+      padding: 0 8px;
       border-radius: 4px;
-      font-size: 0.55rem;
+      font-size: 0.75rem;
       font-weight: 600;
       white-space: nowrap;
-      line-height: 1.6;
+      line-height: 1.8;
     }
 
     .income-tag {
@@ -863,7 +677,7 @@ interface PeriodGroup {
     .diff-tag {
       background: #f0f2f5;
       color: #6b6b8d;
-      min-width: 32px;
+      min-width: 40px;
       text-align: center;
     }
 
@@ -878,15 +692,15 @@ interface PeriodGroup {
     }
 
     .expand-icon {
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       color: #9ca3af;
       transition: transform 0.2s ease;
-      margin-left: 2px;
+      margin-left: 4px;
       font-weight: 700;
     }
 
     .period-content {
-      padding: 0 8px 6px 8px;
+      padding: 0 10px 8px 10px;
       border-top: 1px solid #f0f2f5;
       animation: slideDown 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -910,72 +724,84 @@ interface PeriodGroup {
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 8px;
+      padding: 12px;
       color: #8b8baa;
-      font-size: 0.65rem;
+      font-size: 0.85rem;
     }
 
     .empty-state-large {
       text-align: center;
-      padding: 20px;
+      padding: 24px;
       color: #8b8baa;
-      font-size: 0.75rem;
-    }
-
-    .empty-mobile {
-      text-align: center;
-      padding: 8px;
-      color: #8b8baa;
-      font-size: 0.6rem;
+      font-size: 0.95rem;
     }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
       .transactions-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
         gap: 4px;
+      }
+
+      .provider-name {
+        font-size: 0.8rem;
+      }
+
+      .amount-text {
+        font-size: 0.85rem;
+      }
+
+      .category-pill {
+        font-size: 0.65rem;
+      }
+
+      .percentage-badge {
+        font-size: 0.55rem;
+        padding: 1px 5px;
       }
     }
 
     @media (max-width: 768px) {
       .header-section {
-        padding: 3px 8px 0 8px;
+        padding: 4px 10px 0 10px;
       }
 
       .content-area {
-        padding: 3px 8px 6px 8px;
+        padding: 4px 10px 6px 10px;
       }
 
       .transactions-grid {
-        display: none;
-      }
-
-      .mobile-list {
-        display: flex;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
       }
 
       .period-header {
-        padding: 3px 6px;
-        min-height: 28px;
+        padding: 6px 10px;
+        min-height: 32px;
       }
 
       .header-title {
+        font-size: 0.85rem;
+      }
+
+      .header-count {
         font-size: 0.65rem;
+        padding: 0 6px;
       }
 
       .income-tag,
       .expense-tag,
       .diff-tag {
-        font-size: 0.5rem;
-        padding: 0 3px;
+        font-size: 0.7rem;
+        padding: 0 6px;
       }
 
       .diff-tag {
-        min-width: 28px;
+        min-width: 34px;
       }
 
       .period-content {
-        padding: 0 6px 4px 6px;
+        padding: 0 10px 6px 10px;
       }
 
       .chart-section {
@@ -984,84 +810,130 @@ interface PeriodGroup {
         margin-bottom: 4px;
       }
 
-      .chart-wrapper {
-        max-height: 160px;
-      }
-
       .transactions-section {
         padding: 4px 6px;
         border-radius: 6px;
       }
 
       .section-header {
-        margin-bottom: 3px;
-        padding-bottom: 3px;
+        margin-bottom: 4px;
+        padding-bottom: 4px;
       }
 
       .section-title {
+        font-size: 0.8rem;
+      }
+
+      .section-badge {
+        font-size: 0.65rem;
+        padding: 0 6px;
+        line-height: 1.6;
+      }
+
+      .transaction-card {
+        padding: 4px 6px;
+      }
+
+      .provider-name {
+        font-size: 0.75rem;
+      }
+
+      .amount-text {
+        font-size: 0.8rem;
+      }
+
+      .date-text {
         font-size: 0.65rem;
       }
 
-      .mobile-item {
-        padding: 3px 4px;
-      }
-
-      .mobile-provider {
+      .category-pill {
         font-size: 0.6rem;
+        padding: 0 6px;
+        line-height: 1.6;
       }
 
-      .mobile-amount {
-        font-size: 0.65rem;
+      .tx-count {
+        font-size: 0.55rem;
+        padding: 0 4px;
+      }
+
+      .percentage-badge {
+        font-size: 0.5rem;
+        padding: 0 4px;
+      }
+
+      .card-row {
+        padding: 1px 0;
+      }
+
+      .card-row.middle {
+        padding: 3px 0;
+        margin: 1px 0 0 0;
+      }
+
+      .amount-group {
+        gap: 4px;
+      }
+
+      .expand-icon {
+        font-size: 0.7rem;
       }
     }
 
     @media (max-width: 480px) {
       .header-section {
-        padding: 2px 4px 0 4px;
+        padding: 2px 6px 0 6px;
       }
 
       .content-area {
-        padding: 2px 4px 4px 4px;
+        padding: 2px 6px 4px 6px;
+      }
+
+      .transactions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3px;
       }
 
       .period-header {
-        padding: 2px 4px;
-        min-height: 24px;
+        padding: 4px 8px;
+        min-height: 28px;
         flex-wrap: wrap;
       }
 
       .header-left {
         width: 100%;
+        gap: 4px;
       }
 
       .header-right {
         width: 100%;
         justify-content: flex-start;
+        gap: 3px;
       }
 
       .header-title {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
       }
 
       .header-count {
-        font-size: 0.45rem;
-        padding: 0 3px;
+        font-size: 0.6rem;
+        padding: 0 5px;
       }
 
       .income-tag,
       .expense-tag,
       .diff-tag {
-        font-size: 0.45rem;
-        padding: 0 3px;
-        line-height: 1.4;
+        font-size: 0.65rem;
+        padding: 0 5px;
+        line-height: 1.6;
       }
 
       .diff-tag {
-        min-width: 24px;
+        min-width: 30px;
       }
 
       .period-content {
-        padding: 0 4px 3px 4px;
+        padding: 0 6px 4px 6px;
       }
 
       .chart-section {
@@ -1070,76 +942,109 @@ interface PeriodGroup {
         margin-bottom: 3px;
       }
 
-      .chart-wrapper {
-        max-height: 120px;
-      }
-
       .transactions-section {
         padding: 3px 4px;
         border-radius: 4px;
       }
 
       .section-title {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
       }
 
       .section-badge {
-        font-size: 0.45rem;
+        font-size: 0.55rem;
         padding: 0 4px;
       }
 
-      .mobile-item {
-        padding: 2px 3px;
+      .transaction-card {
+        padding: 3px 4px;
         border-radius: 4px;
       }
 
-      .mobile-provider {
-        font-size: 0.55rem;
+      .provider-name {
+        font-size: 0.7rem;
       }
 
-      .mobile-count {
-        font-size: 0.45rem;
-        padding: 0 3px;
-      }
-
-      .category-chip {
-        font-size: 0.45rem;
+      .tx-count {
+        font-size: 0.5rem;
         padding: 0 4px;
       }
 
-      .mobile-amount {
+      .category-pill {
+        font-size: 0.55rem;
+        padding: 0 5px;
+        line-height: 1.5;
+        border-radius: 6px;
+      }
+
+      .amount-text {
+        font-size: 0.75rem;
+      }
+
+      .date-text {
         font-size: 0.6rem;
       }
 
-      .mobile-date {
-        font-size: 0.5rem;
+      .percentage-badge {
+        font-size: 0.45rem;
+        padding: 0 3px;
+        border-radius: 3px;
       }
 
-      .mobile-row {
-        padding: 0.5px 0;
+      .card-row {
+        padding: 1px 0;
       }
 
-      .progress-bar {
-        height: 12px;
+      .card-row.middle {
+        padding: 2px 0;
+        margin: 1px 0 0 0;
       }
 
-      .progress-label {
-        font-size: 0.4rem;
-        padding: 0 2px;
+      .amount-group {
+        gap: 3px;
       }
 
       .empty-state {
-        padding: 4px;
-        font-size: 0.55rem;
+        padding: 6px;
+        font-size: 0.7rem;
       }
 
       .empty-state-large {
         padding: 12px;
-        font-size: 0.65rem;
+        font-size: 0.75rem;
       }
 
       .expand-icon {
+        font-size: 0.6rem;
+      }
+
+      .salary-tag {
+        font-size: 0.6rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .transactions-grid {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .provider-name {
+        font-size: 0.75rem;
+      }
+
+      .amount-text {
+        font-size: 0.8rem;
+      }
+
+      .category-pill {
+        font-size: 0.6rem;
+        padding: 0 6px;
+      }
+
+      .percentage-badge {
         font-size: 0.5rem;
+        padding: 0 4px;
       }
     }
 
@@ -1216,35 +1121,66 @@ export class MostCommonTransactionComponent {
         .reduce((s, t) => s + (t.amount ?? 0), 0),
     );
 
-    return grouped
-      .map((g) => ({
-        ...g,
-        percentageOfIncome:
-          g.total > 0 && totalIncome > 0 ? (g.total / totalIncome) * 100 : 0,
-        percentageOfExpense:
-          g.total < 0 && totalExpense > 0
-            ? (Math.abs(g.total) / totalExpense) * 100
-            : 0,
-      }))
-      .sort((a, b) => {
-        const aIsIncome = a.total > 0;
-        const bIsIncome = b.total > 0;
+    // Add percentages
+    const groupedWithPercentages = grouped.map((g) => ({
+      ...g,
+      percentageOfIncome:
+        g.total > 0 && totalIncome > 0 ? (g.total / totalIncome) * 100 : 0,
+      percentageOfExpense:
+        g.total < 0 && totalExpense > 0
+          ? (Math.abs(g.total) / totalExpense) * 100
+          : 0,
+    }));
 
-        if (aIsIncome && bIsIncome) {
-          return b.percentageOfIncome - a.percentageOfIncome;
-        }
-
-        if (!aIsIncome && !bIsIncome) {
-          return b.percentageOfExpense - a.percentageOfExpense;
-        }
-
-        if (aIsIncome && !bIsIncome) {
-          return -1;
-        }
-
-        return 1;
-      });
+    // NEW SORTING LOGIC: Income first, then expenses by category with highest expense
+    return this.sortGroupedTransactions(groupedWithPercentages);
   });
+
+  /**
+   * Sorting logic:
+   * 1. Income transactions (positive total) always first
+   * 2. Then expenses (negative total) sorted by:
+   *    a. Category with highest total expense first
+   *    b. Within same category, sorted by amount descending
+   */
+  private sortGroupedTransactions(
+    transactions: GroupedTransaction[],
+  ): GroupedTransaction[] {
+    // Separate income and expenses
+    const incomeItems = transactions.filter((t) => t.total > 0);
+    const expenseItems = transactions.filter((t) => t.total < 0);
+
+    // Sort income items by amount descending
+    const sortedIncome = incomeItems.sort((a, b) => b.total - a.total);
+
+    // Group expenses by category
+    const expenseMap = new Map<TransactionCategory, GroupedTransaction[]>();
+    expenseItems.forEach((item) => {
+      if (!expenseMap.has(item.category)) {
+        expenseMap.set(item.category, []);
+      }
+      expenseMap.get(item.category)!.push(item);
+    });
+
+    // Sort categories by total expense amount (descending)
+    const sortedCategories = Array.from(expenseMap.entries()).sort((a, b) => {
+      const totalA = a[1].reduce((sum, item) => sum + Math.abs(item.total), 0);
+      const totalB = b[1].reduce((sum, item) => sum + Math.abs(item.total), 0);
+      return totalB - totalA;
+    });
+
+    // For each category, sort items by amount descending
+    const sortedExpenses: GroupedTransaction[] = [];
+    sortedCategories.forEach(([category, items]) => {
+      const sortedItems = items.sort(
+        (a, b) => Math.abs(b.total) - Math.abs(a.total),
+      );
+      sortedExpenses.push(...sortedItems);
+    });
+
+    // Return income first, then expenses
+    return [...sortedIncome, ...sortedExpenses];
+  }
 
   private groupedByMonth = computed((): PeriodGroup[] => {
     const txs = this.selectedTransaction();
@@ -1398,24 +1334,8 @@ export class MostCommonTransactionComponent {
           : 0,
     }));
 
-    const sortedGroups = groupsWithPercentages.sort((a, b) => {
-      const aIsIncome = a.total > 0;
-      const bIsIncome = b.total > 0;
-
-      if (aIsIncome && bIsIncome) {
-        return b.percentageOfIncome - a.percentageOfIncome;
-      }
-
-      if (!aIsIncome && !bIsIncome) {
-        return b.percentageOfExpense - a.percentageOfExpense;
-      }
-
-      if (aIsIncome && !bIsIncome) {
-        return -1;
-      }
-
-      return 1;
-    });
+    // Apply the same sorting logic
+    const sortedGroups = this.sortGroupedTransactions(groupsWithPercentages);
 
     return {
       totalIncome,
