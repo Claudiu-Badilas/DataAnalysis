@@ -32,5 +32,5 @@ export const searchTermChanged = createAction(
 
 export const viewModeChanged = createAction(
   '[Transactions] View Mode Changed',
-  props<{ viewMode: 'all' | 'monthly' | 'yearly' }>(),
+  props<{ viewMode: 'salary' | 'all' | 'monthly' | 'yearly' }>(),
 );

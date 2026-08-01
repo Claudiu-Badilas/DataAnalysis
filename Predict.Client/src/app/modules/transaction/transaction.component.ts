@@ -113,12 +113,17 @@ export class TransactionComponent {
   onToggle(value: string) {
     this.store.dispatch(
       TransactionsActions.viewModeChanged({
-        viewMode: value.toLocaleLowerCase() as 'all' | 'monthly' | 'yearly',
+        viewMode: value.toLocaleLowerCase() as
+          | 'salary'
+          | 'all'
+          | 'monthly'
+          | 'yearly',
       }),
     );
   }
 
   getSelectedViewLabel(): string {
+    if (this.viewMode() === 'salary') return 'Salary';
     if (this.viewMode() === 'all') return 'All';
     if (this.viewMode() === 'monthly') return 'Monthly';
     return 'Yearly';

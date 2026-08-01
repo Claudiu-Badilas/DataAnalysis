@@ -130,8 +130,8 @@ module RaiffeisenExcelAccountStatement =
 
         transactions
 
-    let basePath = @$""
-    let transactionsPath = @$"{basePath}\AccountStatements\Raiffaisen2\Economii"
+    let basePath = @$"D:\Projects\PredictFiles"
+    let transactionsPath = @$"{basePath}\AccountStatements\Raiffaisen2"
 
     let transactions () =
         getTransactionsFromExcels 1 transactionsPath

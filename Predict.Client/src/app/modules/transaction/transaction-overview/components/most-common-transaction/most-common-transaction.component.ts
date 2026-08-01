@@ -38,6 +38,10 @@ interface PeriodGroup {
   multiple: GroupedTransaction[];
   isExpanded: boolean;
   month?: string;
+  // New fields for salary grouping
+  salaryPeriodStart?: Date;
+  salaryPeriodEnd?: Date;
+  isSalaryPeriod?: boolean;
 }
 
 @Component({
@@ -54,7 +58,7 @@ interface PeriodGroup {
 })
 export class MostCommonTransactionComponent {
   transactions = input<TransactionDomain[]>([]);
-  viewMode = input<'all' | 'monthly' | 'yearly'>('monthly');
+  viewMode = input<'all' | 'monthly' | 'yearly' | 'salary'>('monthly');
 
   selectedCategory = signal<TransactionCategory | null>(null);
 
@@ -90,6 +94,8 @@ export class MostCommonTransactionComponent {
       return this.groupedByMonth();
     } else if (this.viewMode() === 'yearly') {
       return this.groupedByYear();
+    } else if (this.viewMode() === 'salary') {
+      return this.groupedBySalaryPeriod();
     }
     return [];
   });
@@ -209,6 +215,73 @@ export class MostCommonTransactionComponent {
       })
       .sort((a, b) => b.year - a.year);
   });
+
+  // New method for salary-based grouping (15th of each month)
+  private groupedBySalaryPeriod = computed((): PeriodGroup[] => {
+    const txs = this.selectedTransaction();
+    if (!txs?.length) return [];
+
+    // Group transactions by salary period (15th of month to 14th of next month)
+    const map = new Map<string, TransactionDomain[]>();
+
+    for (const tx of txs) {
+      const date = tx.completionDate || tx.registrationDate;
+      if (!date) continue;
+
+      // Calculate the salary period key
+      const periodKey = this.getSalaryPeriodKey(date);
+      if (!map.has(periodKey)) map.set(periodKey, []);
+      map.get(periodKey)!.push(tx);
+    }
+
+    return Array.from(map.entries())
+      .map(([key, txs]) => {
+        const [year, month, day] = key.split('-').map(Number);
+        const periodStart = new Date(year, month, day);
+        const periodEnd = new Date(year, month, day + 14); // 14 days after start
+
+        const monthName = new Date(year, month).toLocaleString('default', {
+          month: 'short',
+        });
+        const id = `salary-${key}`;
+
+        const processedData = this.processTransactions(txs);
+
+        return {
+          id,
+          title: `${monthName} ${year} (${day}-${periodEnd.getDate()})`,
+          year,
+          monthIndex: month,
+          month: monthName,
+          salaryPeriodStart: periodStart,
+          salaryPeriodEnd: periodEnd,
+          isSalaryPeriod: true,
+          ...processedData,
+          isExpanded: this.expandedPeriodId() === id,
+        };
+      })
+      .sort((a, b) => {
+        if (a.year !== b.year) return b.year - a.year;
+        return b.monthIndex! - a.monthIndex!;
+      });
+  });
+
+  // Helper method to determine salary period key
+  private getSalaryPeriodKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    // If day is 15 or later, this belongs to the current month's salary period
+    if (day >= 15) {
+      return `${year}-${month}-15`;
+    } else {
+      // If day is before 15, this belongs to the previous month's salary period
+      const prevMonth = month === 0 ? 11 : month - 1;
+      const prevYear = month === 0 ? year - 1 : year;
+      return `${prevYear}-${prevMonth}-15`;
+    }
+  }
 
   // Shared processing logic
   private processTransactions(txs: TransactionDomain[]) {

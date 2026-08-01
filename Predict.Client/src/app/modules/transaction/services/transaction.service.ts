@@ -9,7 +9,7 @@ import {
   TransactionResponse,
 } from '../models/transactions.model';
 
-export const TransactionService_STORAGE_KEY = 'Transactions_Cache_June_2026';
+export const TransactionService_STORAGE_KEY = 'Transactions_Cache_Jul_2026';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
@@ -29,7 +29,9 @@ export class TransactionService {
     const source$ = cachedDtos
       ? of(cachedDtos)
       : this.httpClient
-          .get<TransactionResponse[]>('/server/api/v1/transactions')
+          .get<
+            TransactionResponse[]
+          >('https://localhost:8080/api/v1/transactions')
           .pipe(
             tap((dtos) =>
               this.localStorage.setItem(TransactionService_STORAGE_KEY, dtos),

@@ -17,7 +17,7 @@ export interface State {
   selectedProvider: string;
   selectedServiceProvider: string;
   searchTerm: string;
-  viewMode: 'all' | 'monthly' | 'yearly';
+  viewMode: 'salary' | 'all' | 'monthly' | 'yearly';
 }
 
 const initialState: State = {
