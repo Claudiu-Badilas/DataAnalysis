@@ -294,15 +294,6 @@ interface PeriodGroup {
   `,
   styles: `
     /* ===== CONTAINER ===== */
-    .dashboard-container {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #f5f7fb;
-      font-family:
-        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-        sans-serif;
-    }
 
     .header-section {
       flex-shrink: 0;
@@ -770,6 +761,7 @@ interface PeriodGroup {
         padding: 4px 10px 6px 10px;
       }
 
+      /* Mobile: 2 cards per row on tablets */
       .transactions-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 4px;
@@ -889,9 +881,10 @@ interface PeriodGroup {
         padding: 2px 6px 4px 6px;
       }
 
+      /* Mobile: 1 card per row on phones */
       .transactions-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 3px;
+        grid-template-columns: 1fr;
+        gap: 4px;
       }
 
       .period-header {
@@ -957,69 +950,69 @@ interface PeriodGroup {
       }
 
       .transaction-card {
-        padding: 3px 4px;
-        border-radius: 4px;
-      }
-
-      .provider-name {
-        font-size: 0.7rem;
-      }
-
-      .tx-count {
-        font-size: 0.5rem;
-        padding: 0 4px;
-      }
-
-      .category-pill {
-        font-size: 0.55rem;
-        padding: 0 5px;
-        line-height: 1.5;
+        padding: 6px 8px;
         border-radius: 6px;
       }
 
+      .provider-name {
+        font-size: 0.8rem;
+      }
+
+      .tx-count {
+        font-size: 0.55rem;
+        padding: 0 5px;
+      }
+
+      .category-pill {
+        font-size: 0.6rem;
+        padding: 0 8px;
+        line-height: 1.8;
+        border-radius: 8px;
+      }
+
       .amount-text {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
       }
 
       .date-text {
-        font-size: 0.6rem;
+        font-size: 0.65rem;
       }
 
       .percentage-badge {
-        font-size: 0.45rem;
-        padding: 0 3px;
-        border-radius: 3px;
+        font-size: 0.5rem;
+        padding: 1px 5px;
+        border-radius: 4px;
       }
 
       .card-row {
-        padding: 1px 0;
+        padding: 2px 0;
       }
 
       .card-row.middle {
-        padding: 2px 0;
-        margin: 1px 0 0 0;
+        padding: 4px 0;
+        margin: 2px 0 0 0;
       }
 
       .amount-group {
-        gap: 3px;
+        gap: 5px;
       }
 
       .empty-state {
-        padding: 6px;
-        font-size: 0.7rem;
-      }
-
-      .empty-state-large {
-        padding: 12px;
+        padding: 8px;
         font-size: 0.75rem;
       }
 
+      .empty-state-large {
+        padding: 16px;
+        font-size: 0.8rem;
+      }
+
       .expand-icon {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
       }
 
       .salary-tag {
-        font-size: 0.6rem;
+        font-size: 0.65rem;
       }
     }
 
@@ -1027,6 +1020,10 @@ interface PeriodGroup {
       .transactions-grid {
         grid-template-columns: 1fr;
         gap: 3px;
+      }
+
+      .transaction-card {
+        padding: 5px 6px;
       }
 
       .provider-name {
@@ -1038,12 +1035,12 @@ interface PeriodGroup {
       }
 
       .category-pill {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
         padding: 0 6px;
       }
 
       .percentage-badge {
-        font-size: 0.5rem;
+        font-size: 0.45rem;
         padding: 0 4px;
       }
     }
