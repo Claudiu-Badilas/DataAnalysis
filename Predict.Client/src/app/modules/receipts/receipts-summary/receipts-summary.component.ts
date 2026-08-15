@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as ReceiptsActions from 'src/app/modules/receipts/actions/receipts.actions';
 import * as fromReceipts from 'src/app/modules/receipts/reducers/receipts.reducer';
@@ -20,6 +20,7 @@ import { ReceiptListComponent } from './components/receipts-list/receipts-list.c
     TopBarComponent,
   ],
   templateUrl: './receipts-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './receipts-summary.component.scss',
 })
 export class ReceiptsSummaryComponent {

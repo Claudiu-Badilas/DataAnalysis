@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanService_STORAGE_KEY } from 'src/app/modules/loan/services/loan.service';
 import { LoanSettingsService } from 'src/app/modules/loan/services/loan-settings.service';
@@ -11,6 +11,7 @@ import { SuccessModalComponent } from 'src/app/shared/components/modals/success-
   selector: 'p-loan-settings',
   imports: [CommonModule],
   templateUrl: './loan-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./loan-settings.component.scss'],
 })
 export class LoanSettingsComponent implements OnInit {

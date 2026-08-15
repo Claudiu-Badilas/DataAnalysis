@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { DateUtils } from 'src/app/shared/utils/date.utils';
   selector: 'p-receipts',
   imports: [RouterModule, CommonModule],
   templateUrl: './receipts.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./receipts.component.scss'],
 })
 export class ReceiptsComponent {

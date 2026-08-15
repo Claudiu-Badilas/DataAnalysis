@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'p-search-input',
   imports: [],
   templateUrl: './search-input.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./search-input.component.scss'],
 })
 export class SearchInputComponent {

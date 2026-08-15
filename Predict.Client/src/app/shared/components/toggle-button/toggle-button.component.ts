@@ -1,10 +1,11 @@
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'p-toggle-button',
   imports: [NgClass],
   templateUrl: './toggle-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './toggle-button.component.scss',
 })
 export class ToggleButtonComponent {

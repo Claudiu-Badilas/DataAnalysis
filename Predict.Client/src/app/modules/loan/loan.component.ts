@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as LoanActions from 'src/app/modules/loan/actions/loan.actions';
@@ -10,6 +10,7 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
   selector: 'p-loan',
   imports: [CommonModule, RouterModule],
   templateUrl: './loan.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./loan.component.scss'],
 })
 export class LoanComponent {

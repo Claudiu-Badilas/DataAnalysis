@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as fromLoanDetailed from 'src/app/modules/loan/loan-detailed/selectors/loan-detailed.selectors';
@@ -13,6 +13,7 @@ import { MathUtil } from 'src/app/shared/utils/math.utils';
   selector: 'p-loan-detailed-header',
   imports: [CommonModule, NumberFormatPipe],
   templateUrl: './loan-detailed-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-detailed-header.component.scss',
 })
 export class LoanDetailedHeaderComponent {

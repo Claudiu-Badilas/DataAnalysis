@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as LoanActions from 'src/app/modules/loan/actions/loan.actions';
@@ -23,6 +23,7 @@ import {
     HoldTriggerDirective,
   ],
   templateUrl: './loan-simulator-body-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-simulator-body-table.component.scss',
 })
 export class LoanSimulatorBodyTableComponent {

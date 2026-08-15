@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'p-foo-toggle',
   templateUrl: './foo-toggle.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './foo-toggle.component.scss',
 })
 export class FooToggleComponent {

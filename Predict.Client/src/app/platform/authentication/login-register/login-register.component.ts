@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -21,6 +21,7 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
   selector: 'p-login-register',
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './login-register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./login-register.component.scss'],
 })
 export class LoginRegisterComponent implements OnDestroy {

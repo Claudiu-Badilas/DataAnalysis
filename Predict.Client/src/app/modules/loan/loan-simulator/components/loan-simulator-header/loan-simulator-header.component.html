@@ -71,7 +71,7 @@
             {{ initialRemainingBalance() | numberFormat: "0.00" }}
           </span>
           <span class="stat-item__value">
-            {{ payments()?.at(-1)?.remainingBalance | numberFormat: "0.00" }}
+            {{ $safeNavigationMigration(payments()?.at(-1)?.remainingBalance) | numberFormat: "0.00" }}
           </span>
         </div>
       </div>
@@ -119,7 +119,7 @@
             {{ totalPayment() | numberFormat: "0.00" }}
           </span>
           <span class="stat-item__value">
-            {{ payments()?.at(-1)?.remainingBalance | numberFormat: "0.00" }}
+            {{ $safeNavigationMigration(payments()?.at(-1)?.remainingBalance) | numberFormat: "0.00" }}
           </span>
         </div>
       </div>

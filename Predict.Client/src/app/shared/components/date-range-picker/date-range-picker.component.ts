@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { DateRangePicker } from './models/date-range-picker.model';
@@ -7,6 +7,7 @@ import { DateRangePicker } from './models/date-range-picker.model';
   imports: [ReactiveFormsModule, DatePickerComponent],
   selector: 'p-date-range-picker',
   templateUrl: './date-range-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./date-range-picker.component.scss'],
 })
 export class RangeSelectorComponent {

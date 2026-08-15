@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromInvoices from 'src/app/modules/invoices/reducers/invoices.reducer';
 import { SideBarComponent } from 'src/app/shared/components/side-bar/side-bar.component';
@@ -9,6 +9,7 @@ import * as NavigationAction from 'src/app/store/actions/navigation.actions';
   selector: 'p-invoices-detailed',
   imports: [SideBarComponent, ToggleButtonComponent],
   templateUrl: './invoices-detailed.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './invoices-detailed.component.scss',
 })
 export class InvoicesDetailedComponent {

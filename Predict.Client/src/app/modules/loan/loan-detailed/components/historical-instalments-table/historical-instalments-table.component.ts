@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { HistoricalInstalmentPaymentBatch } from '../../models/base-loan-rate.model';
@@ -24,6 +24,7 @@ interface YearGroup {
   selector: 'p-historical-instalments-table',
   imports: [CommonModule, NumberFormatPipe],
   templateUrl: './historical-instalments-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './historical-instalments-table.component.scss',
 })
 export class HistoricalInstalmentsTableComponent {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import * as fromLayout from 'src/app/store/reducers/layout.reducer';
@@ -8,6 +8,7 @@ import * as fromLayout from 'src/app/store/reducers/layout.reducer';
   selector: 'p-spinner',
   imports: [CommonModule],
   templateUrl: './spinner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {

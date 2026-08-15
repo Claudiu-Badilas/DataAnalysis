@@ -51,10 +51,10 @@ jobs:
           # npm install --legacy-peer-deps
 
       - name: Build Angular app
-        run: npm run build -- --configuration production --base-href "/predict/"
+        run: npm run build -- --configuration production
 
       - name: List build output
-        run: ls -la ./dist/predict.client/browser || echo "Build directory not found"
+        run: ls -la ./dist/predict.client || echo "Build directory not found"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -62,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./Predict.Client/dist/predict.client/browser"
+          path: "./Predict.Client/dist/predict.client"
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import * as fromInvoices from 'src/app/modules/invoices/reducers/invoices.reducer';
@@ -22,6 +22,7 @@ import { InvoiceIndexTrentChartUtils } from './utils/invoice-index-trent.chart.u
     TopBarComponent,
   ],
   templateUrl: './invoices-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './invoices-overview.component.scss',
 })
 export class InvoicesOverviewComponent {

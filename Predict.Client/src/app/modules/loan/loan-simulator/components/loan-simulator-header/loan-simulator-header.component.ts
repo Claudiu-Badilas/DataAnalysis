@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
@@ -10,6 +10,7 @@ import { MonthlyInstalmentManager } from '../../models/loan-simulator.model';
   selector: 'p-loan-simulator-header',
   imports: [CommonModule, NumberFormatPipe],
   templateUrl: './loan-simulator-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-simulator-header.component.scss',
 })
 export class LoanSimulatorHeaderComponent {

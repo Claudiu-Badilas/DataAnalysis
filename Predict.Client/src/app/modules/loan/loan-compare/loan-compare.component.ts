@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect } from '@angular/core';
+import { Component, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 
@@ -31,6 +31,7 @@ import { CompareRatesTrendChartUtils } from './utils/compare-loan-rates-trend.ch
     FooToggleComponent,
   ],
   templateUrl: './loan-compare.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./loan-compare.component.scss'],
 })
 export class LoanCompareComponent {
