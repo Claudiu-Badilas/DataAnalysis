@@ -12,7 +12,7 @@ import * as fromLoan from 'src/app/modules/loan/reducers/loan.reducer';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { Colors } from 'src/app/shared/styles/colors';
-import { CompareRatesTrendChartUtils } from '../../../loan-compare/utils/compare-loan-rates-trend.chart.util';
+import { CompareRatesTrendChartUtils } from '../../utils/charts/compare-loan-rates-trend.chart.util';
 import { InterestProgressChartBarUtils } from '../../utils/charts/interest-progress.bar-chart.util';
 import { InterestProgressChartPieUtils } from '../../utils/charts/interest-progress.pie-chart.util';
 import { LoanMonthlyPaymentsChartUtils } from '../../utils/charts/loan-monthly-payments.chart.util';

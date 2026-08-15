@@ -25,7 +25,6 @@ import { ReceiptsEffects } from 'src/app/modules/receipts/effects/receipts.effec
 import * as fromTransactions from 'src/app/modules/transaction/reducers/transactions.reducer';
 import { TransactionsEffects } from 'src/app/modules/transaction/effects/transactions.effects';
 import * as fromLoan from 'src/app/modules/loan/reducers/loan.reducer';
-import * as fromLoanCompare from 'src/app/modules/loan/loan-compare/reducers/loan-compare.reducer';
 import { LoanEffects } from 'src/app/modules/loan/effects/loan.effects';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthenticationInterceptor } from 'src/app/platform/authentication/interceptor/authentication.interceptor';
@@ -65,15 +64,7 @@ bootstrapApplication(AppComponent, {
     ),
     importProvidersFrom(EffectsModule.forFeature([TransactionsEffects])),
 
-    importProvidersFrom(
-      StoreModule.forFeature('LoanState', fromLoan.reducer),
-    ),
-    importProvidersFrom(
-      StoreModule.forFeature(
-        'LoanStateCompare',
-        fromLoanCompare.reducer,
-      ),
-    ),
+    importProvidersFrom(StoreModule.forFeature('LoanState', fromLoan.reducer)),
     importProvidersFrom(EffectsModule.forFeature([LoanEffects])),
 
     // Global providers (interceptors, etc.)

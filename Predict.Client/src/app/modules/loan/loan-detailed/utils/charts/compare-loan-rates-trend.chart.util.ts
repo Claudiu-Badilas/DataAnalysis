@@ -2,7 +2,7 @@ import Highcharts from 'highcharts';
 import { Colors } from 'src/app/shared/styles/colors';
 import { DateUtils } from 'src/app/shared/utils/date.utils';
 import { JsDateUtils } from 'src/app/shared/utils/js-date.utils';
-import { RepaymentSchedule } from '../../models/loan.model';
+import { RepaymentSchedule } from '../../../models/loan.model';
 
 export namespace CompareRatesTrendChartUtils {
   export function getChart(
