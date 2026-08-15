@@ -23,6 +23,12 @@ export const getDetailedSelectedRepaymentSchedule = createSelector(
     repaymentSchedules.find((r) => r.name === selectedRepaymentScheduleName),
 );
 
+export const getDetailedCompareToRepaymentSchedule = createSelector(
+  fromLoan.getRepaymentSchedules,
+  getDetailedSelectedRepaymentScheduleName,
+  (repaymentSchedules, selectedRepaymentScheduleName) => repaymentSchedules[3],
+);
+
 export const getDetailedRepaymentSchedules = createSelector(
   fromLoan.getRepaymentSchedules,
   getDetailedSelectedRepaymentSchedule,
@@ -34,9 +40,26 @@ export const getDetailedRepaymentSchedules = createSelector(
     ),
 );
 
+export const getDetailedCompareToRepaymentSchedules = createSelector(
+  fromLoan.getRepaymentSchedules,
+  getDetailedCompareToRepaymentSchedule,
+  (repaymentSchedules, selectedRepaymentSchedule) =>
+    repaymentSchedules.filter(
+      (r) =>
+        !selectedRepaymentSchedule ||
+        JsDateUtils.isSameOrBefore(r.date, selectedRepaymentSchedule.date),
+    ),
+);
+
 export const getHistoricalInstalmentPayments = createSelector(
   fromLoan.getBaseRepaymentSchedule,
   getDetailedRepaymentSchedules,
+  HistoricalInstalmentPaymentsUtils.getHistoricalInstalmentPayments,
+);
+
+export const getHistoricalCompareToInstalmentPayments = createSelector(
+  fromLoan.getBaseRepaymentSchedule,
+  getDetailedCompareToRepaymentSchedules,
   HistoricalInstalmentPaymentsUtils.getHistoricalInstalmentPayments,
 );
 

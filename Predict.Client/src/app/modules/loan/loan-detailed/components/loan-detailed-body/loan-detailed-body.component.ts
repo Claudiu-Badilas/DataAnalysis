@@ -34,6 +34,11 @@ import { RepaymentSchedule } from '../../../models/loan.model';
   styleUrl: './loan-detailed-body.component.scss',
 })
 export class LoanDetailedBodyComponent {
+  historicalCompareToInstalmentPayments = toSignal(
+    this.store.select(
+      fromLoanDetailed.getHistoricalCompareToInstalmentPayments,
+    ),
+  );
   historicalInstalments = toSignal(
     this.store.select(fromLoanDetailed.getHistoricalInstalmentPayments),
   );
@@ -60,7 +65,10 @@ export class LoanDetailedBodyComponent {
   );
 
   interestProgressBarChart = computed(() =>
-    InterestProgressChartBarUtils.getChart(this.historicalInstalments()),
+    InterestProgressChartBarUtils.getChart(
+      this.historicalInstalments(),
+      this.historicalCompareToInstalmentPayments(),
+    ),
   );
 
   dotBarChart = computed(() => {
