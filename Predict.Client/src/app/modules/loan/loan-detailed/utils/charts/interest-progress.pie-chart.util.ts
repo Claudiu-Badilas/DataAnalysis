@@ -4,7 +4,6 @@ import { Colors } from 'src/app/shared/styles/colors';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { MathUtil } from 'src/app/shared/utils/math.utils';
 import { HistoricalInstalmentPayment } from '../../models/base-loan-rate.model';
-
 export namespace InterestProgressChartPieUtils {
   export function getChart(
     rates: HistoricalInstalmentPayment[],
@@ -224,152 +223,53 @@ export namespace InterestProgressChartPieUtils {
     const isMobile =
       typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 
-    interface TooltipPoint {
-      name: string;
-      amount: number;
-      amountCompact: string;
-      y: number;
-      color: string;
-      category: string;
-      series?: {
-        name: string;
-      };
-      comparedAmount?: number;
-      comparedAmountCompact?: string;
-      comparedPercent?: number;
-      diff?: number;
-      diffFormatted?: string;
-      diffPercent?: number;
-      hasComparison?: boolean;
-    }
+    // Helper function to create sticky note label
+    const createStickyNoteLabel = (
+      point: any,
+      isComparison: boolean = false,
+    ) => {
+      const color = point.color || '#333';
+      const bgColor = isComparison
+        ? 'rgba(255,255,255,0.9)'
+        : 'rgba(255,255,255,0.95)';
+      const borderWidth = isComparison ? '2px' : '1px';
 
-    const tooltipFormatter = function (this: any): string {
-      const point = this.point as TooltipPoint;
-      const amount =
-        point.amountCompact || NumberFormatPipe.numberFormat(point.amount || 0);
-      const percentage = point.y || 0;
-      const isComparisonRing = point.series?.name === 'Referinta';
+      return `<div style="background: ${bgColor}; padding: 6px 10px; border-radius: 6px; border: ${borderWidth} solid ${color}; box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: ${isMobile ? '9px' : '11px'}; font-weight: bold; color: #333; max-width: 180px; text-align: center; pointer-events: none;">
+                ${isComparison ? `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>` : `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>`}
+                <div style="font-size: ${isMobile ? '9px' : '11px'}; font-weight: 700; color: ${color};">${point.nameShort} ${point.amountCompact} ${point.y}% </div>
 
-      const allPoints: TooltipPoint[] = this.series.chart.series
-        .flatMap((s: any) => s.points || [])
-        .filter((p: TooltipPoint) => p.category === point.category);
-
-      let html = `
-        <div style="padding:4px 0; min-width:240px; max-width:320px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:6px;">
-            <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background-color:${point.color};"></span>
-            <span style="font-weight:600; font-size:14px;">${point.name}</span>
-            ${isComparisonRing ? '<span style="font-size:11px; color:#666; margin-left:4px;">(Referinta)</span>' : ''}
-          </div>
-      `;
-
-      if (allPoints.length > 1) {
-        const sortedPoints = allPoints.sort(
-          (a: TooltipPoint, b: TooltipPoint) => {
-            if (a.series?.name === 'Credit') return -1;
-            if (b.series?.name === 'Credit') return 1;
-            return 0;
-          },
-        );
-
-        sortedPoints.forEach((p: TooltipPoint) => {
-          const pAmount =
-            p.amountCompact || NumberFormatPipe.numberFormat(p.amount || 0);
-          const pPercent = p.y || 0;
-          const isRef = p.series?.name === 'Referinta';
-
-          html += `
-            <div style="display:flex; justify-content:space-between; gap:20px; font-size:13px; ${isRef ? 'margin-top:6px; padding-top:6px; border-top:1px solid #eee;' : ''}">
-              <span ${isRef ? 'style="color:#666;"' : ''}>${isRef ? 'Referinta' : 'Principal'}:</span>
-              <span style="font-weight:bold; ${isRef ? 'color:#666;' : ''}">${pAmount} RON (${pPercent}%)</span>
-            </div>
-          `;
-        });
-
-        const mainPoint = allPoints.find(
-          (p: TooltipPoint) => p.series?.name === 'Credit',
-        );
-        const refPoint = allPoints.find(
-          (p: TooltipPoint) => p.series?.name === 'Referinta',
-        );
-
-        if (
-          mainPoint &&
-          refPoint &&
-          mainPoint.amount !== undefined &&
-          refPoint.amount !== undefined
-        ) {
-          const diff = mainPoint.amount - refPoint.amount;
-          const diffFormatted = NumberFormatPipe.numberFormat(Math.abs(diff));
-          const diffPercent =
-            refPoint.amount > 0
-              ? MathUtil.round((diff / refPoint.amount) * 100)
-              : 0;
-          const sign = diff >= 0 ? '+' : '';
-          const color = diff < 0 ? '#F44336' : '#4CAF50';
-          const arrow = diff < 0 ? '▼' : '▲';
-
-          if (diff !== 0) {
-            html += `
-              <div style="display:flex; justify-content:space-between; gap:20px; font-size:13px; margin-top:8px; padding-top:8px; border-top:2px solid #eee;">
-                <span style="font-weight:600;">Diferenta:</span>
-                <span style="color:${color};font-weight:bold;">${arrow} ${sign}${diffFormatted} RON (${sign}${diffPercent}%)</span>
-              </div>
-            `;
-          }
-        }
-      } else {
-        html += `
-          <div style="display:flex; justify-content:space-between; gap:20px; font-size:13px;">
-            <span>Procent:</span>
-            <span style="font-weight:bold; font-size:${percentage > 0 ? 20 : 16}px;">${percentage}%</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; gap:20px; font-size:13px; margin-top:4px;">
-            <span>Suma:</span>
-            <span style="font-weight:bold;">${amount} RON</span>
-          </div>
-        `;
-      }
-
-      html += `</div>`;
-      return html;
+              </div>`;
     };
 
     const series: SeriesOptionsType[] = [
       {
         type: 'pie',
         name: 'Credit',
-        data: mainChartData,
+        data: mainChartData.map((point) => ({
+          ...point,
+          dataLabels: {
+            enabled: true,
+            useHTML: true,
+            formatter: function (this: any) {
+              return createStickyNoteLabel(this, false);
+            },
+            style: {
+              fontSize: isMobile ? '10px' : '12px',
+              fontWeight: 'bold',
+              color: '#333',
+              textShadow: '0 0 3px rgba(255,255,255,0.8)',
+            },
+            connectorWidth: 0,
+            distance: hasComparison ? 15 : 20,
+            crop: false,
+            overflow: 'allow',
+          },
+        })),
         showInLegend: false,
         size: hasComparison ? '80%' : '100%',
         innerSize: hasComparison ? '55%' : '50%',
-        animation: {
-          duration: 1000,
-        },
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.nameShort}</b> {point.amountCompact} ({point.y}%)',
-          style: {
-            fontSize: isMobile ? '8px' : '10px',
-            textOutline: isMobile ? '1px contrast' : 'none',
-            fontWeight: 'bold',
-            color: '#333',
-            textShadow: isMobile ? '0 0 3px rgba(255,255,255,0.8)' : 'none',
-          },
-          connectorWidth: 1,
-          connectorPadding: isMobile ? 6 : 15,
-          distance: hasComparison ? 15 : 20,
-          crop: false,
-          overflow: 'allow',
-        },
-        states: {
-          hover: {
-            enabled: false,
-          },
-          inactive: {
-            enabled: false,
-          },
-        },
+        animation: { duration: 1000 },
+        states: { hover: { enabled: false }, inactive: { enabled: false } },
         allowPointSelect: false,
       } as SeriesOptionsType,
     ];
@@ -378,27 +278,20 @@ export namespace InterestProgressChartPieUtils {
       series.push({
         type: 'pie',
         name: 'Referinta',
-        data: comparisonChartData,
+        data: comparisonChartData.map((point) => ({
+          ...point,
+          dataLabels: {
+            enabled: false, // Disabled sticky notes for comparison
+          },
+        })),
         showInLegend: false,
         size: '100%',
         innerSize: '80%',
-        animation: {
-          duration: 800,
-        },
-        dataLabels: {
-          enabled: false,
-        },
+        animation: { duration: 800 },
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.8)',
         opacity: 0.5,
-        states: {
-          hover: {
-            enabled: false,
-          },
-          inactive: {
-            enabled: false,
-          },
-        },
+        states: { hover: { enabled: false }, inactive: { enabled: false } },
         allowPointSelect: false,
       } as SeriesOptionsType);
     }
@@ -408,21 +301,15 @@ export namespace InterestProgressChartPieUtils {
         type: 'pie',
         spacing: isMobile ? [10, 10, 10, 10] : [20, 20, 20, 20],
         height: isMobile ? 280 : undefined,
-        style: {
-          fontFamily: 'inherit',
-        },
+        style: { fontFamily: 'inherit' },
         events: {
           load: function () {
             this.update({
               plotOptions: {
                 series: {
                   states: {
-                    hover: {
-                      enabled: false,
-                    },
-                    inactive: {
-                      enabled: false,
-                    },
+                    hover: { enabled: false },
+                    inactive: { enabled: false },
                   },
                 },
               },
@@ -431,26 +318,8 @@ export namespace InterestProgressChartPieUtils {
         },
       },
       title: { text: null },
-      legend: {
-        enabled: false,
-      },
-      tooltip: {
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        padding: isMobile ? 10 : 12,
-        shadow: true,
-        useHTML: true,
-        style: {
-          fontSize: isMobile ? '13px' : '14px',
-          fontWeight: 'normal',
-        },
-        formatter: tooltipFormatter,
-        shared: true,
-        followPointer: false,
-        followTouchMove: false,
-      },
+      legend: { enabled: false },
+      tooltip: { enabled: false },
       plotOptions: {
         pie: {
           allowPointSelect: false,
@@ -459,22 +328,11 @@ export namespace InterestProgressChartPieUtils {
           borderWidth: 2,
           borderColor: '#fff',
           states: {
-            hover: {
-              enabled: false,
-            },
-            inactive: {
-              enabled: false,
-            },
-            select: {
-              enabled: false,
-            },
+            hover: { enabled: false },
+            inactive: { enabled: false },
+            select: { enabled: false },
           },
-          point: {
-            events: {
-              mouseOver: undefined,
-              mouseOut: undefined,
-            },
-          },
+          point: { events: { mouseOver: undefined, mouseOut: undefined } },
         },
       },
       series: series,
