@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'p-numeric-input',
   templateUrl: './numeric-input.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./numeric-input.component.scss'],
 })
 export class NumericInputComponent {

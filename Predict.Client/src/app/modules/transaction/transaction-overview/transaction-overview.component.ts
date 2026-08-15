@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed } from '@angular/core';
+import { Component, computed, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 
@@ -13,6 +13,7 @@ import { MostCommonTransactionComponent } from './components/most-common-transac
   selector: 'p-transaction-overview',
   imports: [CommonModule, CommonModule, MostCommonTransactionComponent],
   templateUrl: './transaction-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./transaction-overview.component.scss'],
 })
 export class TransactionOverviewComponent {

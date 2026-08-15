@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ToastNotificationComponent } from './platform/toast-notifications/toast-notification.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
@@ -18,6 +18,7 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     <p-toast />
     <router-outlet />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {}

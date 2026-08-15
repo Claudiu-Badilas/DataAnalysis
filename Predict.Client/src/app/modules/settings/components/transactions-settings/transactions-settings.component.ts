@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanSettingsService } from 'src/app/modules/loan/services/loan-settings.service';
 import { TransactionService_STORAGE_KEY } from 'src/app/modules/transaction/services/transaction.service';
@@ -8,6 +8,7 @@ import { SuccessModalComponent } from 'src/app/shared/components/modals/success-
   selector: 'p-transactions-settings',
   imports: [],
   templateUrl: './transactions-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './transactions-settings.component.scss',
 })
 export class TransactionsSettingsComponent {

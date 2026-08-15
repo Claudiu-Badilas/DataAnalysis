@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as fromLoanDetailed from 'src/app/modules/loan/loan-detailed/selectors/loan-detailed.selectors';
@@ -21,6 +21,7 @@ import { HistoricalInstalmentsTableComponent } from '../historical-instalments-t
     ToggleButtonComponent,
   ],
   templateUrl: './loan-detailed-body.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-detailed-body.component.scss',
 })
 export class LoanDetailedBodyComponent {

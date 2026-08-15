@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ReceiptDomain } from '../../../models/receipts-domain.model';
 
 @Component({
@@ -164,6 +164,7 @@ import { ReceiptDomain } from '../../../models/receipts-domain.model';
       }
     </div>
   </div> `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* Container */
     .receipts-container {

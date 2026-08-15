@@ -14,6 +14,7 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -22,6 +23,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   selector: 'p-dropdown-select',
   templateUrl: './dropdown-select.component.html',
   styleUrls: ['./dropdown-select.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgbDropdownModule, FormsModule, CommonModule],
 })
 export class DropdownSelectComponent implements AfterViewInit, OnDestroy {

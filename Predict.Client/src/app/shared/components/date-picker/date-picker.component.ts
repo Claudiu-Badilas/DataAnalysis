@@ -11,6 +11,7 @@ import {
   Output,
   signal,
   SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePickerService } from './services/date-picker.service';
@@ -22,6 +23,7 @@ const datepickerService = new DatePickerService();
   imports: [FormsModule],
   templateUrl: `./date-picker.component.html`,
   styleUrls: ['./date-picker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatePickerService],
 })
 export class DatePickerComponent implements OnInit, OnChanges, OnDestroy {

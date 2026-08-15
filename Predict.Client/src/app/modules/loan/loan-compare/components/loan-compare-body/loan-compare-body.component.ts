@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as fromLoanCompare from 'src/app/modules/loan/loan-compare/selectors/loan-compare.selectors';
@@ -10,6 +10,7 @@ import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
   selector: 'p-loan-compare-body',
   imports: [CommonModule, NumberFormatPipe],
   templateUrl: './loan-compare-body.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-compare-body.component.scss',
 })
 export class LoanCompareBodyComponent {

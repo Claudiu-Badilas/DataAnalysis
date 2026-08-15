@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoanSettingsService } from 'src/app/modules/loan/services/loan-settings.service';
 import { ReceiptsService_STORAGE_KEY } from 'src/app/modules/receipts/services/receipts.service';
@@ -8,6 +8,7 @@ import { SuccessModalComponent } from 'src/app/shared/components/modals/success-
   selector: 'p-receipts-settings',
   imports: [],
   templateUrl: './receipts-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './receipts-settings.component.scss',
 })
 export class ReceiptsSettingsComponent {

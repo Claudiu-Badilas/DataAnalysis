@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'p-checkbox',
   imports: [FormsModule],
   templateUrl: './checkbox.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./checkbox.component.scss'],
 })
 export class CheckboxComponent {

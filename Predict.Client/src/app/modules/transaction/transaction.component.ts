@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -31,6 +31,7 @@ import { ToggleButtonActionsComponent } from 'src/app/shared/components/toggle-b
     ToggleButtonActionsComponent,
   ],
   templateUrl: './transaction.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./transaction.component.scss'],
 })
 export class TransactionComponent {

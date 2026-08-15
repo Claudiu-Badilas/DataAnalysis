@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
@@ -27,6 +27,7 @@ import { LoanDetailedHeaderComponent } from './components/loan-detailed-header/l
     FooToggleComponent,
   ],
   templateUrl: './loan-detailed.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './loan-detailed.component.scss',
 })
 export class LoanDetailedComponent {

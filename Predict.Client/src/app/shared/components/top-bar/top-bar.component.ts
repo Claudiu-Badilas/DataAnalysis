@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as NavigationAction from 'src/app/store/actions/navigation.actions';
@@ -9,6 +9,7 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
   selector: 'p-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule],
 })
 export class TopBarComponent implements OnInit {

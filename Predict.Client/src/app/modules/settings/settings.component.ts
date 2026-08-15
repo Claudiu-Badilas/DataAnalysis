@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component';
@@ -10,6 +10,7 @@ import * as fromAppStore from 'src/app/store/app-state.reducer';
   selector: 'p-settings',
   imports: [CommonModule, RouterModule, TopBarComponent],
   templateUrl: './settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent {

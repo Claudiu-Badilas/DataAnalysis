@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as ReceiptsActions from 'src/app/modules/receipts/actions/receipts.actions';
 import * as fromReceipts from 'src/app/modules/receipts/reducers/receipts.reducer';
@@ -21,6 +21,7 @@ import { MostCommonProductsComponent } from './components/most-common-products/m
     MostCommonProductsComponent,
   ],
   templateUrl: './receipts-products.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './receipts-products.component.scss',
 })
 export class ReceiptsProductsComponent {

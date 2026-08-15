@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'p-toggle-button-actions',
   imports: [],
   templateUrl: './toggle-button-actions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './toggle-button-actions.component.scss',
 })
 export class ToggleButtonActionsComponent {
