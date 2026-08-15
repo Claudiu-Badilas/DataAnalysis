@@ -236,7 +236,7 @@ export namespace InterestProgressChartPieUtils {
 
       return `<div style="background: ${bgColor}; padding: 6px 10px; border-radius: 6px; border: ${borderWidth} solid ${color}; box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: ${isMobile ? '9px' : '11px'}; font-weight: bold; color: #333; max-width: 180px; text-align: center; pointer-events: none;">
                 ${isComparison ? `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>` : `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>`}
-                <div style="font-size: ${isMobile ? '9px' : '11px'}; font-weight: 700; color: ${color};">${point.nameShort} ${point.amountCompact} ${point.y}% </div>
+                <div style="font-size: ${isMobile ? '9px' : '11px'}; font-weight: 700; color: ${color};">${point.nameShort}: ${point.amountCompact} (${point.y}%) </div>
 
               </div>`;
     };
