@@ -430,24 +430,7 @@ export namespace InterestProgressChartPieUtils {
           },
         },
       },
-      title: {
-        text: hasComparison ? 'Comparatie cu Referinta' : null,
-        align: 'left',
-        style: {
-          fontSize: '14px',
-          fontWeight: 'bold',
-        },
-      },
-      subtitle: {
-        text: hasComparison
-          ? `Total: ${NumberFormatPipe.numberFormat(total)} RON | Referinta: ${NumberFormatPipe.numberFormat(comparedTotal)} RON`
-          : `Total: ${NumberFormatPipe.numberFormat(total)} RON`,
-        align: 'left',
-        style: {
-          fontSize: '12px',
-          color: '#666',
-        },
-      },
+      title: { text: null },
       legend: {
         enabled: false,
       },
