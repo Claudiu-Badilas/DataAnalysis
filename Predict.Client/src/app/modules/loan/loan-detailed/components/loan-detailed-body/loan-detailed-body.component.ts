@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  computed,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as fromLoanDetailed from 'src/app/modules/loan/loan-detailed/selectors/loan-detailed.selectors';
@@ -7,6 +12,7 @@ import * as fromLoan from 'src/app/modules/loan/reducers/loan.reducer';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { Colors } from 'src/app/shared/styles/colors';
+import { CompareRatesTrendChartUtils } from '../../../loan-compare/utils/compare-loan-rates-trend.chart.util';
 import { InterestProgressChartBarUtils } from '../../utils/charts/interest-progress.bar-chart.util';
 import { InterestProgressChartPieUtils } from '../../utils/charts/interest-progress.pie-chart.util';
 import { LoanMonthlyPaymentsChartUtils } from '../../utils/charts/loan-monthly-payments.chart.util';
@@ -36,6 +42,13 @@ export class LoanDetailedBodyComponent {
     this.store.select(fromLoanDetailed.getHistoricalInstalmentPaymentBatches),
   );
 
+  baseRepaymentSchedule = toSignal(
+    this.store.select(fromLoan.getBaseRepaymentSchedule),
+  );
+  selectedRepaymentSchedule = toSignal(
+    this.store.select(fromLoanDetailed.getDetailedSelectedRepaymentSchedule),
+  );
+
   interestProgressPieChart = computed(() =>
     InterestProgressChartPieUtils.getChart(
       this.historicalInstalments(),
@@ -47,6 +60,19 @@ export class LoanDetailedBodyComponent {
     InterestProgressChartBarUtils.getChart(this.historicalInstalments()),
   );
 
+  dotBarChart = computed(() => {
+    const left =
+      this.selectedRepaymentSchedule() ?? this.baseRepaymentSchedule();
+    const right =
+      this.baseRepaymentSchedule() ?? this.selectedRepaymentSchedule();
+
+    if (!left || !right) {
+      return { series: [] } as any;
+    }
+
+    return CompareRatesTrendChartUtils.getChart(left, right);
+  });
+
   loanMonthlyPaymentsChart = computed(() =>
     LoanMonthlyPaymentsChartUtils.getChart(
       this.historicalInstalments(),
@@ -57,15 +83,15 @@ export class LoanDetailedBodyComponent {
   constructor(private store: Store<fromLoan.LoanState>) {}
 
   colors = Colors;
-  chartBasePaymentChange = signal<'pie-chart' | 'bars-chart' | 'columns-chart'>(
-    'pie-chart',
-  );
+  chartBasePaymentChange = signal<
+    'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart'
+  >('pie-chart');
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
   progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Credit');
 
   onChartBasePaymentChange($event: string) {
     this.chartBasePaymentChange.set(
-      $event as 'pie-chart' | 'bars-chart' | 'columns-chart',
+      $event as 'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart',
     );
   }
 
