@@ -51,7 +51,7 @@ jobs:
         run: npm run build -- --configuration production
 
       - name: List build output
-        run: ls -la ./dist/predict.client || echo "Build directory not found"
+        run: ls -la ./dist/predict.client/browser || echo "Build directory not found"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -59,7 +59,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./Predict.Client/dist/predict.client"
+          path: "./Predict.Client/dist/predict.client/browser"
 
   deploy:
     needs: build
