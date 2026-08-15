@@ -60,6 +60,7 @@ export class LoanDetailedBodyComponent {
   interestProgressPieChart = computed(() =>
     InterestProgressChartPieUtils.getChart(
       this.historicalInstalments(),
+      this.historicalCompareToInstalmentPayments(),
       this.progressPaymentViewChange(),
     ),
   );
@@ -111,7 +112,7 @@ export class LoanDetailedBodyComponent {
   >('pie-chart');
   dotBarChartMode = signal<'chart' | 'compare'>('chart');
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
-  progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Credit');
+  progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Total');
 
   onChartBasePaymentChange($event: string) {
     this.chartBasePaymentChange.set(
