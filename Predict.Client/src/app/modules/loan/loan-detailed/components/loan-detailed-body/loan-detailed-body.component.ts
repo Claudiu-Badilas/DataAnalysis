@@ -17,6 +17,8 @@ import { InterestProgressChartBarUtils } from '../../utils/charts/interest-progr
 import { InterestProgressChartPieUtils } from '../../utils/charts/interest-progress.pie-chart.util';
 import { LoanMonthlyPaymentsChartUtils } from '../../utils/charts/loan-monthly-payments.chart.util';
 import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
+import { LoanDetailedCompareBodyComponent } from '../loan-detailed-compare-body/loan-detailed-compare-body.component';
+import { RepaymentSchedule } from '../../../models/loan.model';
 
 @Component({
   selector: 'p-loan-detailed-body',
@@ -24,6 +26,7 @@ import { HistoricalInstalmentsTableComponent } from '../historical-instalments-t
     CommonModule,
     HighchartWrapperComponent,
     HistoricalInstalmentsTableComponent,
+    LoanDetailedCompareBodyComponent,
     ToggleButtonComponent,
   ],
   templateUrl: './loan-detailed-body.component.html',
@@ -73,6 +76,18 @@ export class LoanDetailedBodyComponent {
     return CompareRatesTrendChartUtils.getChart(left, right);
   });
 
+  dotBarChartCompareRepaymentSchedules = computed(() => {
+    const base = this.baseRepaymentSchedule();
+    const selected = this.selectedRepaymentSchedule();
+
+    if (!base && !selected) {
+      return [];
+    }
+
+    const schedules = [base, selected].filter(Boolean) as RepaymentSchedule[];
+    return schedules.length > 1 ? schedules : [];
+  });
+
   loanMonthlyPaymentsChart = computed(() =>
     LoanMonthlyPaymentsChartUtils.getChart(
       this.historicalInstalments(),
@@ -86,6 +101,7 @@ export class LoanDetailedBodyComponent {
   chartBasePaymentChange = signal<
     'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart'
   >('pie-chart');
+  dotBarChartMode = signal<'chart' | 'compare'>('chart');
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
   progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Credit');
 
@@ -93,6 +109,10 @@ export class LoanDetailedBodyComponent {
     this.chartBasePaymentChange.set(
       $event as 'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart',
     );
+  }
+
+  onDotBarChartModeChange($event: string) {
+    this.dotBarChartMode.set($event as 'chart' | 'compare');
   }
 
   onMonthlyPaymentViewChange($event: string) {
