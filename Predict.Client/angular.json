@@ -32,6 +32,7 @@
             ],
             "scripts": [],
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": ["highcharts"],
             "stylePreprocessorOptions": {
               "includePaths": ["."]
             }
@@ -46,7 +47,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kb",
+                  "maximumWarning": "25kb",
                   "maximumError": "30kb"
                 }
               ],
