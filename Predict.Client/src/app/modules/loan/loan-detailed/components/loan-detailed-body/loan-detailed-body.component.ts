@@ -39,6 +39,9 @@ export class LoanDetailedBodyComponent {
       fromLoanDetailed.getHistoricalCompareToInstalmentPayments,
     ),
   );
+  detailedCompareToRepaymentSchedule = toSignal(
+    this.store.select(fromLoanDetailed.getDetailedCompareToRepaymentSchedule),
+  );
   historicalInstalments = toSignal(
     this.store.select(fromLoanDetailed.getHistoricalInstalmentPayments),
   );
@@ -76,7 +79,8 @@ export class LoanDetailedBodyComponent {
     const left =
       this.selectedRepaymentSchedule() ?? this.baseRepaymentSchedule();
     const right =
-      this.baseRepaymentSchedule() ?? this.selectedRepaymentSchedule();
+      this.detailedCompareToRepaymentSchedule() ??
+      this.selectedRepaymentSchedule();
 
     if (!left || !right) {
       return { series: [] } as any;
