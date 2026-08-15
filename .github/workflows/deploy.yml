@@ -28,7 +28,6 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          # Ensure we get all files even if .git is missing
           clean: false
 
       - name: Verify repository state
@@ -47,8 +46,6 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          # If install fails, try with --legacy-peer-deps
-          # npm install --legacy-peer-deps
 
       - name: Build Angular app
         run: npm run build -- --configuration production
@@ -64,6 +61,17 @@ jobs:
         with:
           path: "./Predict.Client/dist/predict.client"
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
