@@ -24,9 +24,24 @@ export const getDetailedSelectedRepaymentSchedule = createSelector(
 );
 
 export const getDetailedCompareToRepaymentSchedule = createSelector(
+  fromLoan.getBaseRepaymentSchedule,
   fromLoan.getRepaymentSchedules,
-  getDetailedSelectedRepaymentScheduleName,
-  (repaymentSchedules, selectedRepaymentScheduleName) => repaymentSchedules[3],
+  getDetailedSelectedRepaymentSchedule,
+  (baseRepaymentSchedule, repaymentSchedules, selectedRepaymentSchedule) => {
+    const date = JsDateUtils.addMonths(selectedRepaymentSchedule?.date, -1);
+    const targetDate = new Date(
+      `01-${date.getMonth() + 1}-${date.getFullYear()}`,
+    );
+    const foundTarget = repaymentSchedules
+      .filter((rs) => rs.isNormalPayment)
+      .find((rs) => {
+        const rsDate = new Date(
+          `01-${rs?.date.getMonth() + 1}-${rs?.date.getFullYear()}`,
+        );
+        return JsDateUtils.isSame(rsDate, targetDate);
+      });
+    return foundTarget || baseRepaymentSchedule;
+  },
 );
 
 export const getDetailedRepaymentSchedules = createSelector(
