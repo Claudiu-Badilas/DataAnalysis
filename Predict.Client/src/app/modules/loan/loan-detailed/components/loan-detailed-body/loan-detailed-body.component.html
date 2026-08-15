@@ -4,8 +4,8 @@
       class="chart-wrapper"
       [chartOptions]="interestProgressPieChart()"
       ><ng-container p-highcharts-wrapper-content>
-        <div class="m-2 d-flex align-items-center justify-content-between">
-          <div style="width: 40%">
+        <div class="my-2 d-flex align-items-center justify-content-between">
+          <div style="width: 45%">
             <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
           <div class="w-50">
@@ -31,8 +31,8 @@
       [chartOptions]="loanMonthlyPaymentsChart()"
     >
       <ng-container p-highcharts-wrapper-content>
-        <div class="m-2 d-flex align-items-center justify-content-between">
-          <div style="width: 40%">
+        <div class="my-2 d-flex align-items-center justify-content-between">
+          <div style="width: 45%">
             <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
           <div class="w-50">
@@ -53,8 +53,8 @@
       class="chart-wrapper"
       [chartOptions]="interestProgressBarChart()"
       ><ng-container p-highcharts-wrapper-content>
-        <div class="m-2 d-flex align-items-center justify-content-between">
-          <div style="width: 40%">
+        <div class="my-2 d-flex align-items-center justify-content-between">
+          <div style="width: 45%">
             <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
           </div>
         </div> </ng-container
@@ -76,6 +76,10 @@
       {
         label: 'columns-chart',
         iconPath: 'assets/icons/column-chart.svg',
+      },
+      {
+        label: 'dot-bar-chart',
+        iconPath: 'assets/icons/dot-bar-chart.svg',
       },
     ]"
     [selected]="chartBasePaymentChange()"
