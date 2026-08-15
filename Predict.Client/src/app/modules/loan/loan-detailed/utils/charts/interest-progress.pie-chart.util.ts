@@ -4,6 +4,7 @@ import { Colors } from 'src/app/shared/styles/colors';
 import { Calculator } from 'src/app/shared/utils/calculator.utils';
 import { MathUtil } from 'src/app/shared/utils/math.utils';
 import { HistoricalInstalmentPayment } from '../../models/base-loan-rate.model';
+
 export namespace InterestProgressChartPieUtils {
   export function getChart(
     rates: HistoricalInstalmentPayment[],
@@ -223,52 +224,32 @@ export namespace InterestProgressChartPieUtils {
     const isMobile =
       typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 
-    // Helper function to create sticky note label
-    const createStickyNoteLabel = (
-      point: any,
-      isComparison: boolean = false,
-    ) => {
-      const color = point.color || '#333';
-      const bgColor = isComparison
-        ? 'rgba(255,255,255,0.9)'
-        : 'rgba(255,255,255,0.95)';
-      const borderWidth = isComparison ? '2px' : '1px';
-
-      return `<div style="background: ${bgColor}; padding: 6px 10px; border-radius: 6px; border: ${borderWidth} solid ${color}; box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: ${isMobile ? '9px' : '11px'}; font-weight: bold; color: #333; max-width: 180px; text-align: center; pointer-events: none;">
-                ${isComparison ? `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>` : `<div style="font-size: ${isMobile ? '7px' : '9px'}; color: #666; margin-bottom: 3px;"></div>`}
-                <div style="font-size: ${isMobile ? '9px' : '11px'}; font-weight: 700; color: ${color};">${point.nameShort}: ${point.amountCompact} (${point.y}%) </div>
-
-              </div>`;
-    };
-
     const series: SeriesOptionsType[] = [
       {
         type: 'pie',
         name: 'Credit',
-        data: mainChartData.map((point) => ({
-          ...point,
-          dataLabels: {
-            enabled: true,
-            useHTML: true,
-            formatter: function (this: any) {
-              return createStickyNoteLabel(this, false);
-            },
-            style: {
-              fontSize: isMobile ? '10px' : '12px',
-              fontWeight: 'bold',
-              color: '#333',
-              textShadow: '0 0 3px rgba(255,255,255,0.8)',
-            },
-            connectorWidth: 0,
-            distance: hasComparison ? 15 : 20,
-            crop: false,
-            overflow: 'allow',
-          },
-        })),
+        data: mainChartData,
         showInLegend: false,
-        size: hasComparison ? '80%' : '100%',
+        size: hasComparison ? '85%' : '100%',
         innerSize: hasComparison ? '55%' : '50%',
-        animation: { duration: 1000 },
+        animation: { duration: 750 },
+        dataLabels: {
+          enabled: true,
+          format:
+            '<b>{point.nameShort}:</b> {point.amountCompact} ({point.y}%)',
+          style: {
+            fontSize: isMobile ? '8px' : '10px',
+            textOutline: isMobile ? '1px contrast' : 'none',
+            fontWeight: 'bold',
+            color: '#333',
+            textShadow: isMobile ? '0 0 3px rgba(255,255,255,0.8)' : 'none',
+          },
+          connectorWidth: 1,
+          connectorPadding: isMobile ? 6 : 15,
+          distance: hasComparison ? 15 : 20,
+          crop: false,
+          overflow: 'allow',
+        },
         states: { hover: { enabled: false }, inactive: { enabled: false } },
         allowPointSelect: false,
       } as SeriesOptionsType,
@@ -278,16 +259,12 @@ export namespace InterestProgressChartPieUtils {
       series.push({
         type: 'pie',
         name: 'Referinta',
-        data: comparisonChartData.map((point) => ({
-          ...point,
-          dataLabels: {
-            enabled: false, // Disabled sticky notes for comparison
-          },
-        })),
+        data: comparisonChartData,
         showInLegend: false,
         size: '100%',
-        innerSize: '80%',
+        innerSize: '85%',
         animation: { duration: 800 },
+        dataLabels: { enabled: false },
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.8)',
         opacity: 0.5,
