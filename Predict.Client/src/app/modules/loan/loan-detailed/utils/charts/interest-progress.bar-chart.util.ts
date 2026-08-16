@@ -167,7 +167,7 @@ export namespace InterestProgressChartBarUtils {
       amountCompact:
         d.compareAmount !== undefined && d.compareAmount > 0
           ? NumberFormatPipe.numberFormat(d.compareAmount)
-          : '0 RON',
+          : '0',
     }));
 
     const allValues = [
@@ -216,14 +216,14 @@ export namespace InterestProgressChartBarUtils {
           tooltipText += `
             <div style="display:flex; justify-content:space-between; width:100%;">
               <span>${point.name}:</span>
-              <span><b>${NumberFormatPipe.numberFormat(mainValue)} RON</b></span>
+              <span><b>${NumberFormatPipe.numberFormat(mainValue)}</b></span>
             </div></br>`;
 
           if (compareValue > 0) {
             tooltipText += `
               <div style="display:flex; justify-content:space-between; width:100%;">
                 <span>Referinta:</span>
-                <span><b>${NumberFormatPipe.numberFormat(compareValue)} RON</b></span>
+                <span><b>${NumberFormatPipe.numberFormat(compareValue)}</b></span>
               </div></br>`;
 
             const diff = mainValue - compareValue;
@@ -242,7 +242,7 @@ export namespace InterestProgressChartBarUtils {
               tooltipText += `
                 <div style="display:flex; justify-content:space-between; width:100%;">
                   <span>Diferenta:</span>
-                  <span style="color:${color};font-weight:bold;">${arrow} ${sign}${diffFormatted} RON (${sign}${diffPercent}%)</span>
+                  <span style="color:${color};font-weight:bold;">${arrow} ${sign}${diffFormatted} (${sign}${diffPercent}%)</span>
                 </div>`;
             }
           }
@@ -330,8 +330,7 @@ export namespace InterestProgressChartBarUtils {
                   y: d.y,
                   color: d.color,
                   amount: d.y,
-                  amountCompact:
-                    d.y > 0 ? NumberFormatPipe.numberFormat(d.y) + ' RON' : '',
+                  amountCompact: NumberFormatPipe.numberFormat(d.y),
                 })),
                 colorByPoint: true,
                 colors: compareData.map((d) => d.color),
@@ -346,10 +345,7 @@ export namespace InterestProgressChartBarUtils {
                   enabled: true,
                   format: '{point.amountCompact}',
                   style: {
-                    fontSize: isMobile ? '6px' : '7px',
-                    fontWeight: 'normal',
-                    color: '#999999',
-                    textOutline: 'none',
+                    fontSize: isMobile ? '7px' : '8px',
                   },
                   position: 'right',
                   overflow: 'allow',
