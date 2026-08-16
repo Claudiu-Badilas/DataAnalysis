@@ -69,8 +69,8 @@
 
       @if (dotBarChartMode() === "compare") {
         <p-loan-detailed-compare-body
-          [baseRepaymentSchedule]="detailedCompareToRepaymentSchedule()"
-          [selectedRepaymentSchedule]="selectedRepaymentSchedule()"
+          [baseRepaymentSchedule]="selectedRepaymentSchedule()"
+          [selectedRepaymentSchedule]="detailedCompareToRepaymentSchedule()"
           [repaymentSchedules]="dotBarChartCompareRepaymentSchedules()"
         />
       } @else {
