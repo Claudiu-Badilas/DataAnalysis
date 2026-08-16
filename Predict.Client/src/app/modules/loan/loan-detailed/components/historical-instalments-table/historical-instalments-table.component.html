@@ -1,317 +1,124 @@
 <div class="historical-instalments">
   <!-- Desktop Table Wrapper -->
-  <div class="table-wrapper">
-    <table class="instalment-table">
-      <thead>
-        <tr>
-          <th class="text-center">#</th>
-          <th class="text-center">Data Plății</th>
-          <th class="text-center">Total</th>
-          <th class="text-center">Rată Credit</th>
-          <th class="text-center">Rată Dobândă</th>
-          <th class="text-center">Asig.</th>
-          <th class="text-center">Sold Rest Plată</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (yearGroup of yearGroups(); track yearGroup.year) {
-          <!-- Year Group Header Row -->
-          <tr
-            class="year-group-header-row"
-            (click)="toggleYearGroup(yearGroup)"
-          >
-            <td class="text-center" colspan="7">
-              <div class="year-group-content">
-                <div class="year-group-info">
-                  <span class="year-group-title">{{ yearGroup.year }}</span>
-                  <span class="year-group-count bold"
-                    >{{ yearGroup.subtotal.instalmentsCount }} +
-                    {{ yearGroup.subtotal.earlyCount }}</span
-                  >
-                </div>
-                <div class="year-group-totals">
-                  <span class="year-total">
-                    Total:
-                    {{ yearGroup.subtotal.total | numberFormat: "0.00" }}
-                  </span>
-                  <span class="year-principal">
-                    Principal:
-                    {{ yearGroup.subtotal.principal | numberFormat: "0.00" }}
-                  </span>
-                  <span class="year-interest">
-                    Dobândă:
-                    {{ yearGroup.subtotal.interest | numberFormat: "0.00" }}
-                  </span>
-                  <span class="year-remaining">
-                    Sold:
-                    {{
-                      yearGroup.subtotal.remainingBalance | numberFormat: "0.00"
-                    }}
-                  </span>
-                </div>
-              </div>
-            </td>
+  <div class="desktop-view">
+    <div class="table-wrapper">
+      <table class="instalment-table">
+        <thead>
+          <tr>
+            <th class="text-center">Data Plății</th>
+            <th class="text-center"></th>
+            <th class="text-center">Total</th>
+            <th class="text-center">Rată Credit</th>
+            <th class="text-center">Rată Dobândă</th>
+            <th class="text-center">Asig.</th>
+            <th class="text-center">Sold Rest Plată</th>
           </tr>
+        </thead>
+        <tbody>
+          @for (group of monthlyGroups(); track group.title) {
+            <!-- Monthly Group Header -->
+            <tr class="monthly-group-header-row">
+              @let subtotal = group.subtotal;
 
-          <!-- Monthly Groups (only shown when year is expanded) -->
-          @if (yearGroup.expanded) {
-            @for (group of yearGroup.monthlyGroups; track group.title) {
-              @let hasValidPayments = hasInstallmentOrEarly(group);
-
-              @if (hasValidPayments) {
-                <!-- Monthly Group Header Row -->
-                <tr
-                  class="monthly-group-header-row"
-                  (click)="toggleMonthlyGroup(group)"
+              <td class="text-center">
+                <span class="group-title">{{
+                  group.title | date: "MMM yyyy"
+                }}</span>
+              </td>
+              <td class="text-center">
+                <span class="count bold"
+                  >{{ subtotal.instalmentsCount }} +
+                  {{ subtotal.earlyCount }}</span
                 >
-                  @let subtotal = getSubtotal(group);
-                  <td class="text-center">
-                    <span class="group-count bold"
-                      >{{ subtotal.instalmentsCount }} +
-                      {{ subtotal.earlyCount }}</span
-                    >
-                  </td>
-                  <td class="text-center">
-                    <span class="group-title">{{
-                      group.title | date: "MMM yyyy"
-                    }}</span>
-                  </td>
-                  <td class="text-center">
-                    <span class="group-title">
-                      {{ subtotal.total | numberFormat: "0.00" }}</span
-                    >
-                  </td>
-                  <td class="text-center">
-                    <span class="total-interest bold">
-                      {{ subtotal.principal | numberFormat: "0.00" }}</span
-                    >
-                  </td>
-                  <td class="text-center">
-                    <span class="total-interest bold">
-                      {{ subtotal.interest | numberFormat: "0.00" }}</span
-                    >
-                  </td>
-                  <td class="text-center">
-                    <span class="total-interest bold">
-                      {{ subtotal.insuranceCost | numberFormat: "0.00" }}</span
-                    >
-                  </td>
-                  <td class="text-center">
-                    <span class="total-remaining">
-                      {{
-                        subtotal.remainingBalance | numberFormat: "0.00"
-                      }}</span
-                    >
-                  </td>
-                </tr>
-
-                <!-- Payment Rows (only shown when monthly group is expanded) -->
-                @if (group.expanded) {
-                  @for (
-                    row of getPaymentRows(group);
-                    let last = $last;
-                    track row.index
-                  ) {
-                    @let rowTotal =
-                      row.principalAmount +
-                      row.interestAmount +
-                      row.insuranceCost;
-                    <tr
-                      [class.orange]="row.instalmentPayment"
-                      [class.green]="row.earlyPayment"
-                    >
-                      <td
-                        class="text-center"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.index }}
-                      </td>
-                      <td
-                        class="text-center"
-                        [class.strike]="
-                          row.earlyPayment || row.instalmentPayment
-                        "
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.paymentDate | date: "MMM yyyy" }}
-                      </td>
-                      <td
-                        class="text-center bold total-column"
-                        [class.strike]="row.earlyPayment"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ rowTotal | numberFormat: "0.00" }}
-                      </td>
-                      <td
-                        class="text-center"
-                        [class.bold]="row.earlyPayment || row.instalmentPayment"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.principalAmount | numberFormat: "0.00" }}
-                      </td>
-                      <td
-                        class="text-center"
-                        [class.strike]="row.earlyPayment"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.interestAmount | numberFormat: "0.00" }}
-                      </td>
-                      <td
-                        class="text-center"
-                        [class.strike]="row.earlyPayment"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.insuranceCost | numberFormat: "0.00" }}
-                      </td>
-                      <td
-                        class="text-center"
-                        [class.strike]="!last"
-                        [class.last-bottom-border]="last && row.earlyPayment"
-                      >
-                        {{ row.remainingBalance | numberFormat: "0.00" }}
-                      </td>
-                    </tr>
-
-                    <tr></tr>
-                  }
-                }
-              }
-            }
+              </td>
+              <td class="text-center">
+                <span class="subtotal-total">
+                  {{ subtotal.total | numberFormat: "0.00" }}</span
+                >
+              </td>
+              <td class="text-center">
+                <span class="semi-bold">
+                  {{ subtotal.principal | numberFormat: "0.00" }}</span
+                >
+              </td>
+              <td class="text-center">
+                <span class="semi-bold">
+                  {{ subtotal.interest | numberFormat: "0.00" }}</span
+                >
+              </td>
+              <td class="text-center">
+                <span class="semi-bold">
+                  {{ subtotal.insuranceCost | numberFormat: "0.00" }}</span
+                >
+              </td>
+              <td class="text-center">
+                <span class="semi-bold">
+                  {{ subtotal.remainingBalance | numberFormat: "0.00" }}</span
+                >
+              </td>
+            </tr>
           }
-        }
-      </tbody>
-    </table>
+        </tbody>
+      </table>
 
-    @if (!yearGroups().length) {
-      <div class="empty-state">No instalment data available</div>
-    }
+      @if (!monthlyGroups().length) {
+        <div class="empty-state">No instalment data available</div>
+      }
+    </div>
   </div>
 
   <!-- Mobile View -->
   <div class="mobile-view">
-    @for (yearGroup of yearGroups(); track yearGroup.year) {
-      <div class="mobile-year-card">
-        <div class="mobile-year-header" (click)="toggleYearGroup(yearGroup)">
-          <div class="mobile-year-info">
-            <span class="mobile-year-title">{{ yearGroup.year }}</span>
-            <span class="mobile-year-count bold"
-              >{{ yearGroup.subtotal.instalmentsCount }} +
-              {{ yearGroup.subtotal.earlyCount }}</span
-            >
-          </div>
-          <div class="mobile-year-totals">
-            <span class="mobile-year-total">
-              Total: {{ yearGroup.subtotal.total | numberFormat: "0.00" }}
-            </span>
+    @for (group of monthlyGroups(); track group.title) {
+      <!-- Mobile Month Card -->
+      <div class="mobile-group-card">
+        <!-- Month Details as Individual Items -->
+        <div class="mobile-items-list">
+          <!-- Month Total as first item -->
+          <div class="mobile-item mobile-total-item">
+            <div class="mobile-item-row">
+              <div class="mobile-item-col">
+                <span class="item-label">{{
+                  group.title | date: "MMM yyyy"
+                }}</span>
+                <span class="item-value total-value">
+                  {{ group.subtotal.instalmentsCount }} +
+                  {{ group.subtotal.earlyCount }}
+                </span>
+              </div>
+              <div class="mobile-item-col">
+                <span class="item-label">Total</span>
+                <span class="item-value total-value">
+                  {{ group.subtotal.total | numberFormat: "0.00" }}
+                </span>
+              </div>
+              <div class="mobile-item-col">
+                <span class="item-label">Principal</span>
+                <span class="item-value principal-value">
+                  {{ group.subtotal.principal | numberFormat: "0.00" }}
+                </span>
+              </div>
+              <div class="mobile-item-col">
+                <span class="item-label">Dobândă</span>
+                <span class="item-value interest-value">
+                  {{ group.subtotal.interest | numberFormat: "0.00" }}
+                </span>
+              </div>
+              <div class="mobile-item-col">
+                <span class="item-label">Asig.</span>
+                <span class="item-value">
+                  {{ group.subtotal.insuranceCost | numberFormat: "0.00" }}
+                </span>
+              </div>
+              <div class="mobile-item-col">
+                <span class="item-label">Sold</span>
+                <span class="item-value remaining-value">
+                  {{ group.subtotal.remainingBalance | numberFormat: "0.00" }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-
-        @if (yearGroup.expanded) {
-          @for (group of yearGroup.monthlyGroups; track group.title) {
-            @let hasValidPayments = hasInstallmentOrEarly(group);
-
-            @if (hasValidPayments) {
-              <div class="mobile-group-card">
-                <div
-                  class="mobile-group-header"
-                  (click)="toggleMonthlyGroup(group)"
-                >
-                  @let subtotal = getSubtotal(group);
-                  <div class="d-flex align-items-center" style="gap: 10px">
-                    <div class="mobile-group-info">
-                      <div class="mobile-group-title">
-                        {{ group.title | date: "MMM yyyy" }}
-                      </div>
-                      <span class="mobile-group-count bold"
-                        >{{ subtotal.instalmentsCount }} +
-                        {{ subtotal.earlyCount }}</span
-                      >
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center" style="gap: 10px">
-                    <div class="mobile-group-info">
-                      <div class="mobile-group-total mobile-group-total-blue">
-                        <span>Princi.</span>
-                        <span>
-                          {{ subtotal.principal | numberFormat: "0.00" }}</span
-                        >
-                      </div>
-                      <div class="mobile-group-total mobile-group-total-green">
-                        <span>Total</span>
-                        <span>
-                          {{ subtotal.total | numberFormat: "0.00" }}
-                        </span>
-                      </div>
-                      <div class="mobile-group-total mobile-group-total-black">
-                        <span>Sold</span>
-                        <span>
-                          {{ subtotal.remainingBalance | numberFormat: "0.00" }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                @if (group.expanded) {
-                  <div class="mobile-items-list">
-                    @for (row of getPaymentRows(group); track row.index) {
-                      <div
-                        class="mobile-item"
-                        [class.orange-item]="row.instalmentPayment"
-                        [class.green-item]="row.earlyPayment"
-                      >
-                        <div class="mobile-item-row">
-                          <div class="mobile-item-col justify-content-center">
-                            <span class="item-index">#{{ row.index }}</span>
-
-                            <span
-                              class="item-date"
-                              [class.strike]="
-                                row.earlyPayment || row.instalmentPayment
-                              "
-                            >
-                              {{ row.paymentDate | date: "MMM yyyy" }}
-                            </span>
-                          </div>
-                          <div class="mobile-item-col">
-                            <span class="item-label">Principal</span>
-                            <span class="item-value principal-value">{{
-                              row.principalAmount | numberFormat: "0.00"
-                            }}</span>
-                          </div>
-                          <div class="mobile-item-col">
-                            <span class="item-label">Dobanda</span>
-                            <span
-                              class="item-value interest-value"
-                              [class.strike]="row.earlyPayment"
-                            >
-                              {{ row.interestAmount | numberFormat: "0.00" }}
-                            </span>
-                          </div>
-                          <div class="mobile-item-col">
-                            <span class="item-label">Asig.</span>
-                            <span
-                              class="item-value"
-                              [class.strike]="row.earlyPayment"
-                            >
-                              {{ row.insuranceCost | numberFormat: "0.00" }}
-                            </span>
-                          </div>
-                          <div class="mobile-item-col">
-                            <span class="item-label">Sold</span>
-                            <span class="item-value remaining-value">{{
-                              row.remainingBalance | numberFormat: "0.00"
-                            }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
-          }
-        }
       </div>
     }
   </div>
