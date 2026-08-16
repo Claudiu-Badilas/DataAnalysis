@@ -49,34 +49,14 @@
         </div> </ng-container
     ></p-highcharts-wrapper>
   } @else if (chartBasePaymentChange() === "dot-bar-chart") {
-    <div class="chart-wrapper">
-      <div class="my-2 d-flex align-items-center justify-content-between">
-        <div style="width: 45%">
-          <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
-        </div>
-        <div class="w-50">
-          <p-toggle-button
-            [options]="[{ label: 'chart' }, { label: 'compare' }]"
-            [selected]="dotBarChartMode()"
-            [gradient]="{
-              primaryColor: '#047f94',
-              secondaryColor: '#d5a326',
-            }"
-            (selectionChange)="onDotBarChartModeChange($event)"
-          />
-        </div>
-      </div>
-
-      @if (dotBarChartMode() === "compare") {
-        <p-loan-detailed-compare-body
-          [baseRepaymentSchedule]="selectedRepaymentSchedule()"
-          [selectedRepaymentSchedule]="detailedCompareToRepaymentSchedule()"
-          [repaymentSchedules]="dotBarChartCompareRepaymentSchedules()"
-        />
-      } @else {
-        <p-highcharts-wrapper [chartOptions]="dotBarChart()" />
-      }
-    </div>
+    <p-highcharts-wrapper class="chart-wrapper" [chartOptions]="dotBarChart()">
+      <ng-container p-highcharts-wrapper-content>
+        <div class="my-2 d-flex align-items-center justify-content-between">
+          <div style="width: 45%">
+            <ng-container *ngTemplateOutlet="chartTypeSelector"></ng-container>
+          </div>
+        </div> </ng-container
+    ></p-highcharts-wrapper>
   } @else {
     <p-highcharts-wrapper
       class="chart-wrapper"

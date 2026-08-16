@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   signal,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
@@ -12,13 +12,12 @@ import * as fromLoan from 'src/app/modules/loan/reducers/loan.reducer';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { ToggleButtonComponent } from 'src/app/shared/components/toggle-button/toggle-button.component';
 import { Colors } from 'src/app/shared/styles/colors';
+import { RepaymentSchedule } from '../../../models/loan.model';
 import { CompareRatesTrendChartUtils } from '../../utils/charts/compare-loan-rates-trend.chart.util';
 import { InterestProgressChartBarUtils } from '../../utils/charts/interest-progress.bar-chart.util';
 import { InterestProgressChartPieUtils } from '../../utils/charts/interest-progress.pie-chart.util';
 import { LoanMonthlyPaymentsChartUtils } from '../../utils/charts/loan-monthly-payments.chart.util';
 import { HistoricalInstalmentsTableComponent } from '../historical-instalments-table/historical-instalments-table.component';
-import { LoanDetailedCompareBodyComponent } from '../loan-detailed-compare-body/loan-detailed-compare-body.component';
-import { RepaymentSchedule } from '../../../models/loan.model';
 
 @Component({
   selector: 'p-loan-detailed-body',
@@ -26,7 +25,6 @@ import { RepaymentSchedule } from '../../../models/loan.model';
     CommonModule,
     HighchartWrapperComponent,
     HistoricalInstalmentsTableComponent,
-    LoanDetailedCompareBodyComponent,
     ToggleButtonComponent,
   ],
   templateUrl: './loan-detailed-body.component.html',
@@ -114,7 +112,6 @@ export class LoanDetailedBodyComponent {
   chartBasePaymentChange = signal<
     'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart'
   >('pie-chart');
-  dotBarChartMode = signal<'chart' | 'compare'>('chart');
   monthlyPaymentViewChange = signal<'Prd. Fixa' | 'Prd. Totala'>('Prd. Fixa');
   progressPaymentViewChange = signal<'Credit' | 'Dobanda' | 'Total'>('Total');
 
@@ -122,10 +119,6 @@ export class LoanDetailedBodyComponent {
     this.chartBasePaymentChange.set(
       $event as 'pie-chart' | 'bars-chart' | 'columns-chart' | 'dot-bar-chart',
     );
-  }
-
-  onDotBarChartModeChange($event: string) {
-    this.dotBarChartMode.set($event as 'chart' | 'compare');
   }
 
   onMonthlyPaymentViewChange($event: string) {
