@@ -33,7 +33,7 @@ export const getDetailedCompareToRepaymentSchedule = createSelector(
       `01-${date.getMonth() + 1}-${date.getFullYear()}`,
     );
     const foundTarget = repaymentSchedules
-      .filter((rs) => rs.isNormalPayment)
+      .filter((rs) => rs.isExtraPayment)
       .find((rs) => {
         const rsDate = new Date(
           `01-${rs?.date.getMonth() + 1}-${rs?.date.getFullYear()}`,
