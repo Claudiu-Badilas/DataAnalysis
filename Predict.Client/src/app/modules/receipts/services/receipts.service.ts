@@ -25,7 +25,7 @@ export class ReceiptsService {
       : this.httpClient
           .get<
             ReceiptDto[]
-          >(`/server/api/v1/receipts?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+          >(`https://localhost:8080/api/v1/receipts?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
           .pipe(
             tap((dtos) =>
               this.localStorage.setItem(ReceiptsService_STORAGE_KEY, dtos),
