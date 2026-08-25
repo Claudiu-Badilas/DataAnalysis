@@ -236,7 +236,7 @@ export namespace InterestProgressChartPieUtils {
         dataLabels: {
           enabled: true,
           format:
-            '<b>{point.nameShort}:</b> {point.amountCompact} ({point.y}%)',
+            '<b>{point.nameShort}</b> {point.amountCompact}({point.y}%)',
           style: {
             fontSize: isMobile ? '8px' : '10px',
             textOutline: isMobile ? '1px contrast' : 'none',
