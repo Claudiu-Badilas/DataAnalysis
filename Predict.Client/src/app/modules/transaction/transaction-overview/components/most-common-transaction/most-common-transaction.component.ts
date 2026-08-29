@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { HighchartWrapperComponent } from 'src/app/shared/components/highcharts-wrapper/highcharts-wrapper.component';
 import { NumberFormatPipe } from 'src/app/shared/pipes/number-format.pipe';
@@ -295,6 +301,12 @@ interface PeriodGroup {
   changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* ===== CONTAINER ===== */
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
 
     .header-section {
       flex-shrink: 0;
@@ -305,6 +317,7 @@ interface PeriodGroup {
       flex: 1;
       overflow: hidden;
       padding: 4px 12px 8px 12px;
+      min-height: 0;
     }
 
     .scroll-container {
@@ -334,6 +347,8 @@ interface PeriodGroup {
       border: 1px solid #f0f2f5;
       display: flex;
       flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
     }
 
     .chart-section.compact-chart {
@@ -351,6 +366,7 @@ interface PeriodGroup {
       width: 100%;
       height: 300px;
       display: block;
+      min-height: 200px;
     }
 
     .chart-wrapper ::ng-deep .highcharts-container {
@@ -361,15 +377,18 @@ interface PeriodGroup {
     /* Compact chart height */
     .chart-section.compact-chart .chart-wrapper {
       height: 240px;
+      min-height: 160px;
     }
 
     /* ===== RESPONSIVE CHART HEIGHTS ===== */
     @media (max-width: 1024px) {
       .chart-wrapper {
         height: 260px;
+        min-height: 180px;
       }
       .chart-section.compact-chart .chart-wrapper {
         height: 210px;
+        min-height: 150px;
       }
     }
 
@@ -381,9 +400,11 @@ interface PeriodGroup {
 
       .chart-wrapper {
         height: 220px;
+        min-height: 150px;
       }
       .chart-section.compact-chart .chart-wrapper {
         height: 180px;
+        min-height: 130px;
       }
     }
 
@@ -395,18 +416,22 @@ interface PeriodGroup {
 
       .chart-wrapper {
         height: 180px;
+        min-height: 120px;
       }
       .chart-section.compact-chart .chart-wrapper {
         height: 150px;
+        min-height: 100px;
       }
     }
 
     @media (max-width: 380px) {
       .chart-wrapper {
         height: 150px;
+        min-height: 100px;
       }
       .chart-section.compact-chart .chart-wrapper {
         height: 130px;
+        min-height: 90px;
       }
     }
 
@@ -416,6 +441,7 @@ interface PeriodGroup {
       border-radius: 8px;
       padding: 6px 8px;
       border: 1px solid #f0f2f5;
+      flex-shrink: 0;
     }
 
     .transactions-section.compact {
@@ -605,6 +631,7 @@ interface PeriodGroup {
       transition: background 0.15s ease;
       gap: 6px;
       min-height: 36px;
+      flex-wrap: nowrap;
     }
 
     .period-header:hover {
@@ -617,12 +644,14 @@ interface PeriodGroup {
       gap: 6px;
       flex: 1;
       min-width: 0;
+      flex-wrap: nowrap;
     }
 
     .header-title {
       font-weight: 600;
       font-size: 0.95rem;
       color: #1a1a2e;
+      white-space: nowrap;
     }
 
     .header-count {
@@ -632,10 +661,12 @@ interface PeriodGroup {
       padding: 0 8px;
       border-radius: 6px;
       line-height: 1.6;
+      flex-shrink: 0;
     }
 
     .salary-tag {
       font-size: 0.75rem;
+      flex-shrink: 0;
     }
 
     .header-right {
@@ -643,6 +674,7 @@ interface PeriodGroup {
       align-items: center;
       gap: 4px;
       flex-shrink: 0;
+      flex-wrap: nowrap;
     }
 
     .income-tag,
@@ -654,6 +686,7 @@ interface PeriodGroup {
       font-weight: 600;
       white-space: nowrap;
       line-height: 1.8;
+      flex-shrink: 0;
     }
 
     .income-tag {
@@ -689,6 +722,7 @@ interface PeriodGroup {
       transition: transform 0.2s ease;
       margin-left: 4px;
       font-weight: 700;
+      flex-shrink: 0;
     }
 
     .period-content {
@@ -771,6 +805,7 @@ interface PeriodGroup {
       .period-header {
         padding: 6px 10px;
         min-height: 32px;
+        flex-wrap: nowrap;
       }
 
       .header-title {
@@ -891,39 +926,57 @@ interface PeriodGroup {
       .period-header {
         padding: 4px 8px;
         min-height: 28px;
-        flex-wrap: wrap;
-      }
-
-      .header-left {
-        width: 100%;
+        flex-wrap: nowrap;
         gap: 4px;
       }
 
+      .header-left {
+        flex: 1;
+        min-width: 0;
+        gap: 4px;
+        flex-wrap: nowrap;
+      }
+
       .header-right {
-        width: 100%;
-        justify-content: flex-start;
+        flex: 0 0 auto;
+        width: auto;
+        justify-content: flex-end;
         gap: 3px;
+        flex-wrap: nowrap;
       }
 
       .header-title {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        white-space: nowrap;
       }
 
       .header-count {
-        font-size: 0.6rem;
-        padding: 0 5px;
+        font-size: 0.55rem;
+        padding: 0 4px;
+        flex-shrink: 0;
       }
 
       .income-tag,
       .expense-tag,
       .diff-tag {
-        font-size: 0.65rem;
-        padding: 0 5px;
-        line-height: 1.6;
+        font-size: 0.6rem;
+        padding: 0 4px;
+        line-height: 1.4;
+        flex-shrink: 0;
       }
 
       .diff-tag {
-        min-width: 30px;
+        min-width: 24px;
+      }
+
+      .expand-icon {
+        font-size: 0.65rem;
+        flex-shrink: 0;
+      }
+
+      .salary-tag {
+        font-size: 0.55rem;
+        flex-shrink: 0;
       }
 
       .period-content {
@@ -1007,20 +1060,47 @@ interface PeriodGroup {
         padding: 16px;
         font-size: 0.8rem;
       }
-
-      .expand-icon {
-        font-size: 0.7rem;
-      }
-
-      .salary-tag {
-        font-size: 0.65rem;
-      }
     }
 
     @media (max-width: 380px) {
       .transactions-grid {
         grid-template-columns: 1fr;
         gap: 3px;
+      }
+
+      .period-header {
+        padding: 3px 6px;
+        min-height: 24px;
+        gap: 2px;
+      }
+
+      .header-title {
+        font-size: 0.6rem;
+      }
+
+      .header-count {
+        font-size: 0.5rem;
+        padding: 0 3px;
+      }
+
+      .income-tag,
+      .expense-tag,
+      .diff-tag {
+        font-size: 0.5rem;
+        padding: 0 3px;
+        line-height: 1.2;
+      }
+
+      .diff-tag {
+        min-width: 20px;
+      }
+
+      .expand-icon {
+        font-size: 0.6rem;
+      }
+
+      .salary-tag {
+        font-size: 0.5rem;
       }
 
       .transaction-card {
