@@ -1446,7 +1446,7 @@ export class MostCommonTransactionComponent {
     const map = new Map<string, GroupedTransaction>();
 
     for (const tx of txs) {
-      const key = `${tx.category}-${tx.serviceProvider}`;
+      const key = tx.category;
       const date = tx.completionDate || tx.registrationDate;
 
       if (!map.has(key)) {
