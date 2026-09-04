@@ -222,15 +222,6 @@ interface PeriodGroup {
                           @for (item of period.multiple; track item.provider) {
                             <div class="transaction-card highlight-card">
                               <div class="card-row">
-                                <div class="provider-group">
-                                  <span
-                                    class="provider-name"
-                                    [ngbTooltip]="item.description"
-                                  >
-                                    {{ item.provider }}
-                                  </span>
-                                  <span class="tx-count">{{ item.count }}</span>
-                                </div>
                                 <div
                                   class="category-pill"
                                   (click)="onSelectCategory(item.category)"
@@ -240,11 +231,9 @@ interface PeriodGroup {
                                 >
                                   {{ getCategoryLabel(item.category) }}
                                 </div>
-                              </div>
-                              <div class="card-row middle">
-                                <span class="date-text">{{
-                                  formatDay(item.latestDate)
-                                }}</span>
+                                <div class="provider-group">
+                                  <span class="tx-count">{{ item.count }}</span>
+                                </div>
                                 <div class="amount-group">
                                   <span
                                     class="amount-text"
@@ -485,7 +474,7 @@ interface PeriodGroup {
     .transaction-card {
       background: #fafbfc;
       border-radius: 6px;
-      padding: 6px 8px;
+      padding: 5px;
       border: 1px solid #eef0f3;
       transition: all 0.15s ease;
     }
